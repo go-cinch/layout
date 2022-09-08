@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package helloworld.v1;
+
+import "google/api/annotations.proto";
+// the validate rules:
+// https://github.com/envoyproxy/protoc-gen-validate
+import "validate/validate.proto";
+
+option go_package = "github.com/go-cinch/layout/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "helloworld.v1";
+option java_outer_classname = "HelloworldProtoV1";
+
+// The helloworld service definition.
+service Helloworld {
+  rpc CreateGreeter (CreateGreeterRequest) returns (CreateGreeterReply) {
+    option (google.api.http) = {
+      post: "/v1/greeter"
+      body: "*"
+    };
+  }
+  rpc UpdateGreeter (UpdateGreeterRequest) returns (UpdateGreeterReply) {
+    option (google.api.http) = {
+      put: "/v1/greeter/{id}"
+      body: "*",
+      // bind another method
+      additional_bindings {
+        patch: "/v1/greeter/{id}",
+        body: "*",
+      }
+    };
+  }
+  rpc DeleteGreeter (DeleteGreeterRequest) returns (DeleteGreeterReply) {
+    option (google.api.http) = {
+      delete: "/v1/greeter/{id}"
+    };
+  }
+  rpc GetGreeter (GetGreeterRequest) returns (GetGreeterReply) {
+    option (google.api.http) = {
+      get: "/v1/greeter/{id}"
+    };
+  }
+  rpc ListGreeter (ListGreeterRequest) returns (ListGreeterReply) {
+    option (google.api.http) = {
+      get: "/v1/greeter"
+    };
+  }
+}
+
+message Greeter {
+  int64 id = 1;
+  string name = 2;
+  int32 age = 3;
+}
+
+message CreateGreeterRequest {
+  string name = 1 [(validate.rules).string = {min_len: 2, max_len: 50}]; // the name of string must be between 2 and 50 character
+  int32 age = 2 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
+}
+
+message CreateGreeterReply {
+  Greeter item = 1;
+}
+
+message UpdateGreeterRequest {
+  int64 id = 1 [(validate.rules).int64 = {gt: 0}];
+  string name = 2 [(validate.rules).string = {min_len: 2, max_len: 50}]; // the name of string must be between 2 and 50 character
+  int32 age = 3 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
+}
+
+message UpdateGreeterReply {
+  Greeter item = 1;
+}
+
+message DeleteGreeterRequest {
+  int64 id = 1;
+}
+
+message DeleteGreeterReply {
+}
+
+message GetGreeterRequest {
+  int64 id = 1;
+}
+
+message GetGreeterReply {
+  Greeter item = 1;
+}
+
+message ListGreeterRequest {
+}
+
+message ListGreeterReply {
+  repeated Greeter list = 1;
+}

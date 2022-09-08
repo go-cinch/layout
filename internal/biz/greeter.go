@@ -2,44 +2,55 @@ package biz
 
 import (
 	"context"
-
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 var (
-	// ErrUserNotFound is user not found.
-	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
+	// ErrGreeterNotFound is greeter not found.
+	ErrGreeterNotFound = errors.NotFound(v1.ErrorReason_GREETER_NOT_FOUND.String(), "greeter not found")
 )
 
-// Greeter is a Greeter model.
 type Greeter struct {
-	Hello string
+	Id   int64
+	Name string
+	Age  int32
 }
 
-// GreeterRepo is a Greater repo.
 type GreeterRepo interface {
-	Save(context.Context, *Greeter) (*Greeter, error)
-	Update(context.Context, *Greeter) (*Greeter, error)
-	FindByID(context.Context, int64) (*Greeter, error)
-	ListByHello(context.Context, string) ([]*Greeter, error)
-	ListAll(context.Context) ([]*Greeter, error)
+	Create(ctx context.Context, item *Greeter) error
+	Update(ctx context.Context, id int64, item *Greeter) error
+	Delete(ctx context.Context, id int64) error
+	Get(ctx context.Context, id int64) (*Greeter, error)
+	List(ctx context.Context, item *Greeter) ([]*Greeter, error)
 }
 
-// GreeterUsecase is a Greeter usecase.
-type GreeterUsecase struct {
-	repo GreeterRepo
+type GreeterUseCase struct {
 	log  *log.Helper
+	repo GreeterRepo
 }
 
-// NewGreeterUsecase new a Greeter usecase.
-func NewGreeterUsecase(repo GreeterRepo, logger log.Logger) *GreeterUsecase {
-	return &GreeterUsecase{repo: repo, log: log.NewHelper(logger)}
+func NewGreeterUseCase(repo GreeterRepo, logger log.Logger) *GreeterUseCase {
+	return &GreeterUseCase{repo: repo, log: log.NewHelper(logger)}
 }
 
-// CreateGreeter creates a Greeter, and returns the new Greeter.
-func (uc *GreeterUsecase) CreateGreeter(ctx context.Context, g *Greeter) (*Greeter, error) {
-	uc.log.WithContext(ctx).Infof("CreateGreeter: %v", g.Hello)
-	return uc.repo.Save(ctx, g)
+func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {
+	return uc.repo.Create(ctx, item)
+}
+
+func (uc *GreeterUseCase) Update(ctx context.Context, id int64, item *Greeter) error {
+	return uc.repo.Update(ctx, id, item)
+}
+
+func (uc *GreeterUseCase) Delete(ctx context.Context, id int64) error {
+	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *GreeterUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {
+	return uc.repo.Get(ctx, id)
+}
+
+func (uc *GreeterUseCase) List(ctx context.Context, item *Greeter) (ps []*Greeter, err error) {
+	return uc.repo.List(ctx, item)
 }
