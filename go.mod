@@ -1,6 +1,6 @@
-module github.com/go-kratos/kratos-layout
+module github.com/go-cinch/layout
 
-go 1.17
+go 1.18
 
 require (
 	github.com/go-kratos/kratos/v2 v2.4.1
@@ -21,9 +21,9 @@ require (
 	github.com/imdario/mergo v0.3.12 // indirect
 	go.opentelemetry.io/otel v1.7.0 // indirect
 	go.opentelemetry.io/otel/trace v1.7.0 // indirect
-	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2 // indirect
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
+	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/yaml.v3 v3.0.0 // indirect
 )

@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"os"
-
-	"github.com/go-kratos/kratos-layout/internal/conf"
+	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -12,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"os"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
