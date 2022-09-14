@@ -4,7 +4,6 @@ import (
 	"context"
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 var (
@@ -27,12 +26,11 @@ type GreeterRepo interface {
 }
 
 type GreeterUseCase struct {
-	log  *log.Helper
 	repo GreeterRepo
 }
 
-func NewGreeterUseCase(repo GreeterRepo, logger log.Logger) *GreeterUseCase {
-	return &GreeterUseCase{repo: repo, log: log.NewHelper(logger)}
+func NewGreeterUseCase(repo GreeterRepo) *GreeterUseCase {
+	return &GreeterUseCase{repo: repo}
 }
 
 func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {

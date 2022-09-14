@@ -13,23 +13,19 @@ import (
 	"github.com/go-cinch/layout/internal/server"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
-	if err != nil {
-		return nil, nil, err
-	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, logger)
-	hellowordService := service.NewHellowordService(greeterUseCase, logger)
-	grpcServer := server.NewGRPCServer(confServer, hellowordService, logger)
-	httpServer := server.NewHTTPServer(confServer, hellowordService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+func wireApp(confServer *conf.Server, confData *conf.Data) (*kratos.App, func(), error) {
+	dataData, cleanup := data.NewData(confData)
+	greeterRepo := data.NewGreeterRepo(dataData)
+	greeterUseCase := biz.NewGreeterUseCase(greeterRepo)
+	hellowordService := service.NewHellowordService(greeterUseCase)
+	grpcServer := server.NewGRPCServer(confServer, hellowordService)
+	httpServer := server.NewHTTPServer(confServer, hellowordService)
+	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()
 	}, nil

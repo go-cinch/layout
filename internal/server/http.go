@@ -4,13 +4,12 @@ import (
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/service"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.HellowordService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, greeter *service.HellowordService) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),

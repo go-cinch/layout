@@ -4,13 +4,12 @@ import (
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/service"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.HellowordService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, greeter *service.HellowordService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),

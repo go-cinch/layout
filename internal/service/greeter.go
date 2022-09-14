@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/go-cinch/common/log"
 	helloword "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/jinzhu/copier"
@@ -12,7 +13,7 @@ func (s *HellowordService) CreateGreeter(ctx context.Context, req *helloword.Cre
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "CreateGreeter")
 	defer span.End()
-	s.log.WithContext(ctx).Infof("input data %v", req)
+	log.WithContext(ctx).Info("input data %v", req)
 	rp = &helloword.CreateGreeterReply{}
 	r := &biz.Greeter{}
 	copier.Copy(&r, req)
@@ -28,7 +29,7 @@ func (s *HellowordService) UpdateGreeter(ctx context.Context, req *helloword.Upd
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "UpdateGreeter")
 	defer span.End()
-	s.log.WithContext(ctx).Infof("input data %v", req)
+	log.WithContext(ctx).Info("input data %v", req)
 	rp = &helloword.UpdateGreeterReply{}
 	r := &biz.Greeter{}
 	copier.Copy(&r, req)
@@ -44,7 +45,7 @@ func (s *HellowordService) DeleteGreeter(ctx context.Context, req *helloword.Del
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "DeleteGreeter")
 	defer span.End()
-	s.log.WithContext(ctx).Infof("input data %v", req)
+	log.WithContext(ctx).Info("input data %v", req)
 	rp = &helloword.DeleteGreeterReply{}
 	err = s.greeter.Delete(ctx, req.Id)
 	return
@@ -54,7 +55,7 @@ func (s *HellowordService) GetGreeter(ctx context.Context, req *helloword.GetGre
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "GetGreeter")
 	defer span.End()
-	s.log.WithContext(ctx).Infof("input data %v", req)
+	log.WithContext(ctx).Info("input data %v", req)
 	rp = &helloword.GetGreeterReply{}
 	res, err := s.greeter.Get(ctx, req.Id)
 	if err != nil {
@@ -68,7 +69,7 @@ func (s *HellowordService) ListGreeter(ctx context.Context, req *helloword.ListG
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "ListGreeter")
 	defer span.End()
-	s.log.WithContext(ctx).Infof("input data %v", req)
+	log.WithContext(ctx).Info("input data %v", req)
 	rp = &helloword.ListGreeterReply{}
 	r := &biz.Greeter{}
 	copier.Copy(&r, req)
