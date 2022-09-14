@@ -19,7 +19,11 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data) (*kratos.App, func(), error) {
-	dataData, cleanup := data.NewData(confData)
+	db, err := data.NewDB(confData)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, cleanup := data.NewData(db)
 	greeterRepo := data.NewGreeterRepo(dataData)
 	greeterUseCase := biz.NewGreeterUseCase(greeterRepo)
 	hellowordService := service.NewHellowordService(greeterUseCase)
