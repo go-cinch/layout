@@ -8,7 +8,7 @@ server:
 data:
   database:
     driver: mysql
-    dsn: root:root@tcp(127.0.0.1:3306)/test
+    dsn: root:root@tcp(127.0.0.1:3306)/test?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms
   redis:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s

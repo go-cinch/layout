@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"github.com/go-cinch/common/log"
+	"github.com/go-cinch/common/migrate"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-sql-driver/mysql"
@@ -53,16 +54,23 @@ func NewData(db *gorm.DB) (d *Data, cleanup func()) {
 }
 
 // NewDB gorm db without tx
-func NewDB(conf *conf.Data) (db *gorm.DB, err error) {
-	db, err = gorm.Open(m.Open(conf.Database.Dsn), &gorm.Config{})
+func NewDB(c *conf.Data) (db *gorm.DB, err error) {
+	err = migrate.Do(
+		migrate.WithUri(c.Database.Dsn),
+		migrate.WithFs(conf.SqlFiles),
+		migrate.WithFsRoot("db"),
+		migrate.WithBefore(func(ctx context.Context) (err error) {
+			db, err = gorm.Open(m.Open(c.Database.Dsn), &gorm.Config{})
+			return
+		}),
+	)
 	var showDsn string
-	cfg, e := mysql.ParseDSN(conf.Database.Dsn)
+	cfg, e := mysql.ParseDSN(c.Database.Dsn)
 	if e == nil {
 		// hidden password
 		cfg.Passwd = "***"
 		showDsn = cfg.FormatDSN()
 	}
-
 	if err != nil {
 		log.
 			WithError(err).
