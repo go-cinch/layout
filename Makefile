@@ -28,19 +28,24 @@ init:
 config:
 	protoc --proto_path=./internal \
 	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./internal \
+	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
 .PHONY: api
 # generate api proto
 api:
+	mkdir -p docs
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 	protoc --proto_path=./api \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
- 	       --go-http_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=true,default_response=false:. \
-	       $(API_PROTO_FILES)
+		--proto_path=./third_party \
+		--go_out=paths=source_relative:./api \
+		--go-http_out=paths=source_relative:./api \
+		--go-grpc_out=paths=source_relative:./api \
+		--openapiv2_out docs \
+		--openapiv2_opt logtostderr=true \
+		--openapiv2_opt json_names_for_fields=false \
+		$(API_PROTO_FILES)
+	@echo 'You can import *.json into https://editor.swagger.io/'
 
 .PHONY: build
 # build
