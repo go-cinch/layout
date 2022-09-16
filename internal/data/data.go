@@ -4,21 +4,26 @@ import (
 	"context"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/common/migrate"
+	"github.com/go-cinch/common/utils"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/go-redis/redis/v8"
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
+	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/sdk/trace"
 	m "gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewTracer, NewData, NewDB, NewTransaction, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewRedis, NewDB, NewTracer, NewData, NewTransaction, NewGreeterRepo)
 
 // Data .
 type Data struct {
-	db *gorm.DB
+	db    *gorm.DB
+	redis redis.UniversalClient
 }
 
 type contextTxKey struct{}
@@ -46,9 +51,10 @@ func NewTransaction(d *Data) biz.Transaction {
 }
 
 // NewData .
-func NewData(db *gorm.DB, tp *trace.TracerProvider) (d *Data, cleanup func()) {
+func NewData(redis redis.UniversalClient, db *gorm.DB, tp *trace.TracerProvider) (d *Data, cleanup func()) {
 	d = &Data{
-		db: db,
+		redis: redis,
+		db:    db,
 	}
 	cleanup = func() {
 		tp.Shutdown(context.Background())
@@ -57,7 +63,33 @@ func NewData(db *gorm.DB, tp *trace.TracerProvider) (d *Data, cleanup func()) {
 	return
 }
 
-// NewDB gorm db without tx
+// NewRedis is initialize redis connection from config
+func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
+	var u *url.URL
+	u, err = url.Parse(c.Data.Redis.Dsn)
+	if err != nil {
+		log.
+			WithError(errors.Errorf("invalid redis dsn")).
+			WithField("redis.dsn", c.Data.Redis.Dsn).
+			Info("initialize redis failed")
+		return
+	}
+	u.User = url.UserPassword(u.User.Username(), "***")
+	showDsn, _ := url.PathUnescape(u.String())
+	client, err = utils.ParseRedisURI(c.Data.Redis.Dsn)
+	if err != nil {
+		log.
+			WithError(err).
+			WithField("redis.dsn", showDsn).
+			Info("initialize redis failed")
+	}
+	log.
+		WithField("redis.dsn", showDsn).
+		Info("initialize redis success")
+	return
+}
+
+// NewDB is initialize db connection from config
 func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 	err = migrate.Do(
 		migrate.WithUri(c.Data.Database.Dsn),

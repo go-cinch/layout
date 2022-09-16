@@ -19,6 +19,10 @@ import (
 
 // wireApp init kratos application.
 func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
+	universalClient, err := data.NewRedis(c)
+	if err != nil {
+		return nil, nil, err
+	}
 	db, err := data.NewDB(c)
 	if err != nil {
 		return nil, nil, err
@@ -27,7 +31,7 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup := data.NewData(db, tracerProvider)
+	dataData, cleanup := data.NewData(universalClient, db, tracerProvider)
 	greeterRepo := data.NewGreeterRepo(dataData)
 	transaction := data.NewTransaction(dataData)
 	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, transaction)

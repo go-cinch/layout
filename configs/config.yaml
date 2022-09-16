@@ -12,9 +12,11 @@ data:
     driver: mysql
     dsn: root:root@tcp(127.0.0.1:3306)/test?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms
   redis:
-    addr: 127.0.0.1:6379
-    read_timeout: 0.2s
-    write_timeout: 0.2s
+    # redis dsn like this:
+    # redis://[:password@]host[:port][/dbnumber]
+    # redis-socket://[:password@]path[?db=dbnumber]
+    # redis-sentinel://[:password@]host1[:port][,host2:[:port]][,hostN:[:port]][?master=masterName]
+    dsn: 'redis://127.0.0.1:6379/0'
 tracer:
   otlp:
     # how to run a otel-collector? see this: https://github.com/SigNoz/signoz/blob/develop/deploy/README.md#using-docker-compose
