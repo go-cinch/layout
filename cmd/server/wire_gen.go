@@ -23,7 +23,11 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup := data.NewData(db)
+	tracerProvider, err := data.NewTracer(c)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, cleanup := data.NewData(db, tracerProvider)
 	greeterRepo := data.NewGreeterRepo(dataData)
 	transaction := data.NewTransaction(dataData)
 	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, transaction)

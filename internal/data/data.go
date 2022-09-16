@@ -8,12 +8,13 @@ import (
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
+	"go.opentelemetry.io/otel/sdk/trace"
 	m "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewDB, NewTransaction, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewTracer, NewData, NewDB, NewTransaction, NewGreeterRepo)
 
 // Data .
 type Data struct {
@@ -45,11 +46,12 @@ func NewTransaction(d *Data) biz.Transaction {
 }
 
 // NewData .
-func NewData(db *gorm.DB) (d *Data, cleanup func()) {
+func NewData(db *gorm.DB, tp *trace.TracerProvider) (d *Data, cleanup func()) {
 	d = &Data{
 		db: db,
 	}
 	cleanup = func() {
+		tp.Shutdown(context.Background())
 		log.Info("clean data")
 	}
 	return
