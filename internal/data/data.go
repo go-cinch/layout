@@ -54,18 +54,18 @@ func NewData(db *gorm.DB) (d *Data, cleanup func()) {
 }
 
 // NewDB gorm db without tx
-func NewDB(c *conf.Data) (db *gorm.DB, err error) {
+func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 	err = migrate.Do(
-		migrate.WithUri(c.Database.Dsn),
+		migrate.WithUri(c.Data.Database.Dsn),
 		migrate.WithFs(conf.SqlFiles),
 		migrate.WithFsRoot("db"),
 		migrate.WithBefore(func(ctx context.Context) (err error) {
-			db, err = gorm.Open(m.Open(c.Database.Dsn), &gorm.Config{})
+			db, err = gorm.Open(m.Open(c.Data.Database.Dsn), &gorm.Config{})
 			return
 		}),
 	)
 	var showDsn string
-	cfg, e := mysql.ParseDSN(c.Database.Dsn)
+	cfg, e := mysql.ParseDSN(c.Data.Database.Dsn)
 	if e == nil {
 		// hidden password
 		cfg.Passwd = "***"
