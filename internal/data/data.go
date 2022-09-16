@@ -22,6 +22,7 @@ type Data struct {
 
 type contextTxKey struct{}
 
+// Tx is transaction wrapper
 func (d *Data) Tx(ctx context.Context, fn func(ctx context.Context) error) error {
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		ctx = context.WithValue(ctx, contextTxKey{}, tx)
@@ -29,6 +30,7 @@ func (d *Data) Tx(ctx context.Context, fn func(ctx context.Context) error) error
 	})
 }
 
+// DB can get tx from ctx, if not exist return db
 func (d *Data) DB(ctx context.Context) *gorm.DB {
 	tx, ok := ctx.Value(contextTxKey{}).(*gorm.DB)
 	if ok {

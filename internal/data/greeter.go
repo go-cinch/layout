@@ -12,6 +12,13 @@ type greeterRepo struct {
 	data *Data
 }
 
+// Greeter is database fields map
+type Greeter struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Age  int64  `json:"age"`
+}
+
 // NewGreeterRepo .
 func NewGreeterRepo(data *Data) biz.GreeterRepo {
 	return &greeterRepo{
@@ -23,6 +30,10 @@ func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error)
 	// TODO implement me
 	log.WithContext(ctx).Info("Create, name: %s, age: %d", item.Name, item.Age)
 	err = errors.Errorf("implement me")
+	// u can do create like this:
+	// var m Greeter
+	// copier.Copy(&m, item)
+	// err = ro.data.DB(ctx).Create(&m).Error
 	return
 }
 

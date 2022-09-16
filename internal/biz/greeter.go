@@ -27,22 +27,29 @@ type GreeterRepo interface {
 
 type GreeterUseCase struct {
 	repo GreeterRepo
+	tx   Transaction
 }
 
-func NewGreeterUseCase(repo GreeterRepo) *GreeterUseCase {
-	return &GreeterUseCase{repo: repo}
+func NewGreeterUseCase(repo GreeterRepo, tx Transaction) *GreeterUseCase {
+	return &GreeterUseCase{repo: repo, tx: tx}
 }
 
 func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {
-	return uc.repo.Create(ctx, item)
+	return uc.tx.Tx(ctx, func(ctx context.Context) error {
+		return uc.repo.Create(ctx, item)
+	})
 }
 
 func (uc *GreeterUseCase) Update(ctx context.Context, id int64, item *Greeter) error {
-	return uc.repo.Update(ctx, id, item)
+	return uc.tx.Tx(ctx, func(ctx context.Context) error {
+		return uc.repo.Update(ctx, id, item)
+	})
 }
 
 func (uc *GreeterUseCase) Delete(ctx context.Context, id int64) error {
-	return uc.repo.Delete(ctx, id)
+	return uc.tx.Tx(ctx, func(ctx context.Context) error {
+		return uc.repo.Delete(ctx, id)
+	})
 }
 
 func (uc *GreeterUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {

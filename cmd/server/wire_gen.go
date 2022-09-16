@@ -25,7 +25,8 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	}
 	dataData, cleanup := data.NewData(db)
 	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUseCase := biz.NewGreeterUseCase(greeterRepo)
+	transaction := data.NewTransaction(dataData)
+	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, transaction)
 	hellowordService := service.NewHellowordService(greeterUseCase)
 	grpcServer := server.NewGRPCServer(c, hellowordService)
 	httpServer := server.NewHTTPServer(c, hellowordService)
