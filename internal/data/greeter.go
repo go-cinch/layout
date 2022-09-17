@@ -3,9 +3,8 @@ package data
 import (
 	"context"
 	"github.com/go-cinch/common/log"
-	"github.com/pkg/errors"
-
 	"github.com/go-cinch/layout/internal/biz"
+	"github.com/pkg/errors"
 )
 
 type greeterRepo struct {

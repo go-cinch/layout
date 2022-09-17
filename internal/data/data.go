@@ -29,10 +29,10 @@ type Data struct {
 type contextTxKey struct{}
 
 // Tx is transaction wrapper
-func (d *Data) Tx(ctx context.Context, fn func(ctx context.Context) error) error {
+func (d *Data) Tx(ctx context.Context, handler func(ctx context.Context) error) error {
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		ctx = context.WithValue(ctx, contextTxKey{}, tx)
-		return fn(ctx)
+		return handler(ctx)
 	})
 }
 
@@ -57,7 +57,9 @@ func NewData(redis redis.UniversalClient, db *gorm.DB, tp *trace.TracerProvider)
 		db:    db,
 	}
 	cleanup = func() {
-		tp.Shutdown(context.Background())
+		if tp != nil {
+			tp.Shutdown(context.Background())
+		}
 		log.Info("clean data")
 	}
 	return

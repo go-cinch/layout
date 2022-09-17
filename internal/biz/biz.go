@@ -9,5 +9,5 @@ import (
 var ProviderSet = wire.NewSet(NewGreeterUseCase)
 
 type Transaction interface {
-	Tx(context.Context, func(ctx context.Context) error) error
+	Tx(ctx context.Context, handler func(ctx context.Context) error) error
 }

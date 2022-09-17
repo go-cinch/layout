@@ -12,7 +12,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, greeter *service.HellowordService) *http.Server {
+func NewHTTPServer(c *conf.Bootstrap, svc *service.HellowordService) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -30,6 +30,7 @@ func NewHTTPServer(c *conf.Bootstrap, greeter *service.HellowordService) *http.S
 		opts = append(opts, http.Timeout(c.Server.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterHelloworldHTTPServer(srv, greeter)
+	srv.SetKeepAlivesEnabled(false)
+	v1.RegisterHelloworldHTTPServer(srv, svc)
 	return srv
 }
