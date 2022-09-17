@@ -13,10 +13,11 @@ var ProviderSet = wire.NewSet(NewHellowordService)
 type HellowordService struct {
 	helloword.UnimplementedHelloworldServer
 
-	greeter *biz.GreeterUseCase
+	greeter          *biz.GreeterUseCase
+	greeterWithCache *biz.GreeterWithCacheUseCase
 }
 
 // NewHellowordService new a helloword service.
-func NewHellowordService(greeter *biz.GreeterUseCase) *HellowordService {
-	return &HellowordService{greeter: greeter}
+func NewHellowordService(greeter *biz.GreeterUseCase, greeterWithCache *biz.GreeterWithCacheUseCase) *HellowordService {
+	return &HellowordService{greeter: greeter, greeterWithCache: greeterWithCache}
 }

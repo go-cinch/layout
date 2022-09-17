@@ -12,6 +12,8 @@ enum ErrorReason {
   // default reason
   option (errors.default_code) = 500;
 
+  TOO_MANY_REQUESTS = 0 [(errors.code) = 429];
+
   // custom reason
-  GREETER_NOT_FOUND = 0 [(errors.code) = 404];
+  GREETER_NOT_FOUND = 1 [(errors.code) = 404];
 }

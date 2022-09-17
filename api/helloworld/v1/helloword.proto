@@ -46,6 +46,38 @@ service Helloworld {
       get: "/v1/greeter"
     };
   }
+  rpc CreateGreeterWithCache (CreateGreeterRequest) returns (CreateGreeterReply) {
+    option (google.api.http) = {
+      post: "/v1/greeter_with_cache"
+      body: "*"
+    };
+  }
+  rpc UpdateGreeterWithCache (UpdateGreeterRequest) returns (UpdateGreeterReply) {
+    option (google.api.http) = {
+      put: "/v1/greeter_with_cache/{id}"
+      body: "*",
+      // bind another method
+      additional_bindings {
+        patch: "/v1/greeter_with_cache/{id}",
+        body: "*",
+      }
+    };
+  }
+  rpc DeleteGreeterWithCache (DeleteGreeterRequest) returns (DeleteGreeterReply) {
+    option (google.api.http) = {
+      delete: "/v1/greeter_with_cache/{id}"
+    };
+  }
+  rpc GetGreeterWithCache (GetGreeterRequest) returns (GetGreeterReply) {
+    option (google.api.http) = {
+      get: "/v1/greeter_with_cache/{id}"
+    };
+  }
+  rpc ListGreeterWithCache (ListGreeterRequest) returns (ListGreeterReply) {
+    option (google.api.http) = {
+      get: "/v1/greeter_with_cache"
+    };
+  }
 }
 
 message Greeter {
