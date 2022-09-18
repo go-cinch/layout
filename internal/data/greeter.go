@@ -53,7 +53,13 @@ func (ro greeterRepo) Delete(ctx context.Context, id int64) (err error) {
 func (ro greeterRepo) Get(ctx context.Context, id int64) (item *biz.Greeter, err error) {
 	// TODO implement me
 	log.WithContext(ctx).Info("Get, id: %d", id)
-	err = biz.ErrGreeterNotFound
+	item = &biz.Greeter{
+		Id: id,
+	}
+	if id <= 0 {
+		item.Id = 0
+		err = biz.ErrGreeterNotFound
+	}
 	return
 }
 

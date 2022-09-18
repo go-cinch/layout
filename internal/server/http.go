@@ -30,7 +30,6 @@ func NewHTTPServer(c *conf.Bootstrap, svc *service.HellowordService) *http.Serve
 		opts = append(opts, http.Timeout(c.Server.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	srv.SetKeepAlivesEnabled(false)
 	v1.RegisterHelloworldHTTPServer(srv, svc)
 	return srv
 }

@@ -7,9 +7,9 @@ import (
 )
 
 type Greeter struct {
-	Id   int64
-	Name string
-	Age  int32
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Age  int32  `json:"age"`
 }
 
 type GreeterRepo interface {
@@ -93,71 +93,59 @@ func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id int64) error {
 func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {
 	p = &Greeter{}
 	action := fmt.Sprintf("get_%d", id)
-	// first get cache
-	str, ok := uc.cache.Get(ctx, action)
+	str, ok, lock := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
+		return uc.get(ctx, action, id)
+	})
 	if ok {
 		json.Unmarshal([]byte(str), p)
-		return
-	}
-	// get lock before read db
-	ok = uc.cache.Lock(ctx, action)
-	if !ok {
+	} else if !lock {
 		err = TooManyRequests
 		return
 	}
-	defer uc.cache.Unlock(ctx, action)
-	// double check cache(avoid concurrency first get cache=false)
-	str, ok = uc.cache.Get(ctx, action)
-	if ok {
-		json.Unmarshal([]byte(str), p)
-		return
-	}
+	return
+}
+
+func (uc *GreeterWithCacheUseCase) get(ctx context.Context, action string, id int64) (res string, ok bool) {
+	// read data from db and write to cache
+	p := &Greeter{}
+	var err error
 	p, err = uc.repo.Get(ctx, id)
-	if err != nil {
-		if err == ErrGreeterNotFound {
-			// if record not found, set a short expiration cache
-			res, _ := json.Marshal(p)
-			uc.cache.SetWithExpiration(ctx, action, string(res), 60)
-		}
+	if err != nil && err != ErrGreeterNotFound {
 		return
 	}
-	res, _ := json.Marshal(p)
-	uc.cache.Set(ctx, action, string(res))
+	bs, _ := json.Marshal(p)
+	res = string(bs)
+	uc.cache.Set(ctx, action, res, err == ErrGreeterNotFound)
+	ok = true
 	return
 }
 
 func (uc *GreeterWithCacheUseCase) List(ctx context.Context, item *Greeter) (list []*Greeter, err error) {
 	list = make([]*Greeter, 0)
 	action := fmt.Sprintf("list_%d_%s_%d", item.Id, item.Name, item.Age)
-	// first get cache
-	str, ok := uc.cache.Get(ctx, action)
+	str, ok, lock := uc.cache.Get(ctx, action, func(ctx context.Context) (res string, ok bool) {
+		return uc.list(ctx, action, item)
+	})
 	if ok {
 		json.Unmarshal([]byte(str), list)
-		return
-	}
-	// get lock before read db
-	ok = uc.cache.Lock(ctx, action)
-	if !ok {
+	} else if !lock {
 		err = TooManyRequests
 		return
 	}
-	defer uc.cache.Unlock(ctx, action)
-	// double check cache(avoid concurrency first get cache=false)
-	str, ok = uc.cache.Get(ctx, action)
-	if ok {
-		json.Unmarshal([]byte(str), list)
-		return
-	}
+	return
+}
+
+func (uc *GreeterWithCacheUseCase) list(ctx context.Context, action string, item *Greeter) (res string, ok bool) {
+	// read data from db and write to cache
+	list := make([]*Greeter, 0)
+	var err error
 	list, err = uc.repo.List(ctx, item)
 	if err != nil {
-		if len(list) == 0 {
-			// if list is empty, set a short expiration cache
-			res, _ := json.Marshal(list)
-			uc.cache.SetWithExpiration(ctx, action, string(res), 60)
-		}
 		return
 	}
-	res, _ := json.Marshal(list)
-	uc.cache.Set(ctx, action, string(res))
+	bs, _ := json.Marshal(list)
+	res = string(bs)
+	uc.cache.Set(ctx, action, res, len(list) == 0)
+	ok = true
 	return
 }

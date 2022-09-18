@@ -24,26 +24,41 @@ func (c *Cache) Register(prefix string) {
 	c.val = fmt.Sprintf("%s_val", prefix)
 }
 
-func (c *Cache) Get(ctx context.Context, action string) (res string, ok bool) {
+func (c *Cache) Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (res string, ok bool, lock bool) {
 	var err error
+	// 1. first get cache
 	res, err = c.redis.Get(context.Background(), fmt.Sprintf("%s_%s", c.val, action)).Result()
 	if err == nil {
+		// cache exists
 		ok = true
-	} else {
-		log.
-			WithContext(ctx).
-			WithError(err).
-			WithFields(log.Fields{
-				"action": action,
-			}).
-			Warn("get cache failed")
+		return
+	}
+	// 2. get lock before read db
+	lock = c.Lock(ctx, action)
+	if !lock {
+		return
+	}
+	defer c.Unlock(ctx, action)
+	// 3. double check cache exists(avoid concurrency step 1 ok=false)
+	res, err = c.redis.Get(context.Background(), fmt.Sprintf("%s_%s", c.val, action)).Result()
+	if err == nil {
+		// cache exists
+		ok = true
+		return
+	}
+	if write != nil {
+		res, ok = write(ctx)
 	}
 	return
 }
 
-func (c *Cache) Set(ctx context.Context, action, data string) {
+func (c *Cache) Set(ctx context.Context, action, data string, short bool) {
 	// set random expiration avoid a large number of keys expire at the same time
 	seconds := rand.New(rand.NewSource(time.Now().Unix())).Int63n(300) + 300
+	if short {
+		// if record not found, set a short expiration
+		seconds = 60
+	}
 	c.SetWithExpiration(ctx, action, data, seconds)
 }
 
