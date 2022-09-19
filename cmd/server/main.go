@@ -6,6 +6,7 @@ import (
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
+	"github.com/go-kratos/kratos/v2/config/env"
 	"github.com/go-kratos/kratos/v2/config/file"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -18,6 +19,8 @@ import (
 var (
 	// Name is the name of the compiled software.
 	Name = "cinch-layout"
+	// EnvPrefix is the prefix of the env params
+	EnvPrefix = "CINCH_"
 	// Version is the version of the compiled software.
 	Version string
 	// flagConf is the config flag.
@@ -62,6 +65,7 @@ func main() {
 	)
 	c := config.New(
 		config.WithSource(
+			env.NewSource(EnvPrefix),
 			file.NewSource(flagConf),
 		),
 	)
