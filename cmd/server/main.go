@@ -17,7 +17,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "cinch-layout"
 	// Version is the version of the compiled software.
 	Version string
 	// flagConf is the config flag.
@@ -75,6 +75,8 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+	bc.Name = Name
+	bc.Version = Version
 
 	app, cleanup, err := wireApp(&bc)
 	if err != nil {

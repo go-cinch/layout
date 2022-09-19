@@ -6,14 +6,11 @@ option go_package = "github.com/go-cinch/layout/internal/conf;conf";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
-  System system = 1;
-  Server server = 2;
-  Data data = 3;
-  Tracer tracer = 4;
-}
-
-message System {
   string name = 1;
+  string version = 2;
+  Server server = 3;
+  Data data = 4;
+  Tracer tracer = 5;
 }
 
 message Server {

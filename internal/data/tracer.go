@@ -45,7 +45,7 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 		trace.WithSampler(trace.AlwaysSample()),
 		trace.WithSyncer(exporter),
 		trace.WithResource(resource.NewSchemaless(
-			semconv.ServiceNameKey.String(c.System.Name),
+			semconv.ServiceNameKey.String(c.Name),
 			attribute.String("exporter", "otlp"),
 		)),
 	)
