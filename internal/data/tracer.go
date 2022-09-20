@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
@@ -22,6 +23,10 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 			err = errors.Errorf("%v", e)
 		}
 	}()
+	if !c.Tracer.Enable {
+		log.Info("skip initialize tracer")
+		return
+	}
 	ctx := context.Background()
 
 	var exporter trace.SpanExporter
@@ -46,6 +51,9 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 	}
 
 	if err != nil {
+		log.
+			WithError(err).
+			Error("initialize tracer failed")
 		return
 	}
 	tp = trace.NewTracerProvider(
@@ -57,5 +65,6 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 		)),
 	)
 	otel.SetTracerProvider(tp)
+	log.Info("initialize tracer success")
 	return
 }

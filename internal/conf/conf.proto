@@ -48,6 +48,7 @@ message Tracer {
   message Stdout {
     bool prettyPrint = 1;
   }
-  Otlp otlp = 1;
-  Stdout stdout = 2;
+  bool enable = 1;
+  Otlp otlp = 2;
+  Stdout stdout = 3;
 }
