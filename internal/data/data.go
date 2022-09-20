@@ -15,6 +15,7 @@ import (
 	m "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"net/url"
+	"time"
 )
 
 // ProviderSet is data providers.
@@ -73,30 +74,25 @@ func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
 			err = errors.Errorf("%v", e)
 		}
 	}()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	var u *url.URL
 	u, err = url.Parse(c.Data.Redis.Dsn)
 	if err != nil {
-		log.
-			WithError(errors.Errorf("invalid redis dsn")).
-			WithField("redis.dsn", c.Data.Redis.Dsn).
-			Info("initialize redis failed")
+		err = errors.WithMessage(err, "initialize redis failed")
 		return
 	}
 	u.User = url.UserPassword(u.User.Username(), "***")
 	showDsn, _ := url.PathUnescape(u.String())
 	client, err = utils.ParseRedisURI(c.Data.Redis.Dsn)
 	if err != nil {
-		log.
-			WithError(err).
-			WithField("redis.dsn", showDsn).
-			Info("initialize redis failed")
+		err = errors.WithMessage(err, "initialize redis failed")
+		return
 	}
-	err = client.Ping(context.Background()).Err()
+	err = client.Ping(ctx).Err()
 	if err != nil {
-		log.
-			WithError(err).
-			WithField("redis.dsn", showDsn).
-			Info("initialize redis failed")
+		err = errors.WithMessage(err, "initialize redis failed")
+		return
 	}
 	log.
 		WithField("redis.dsn", showDsn).
@@ -112,7 +108,10 @@ func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 			err = errors.Errorf("%v", e)
 		}
 	}()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = migrate.Do(
+		migrate.WithCtx(ctx),
 		migrate.WithUri(c.Data.Database.Dsn),
 		migrate.WithFs(conf.SqlFiles),
 		migrate.WithFsRoot("db"),
@@ -129,10 +128,7 @@ func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 		showDsn = cfg.FormatDSN()
 	}
 	if err != nil {
-		log.
-			WithError(err).
-			WithField("db.dsn", showDsn).
-			Error("initialize mysql failed")
+		err = errors.WithMessage(err, "initialize mysql failed")
 		return
 	}
 	log.

@@ -14,6 +14,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 	"google.golang.org/grpc"
+	"time"
 )
 
 func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
@@ -27,8 +28,8 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 		log.Info("skip initialize tracer")
 		return
 	}
-	ctx := context.Background()
-
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	var exporter trace.SpanExporter
 	if c.Tracer.Otlp.Endpoint != "" {
 		// rpc driver
@@ -51,9 +52,7 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 	}
 
 	if err != nil {
-		log.
-			WithError(err).
-			Error("initialize tracer failed")
+		err = errors.WithMessage(err, "initialize tracer failed")
 		return
 	}
 	tp = trace.NewTracerProvider(
