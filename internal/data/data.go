@@ -67,6 +67,12 @@ func NewData(redis redis.UniversalClient, db *gorm.DB, tp *trace.TracerProvider)
 
 // NewRedis is initialize redis connection from config
 func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = errors.Errorf("%v", e)
+		}
+	}()
 	var u *url.URL
 	u, err = url.Parse(c.Data.Redis.Dsn)
 	if err != nil {
@@ -85,6 +91,13 @@ func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
 			WithField("redis.dsn", showDsn).
 			Info("initialize redis failed")
 	}
+	err = client.Ping(context.Background()).Err()
+	if err != nil {
+		log.
+			WithError(err).
+			WithField("redis.dsn", showDsn).
+			Info("initialize redis failed")
+	}
 	log.
 		WithField("redis.dsn", showDsn).
 		Info("initialize redis success")
@@ -93,6 +106,12 @@ func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
 
 // NewDB is initialize db connection from config
 func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = errors.Errorf("%v", e)
+		}
+	}()
 	err = migrate.Do(
 		migrate.WithUri(c.Data.Database.Dsn),
 		migrate.WithFs(conf.SqlFiles),

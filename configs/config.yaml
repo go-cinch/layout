@@ -21,4 +21,4 @@ tracer:
     endpoint: '${TRACER_OTLP_ENDPOINT:127.0.0.1:4317}'
     insecure: true
   stdout:
-    pretty_print: true
+    prettyPrint: true

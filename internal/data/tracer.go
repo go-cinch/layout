@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -15,6 +16,12 @@ import (
 )
 
 func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = errors.Errorf("%v", e)
+		}
+	}()
 	ctx := context.Background()
 
 	var exporter trace.SpanExporter
