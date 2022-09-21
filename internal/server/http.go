@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-cinch/common/log"
+	commonMiddleware "github.com/go-cinch/common/middleware"
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/service"
@@ -18,7 +19,7 @@ func NewHTTPServer(c *conf.Bootstrap, svc *service.HellowordService) *http.Serve
 		recovery.Recovery(),
 	}
 	if c.Tracer.Enable {
-		middlewares = append(middlewares, tracing.Server())
+		middlewares = append(middlewares, tracing.Server(), commonMiddleware.TraceId())
 	}
 	middlewares = append(
 		middlewares,

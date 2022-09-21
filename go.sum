@@ -124,6 +124,8 @@ github.com/getkin/kin-openapi v0.76.0/go.mod h1:660oXbgy5JFMKreazJaQTw7o+X00qeSy
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-cinch/common/log v0.0.0-20220915041046-67146b6fe8fe h1:Ss4n9WEx1vuksZUVFmThV7qoSIDrHqoureyugR9oL+4=
 github.com/go-cinch/common/log v0.0.0-20220915041046-67146b6fe8fe/go.mod h1:sWaidTCXD+LtnuRbiQpmsIDAsX8LlYcbJSAIQZ5P23U=
+github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde h1:1ULpEpOpk82oH59quNTMtdyKypcInHu8p5cUhGSXGMs=
+github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde/go.mod h1:bBjM9OkdX7o6aHf/auXSQ2hcshf5qImrxq3Lhlq9WYU=
 github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c h1:iSMIZ1Ux6do0EzdwETsFlFLG/Anna6p0a8qBtLfvGR4=
 github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c/go.mod h1:dxeE/NqqmWl3/boP1DIHpkWQ3C2I/gePmBWKehAdbnQ=
 github.com/go-cinch/common/utils v0.0.0-20220916073718-f317849b1c58 h1:LA+aixXR8rrZ85hm9cZ8WorT9EKgWOaCbX1NYXtgjz4=
