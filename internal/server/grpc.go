@@ -8,6 +8,7 @@ import (
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -17,6 +18,7 @@ import (
 func NewGRPCServer(c *conf.Bootstrap, svc *service.HellowordService) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
+		ratelimit.Server(),
 	}
 	if c.Tracer.Enable {
 		middlewares = append(middlewares, tracing.Server(), commonMiddleware.TraceId())
