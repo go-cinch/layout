@@ -3,10 +3,13 @@ package service
 import (
 	"context"
 	"github.com/go-cinch/common/log"
+	"github.com/go-cinch/common/worker"
 	helloword "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/biz"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 	"go.opentelemetry.io/otel"
+	"time"
 )
 
 func (s *HellowordService) CreateGreeter(ctx context.Context, req *helloword.CreateGreeterRequest) (rp *helloword.CreateGreeterReply, err error) {
@@ -21,6 +24,12 @@ func (s *HellowordService) CreateGreeter(ctx context.Context, req *helloword.Cre
 	if err != nil {
 		return
 	}
+	s.task.Once(
+		worker.WithRunUuid(uuid.NewString()),
+		worker.WithRunCategory("create.greeter"),
+		worker.WithRunAt(time.Now().Add(time.Duration(10)*time.Second)),
+		worker.WithRunPayload(req.String()),
+	)
 	copier.Copy(&rp.Item, r)
 	return
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/go-cinch/layout/internal/data"
 	"github.com/go-cinch/layout/internal/server"
 	"github.com/go-cinch/layout/internal/service"
+	"github.com/go-cinch/layout/internal/task"
 	"github.com/go-kratos/kratos/v2"
 )
 
@@ -35,9 +36,14 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	greeterRepo := data.NewGreeterRepo(dataData)
 	transaction := data.NewTransaction(dataData)
 	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, transaction)
+	taskTask, err := task.NewTask(c, greeterUseCase)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	cache := data.NewCache(universalClient)
 	greeterWithCacheUseCase := biz.NewGreeterWithCacheUseCase(greeterRepo, transaction, cache)
-	hellowordService := service.NewHellowordService(greeterUseCase, greeterWithCacheUseCase)
+	hellowordService := service.NewHellowordService(taskTask, greeterUseCase, greeterWithCacheUseCase)
 	grpcServer := server.NewGRPCServer(c, hellowordService)
 	httpServer := server.NewHTTPServer(c, hellowordService)
 	app := newApp(grpcServer, httpServer)

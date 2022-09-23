@@ -3,6 +3,7 @@ package service
 import (
 	helloword "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/biz"
+	"github.com/go-cinch/layout/internal/task"
 	"github.com/google/wire"
 )
 
@@ -13,11 +14,12 @@ var ProviderSet = wire.NewSet(NewHellowordService)
 type HellowordService struct {
 	helloword.UnimplementedHelloworldServer
 
+	task             *task.Task
 	greeter          *biz.GreeterUseCase
 	greeterWithCache *biz.GreeterWithCacheUseCase
 }
 
 // NewHellowordService new a helloword service.
-func NewHellowordService(greeter *biz.GreeterUseCase, greeterWithCache *biz.GreeterWithCacheUseCase) *HellowordService {
-	return &HellowordService{greeter: greeter, greeterWithCache: greeterWithCache}
+func NewHellowordService(task *task.Task, greeter *biz.GreeterUseCase, greeterWithCache *biz.GreeterWithCacheUseCase) *HellowordService {
+	return &HellowordService{task: task, greeter: greeter, greeterWithCache: greeterWithCache}
 }

@@ -11,6 +11,7 @@ message Bootstrap {
   Server server = 3;
   Data data = 4;
   Tracer tracer = 5;
+  repeated Task tasks = 6;
 }
 
 message Server {
@@ -51,4 +52,12 @@ message Tracer {
   bool enable = 1;
   Otlp otlp = 2;
   Stdout stdout = 3;
+}
+
+message Task {
+  string category = 1;
+  string uuid = 2;
+  string expr = 3;
+  int64 timeout = 4;
+  int64 retry = 5;
 }
