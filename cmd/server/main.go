@@ -63,7 +63,6 @@ func main() {
 			kratosLog.With(
 				kratosLog.NewStdLogger(os.Stdout),
 				"ts", kratosLog.DefaultTimestamp,
-				"caller", kratosLog.DefaultCaller,
 				"service.id", id,
 				"service.name", Name,
 				"service.version", Version,

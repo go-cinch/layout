@@ -7,6 +7,7 @@ require (
 	github.com/go-cinch/common/log v0.0.1
 	github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde
 	github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c
+	github.com/go-cinch/common/plugins/gorm/log v0.0.0-20220927074458-492682a7fa35
 	github.com/go-cinch/common/utils v0.0.0-20220916073718-f317849b1c58
 	github.com/go-cinch/common/worker v0.0.0-20220923043326-8aaacac4188d
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20220817101725-ba7223047727
@@ -26,7 +27,7 @@ require (
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.3.6
-	gorm.io/gorm v1.23.8
+	gorm.io/gorm v1.23.10
 )
 
 require (

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/common/migrate"
+	glog "github.com/go-cinch/common/plugins/gorm/log"
 	"github.com/go-cinch/common/utils"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
@@ -43,7 +44,7 @@ func (d *Data) DB(ctx context.Context) *gorm.DB {
 	if ok {
 		return tx
 	}
-	return d.db
+	return d.db.WithContext(ctx)
 }
 
 // NewTransaction .
@@ -116,7 +117,13 @@ func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 		migrate.WithFs(conf.SqlFiles),
 		migrate.WithFsRoot("db"),
 		migrate.WithBefore(func(ctx context.Context) (err error) {
-			db, err = gorm.Open(m.Open(c.Data.Database.Dsn), &gorm.Config{})
+			l := glog.New(
+				glog.WithColorful(true),
+				glog.WithSlow(200),
+			)
+			db, err = gorm.Open(m.Open(c.Data.Database.Dsn), &gorm.Config{
+				Logger: l,
+			})
 			return
 		}),
 	)
