@@ -2,8 +2,8 @@ package biz
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/go-cinch/common/utils"
 )
 
 type Greeter struct {
@@ -97,7 +97,7 @@ func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id int64) (p *Greete
 		return uc.get(ctx, action, id)
 	})
 	if ok {
-		json.Unmarshal([]byte(str), p)
+		utils.Json2Struct(p, str)
 	} else if !lock {
 		err = TooManyRequests
 		return
@@ -113,8 +113,7 @@ func (uc *GreeterWithCacheUseCase) get(ctx context.Context, action string, id in
 	if err != nil && err != ErrGreeterNotFound {
 		return
 	}
-	bs, _ := json.Marshal(p)
-	res = string(bs)
+	res = utils.Struct2Json(p)
 	uc.cache.Set(ctx, action, res, err == ErrGreeterNotFound)
 	ok = true
 	return
@@ -127,7 +126,7 @@ func (uc *GreeterWithCacheUseCase) List(ctx context.Context, item *Greeter) (lis
 		return uc.list(ctx, action, item)
 	})
 	if ok {
-		json.Unmarshal([]byte(str), list)
+		utils.Json2Struct(list, str)
 	} else if !lock {
 		err = TooManyRequests
 		return
@@ -143,8 +142,7 @@ func (uc *GreeterWithCacheUseCase) list(ctx context.Context, action string, item
 	if err != nil {
 		return
 	}
-	bs, _ := json.Marshal(list)
-	res = string(bs)
+	res = utils.Struct2Json(list)
 	uc.cache.Set(ctx, action, res, len(list) == 0)
 	ok = true
 	return
