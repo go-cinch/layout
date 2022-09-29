@@ -36,12 +36,14 @@ config:
 api:
 	mkdir -p docs
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+	go install github.com/envoyproxy/protoc-gen-validate@latest
 	protoc --proto_path=./api \
 		--proto_path=./third_party \
 		--go_out=paths=source_relative:./api \
 		--go-errors_out=paths=source_relative:./api \
 		--go-http_out=paths=source_relative:./api \
 		--go-grpc_out=paths=source_relative:./api \
+		--validate_out=paths=source_relative,lang=go:./api \
 		--openapiv2_out docs \
 		--openapiv2_opt logtostderr=true \
 		--openapiv2_opt json_names_for_fields=false \

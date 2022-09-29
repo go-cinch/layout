@@ -11,6 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
@@ -26,6 +27,7 @@ func NewHTTPServer(c *conf.Bootstrap, svc *service.HellowordService) *http.Serve
 	middlewares = append(
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
+		validate.Validator(),
 	)
 	var opts = []http.ServerOption{http.Middleware(middlewares...)}
 	if c.Server.Http.Network != "" {
