@@ -81,7 +81,7 @@ service Helloworld {
 }
 
 message Greeter {
-  int64 id = 1;
+  uint64 id = 1;
   string name = 2;
   int32 age = 3;
 }
@@ -96,7 +96,7 @@ message CreateGreeterReply {
 }
 
 message UpdateGreeterRequest {
-  int64 id = 1 [(validate.rules).int64 = {gt: 0}];
+  uint64 id = 1;
   string name = 2 [(validate.rules).string = {min_len: 2, max_len: 50}]; // the name of string must be between 2 and 50 character
   int32 age = 3 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
 }
@@ -106,14 +106,14 @@ message UpdateGreeterReply {
 }
 
 message DeleteGreeterRequest {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message DeleteGreeterReply {
 }
 
 message GetGreeterRequest {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message GetGreeterReply {

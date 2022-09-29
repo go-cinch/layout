@@ -13,7 +13,7 @@ type greeterRepo struct {
 
 // Greeter is database fields map
 type Greeter struct {
-	Id   int64  `json:"id"`
+	Id   uint64 `json:"id"`
 	Name string `json:"name"`
 	Age  int64  `json:"age"`
 }
@@ -36,21 +36,21 @@ func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error)
 	return
 }
 
-func (ro greeterRepo) Update(ctx context.Context, id int64, item *biz.Greeter) (err error) {
+func (ro greeterRepo) Update(ctx context.Context, id uint64, item *biz.Greeter) (err error) {
 	// TODO implement me
 	log.WithContext(ctx).Info("Update, id: %d, name: %s, age: %d", item.Id, item.Name, item.Age)
 	err = errors.Errorf("implement me")
 	return
 }
 
-func (ro greeterRepo) Delete(ctx context.Context, id int64) (err error) {
+func (ro greeterRepo) Delete(ctx context.Context, id uint64) (err error) {
 	// TODO implement me
 	log.WithContext(ctx).Info("Delete, id: %d", id)
 	err = errors.Errorf("implement me")
 	return
 }
 
-func (ro greeterRepo) Get(ctx context.Context, id int64) (item *biz.Greeter, err error) {
+func (ro greeterRepo) Get(ctx context.Context, id uint64) (item *biz.Greeter, err error) {
 	// TODO implement me
 	log.WithContext(ctx).Info("Get, id: %d", id)
 	item = &biz.Greeter{

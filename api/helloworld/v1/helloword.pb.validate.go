@@ -416,16 +416,7 @@ func (m *UpdateGreeterRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
-		err := UpdateGreeterRequestValidationError{
-			field:  "Id",
-			reason: "value must be greater than 0",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
+	// no validation rules for Id
 
 	if l := utf8.RuneCountInString(m.GetName()); l < 2 || l > 50 {
 		err := UpdateGreeterRequestValidationError{

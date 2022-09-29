@@ -7,16 +7,16 @@ import (
 )
 
 type Greeter struct {
-	Id   int64  `json:"id"`
+	Id   uint64 `json:"id"`
 	Name string `json:"name"`
 	Age  int32  `json:"age"`
 }
 
 type GreeterRepo interface {
 	Create(ctx context.Context, item *Greeter) error
-	Update(ctx context.Context, id int64, item *Greeter) error
-	Delete(ctx context.Context, id int64) error
-	Get(ctx context.Context, id int64) (*Greeter, error)
+	Update(ctx context.Context, id uint64, item *Greeter) error
+	Delete(ctx context.Context, id uint64) error
+	Get(ctx context.Context, id uint64) (*Greeter, error)
 	List(ctx context.Context, item *Greeter) ([]*Greeter, error)
 }
 
@@ -35,19 +35,19 @@ func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {
 	})
 }
 
-func (uc *GreeterUseCase) Update(ctx context.Context, id int64, item *Greeter) error {
+func (uc *GreeterUseCase) Update(ctx context.Context, id uint64, item *Greeter) error {
 	return uc.tx.Tx(ctx, func(ctx context.Context) error {
 		return uc.repo.Update(ctx, id, item)
 	})
 }
 
-func (uc *GreeterUseCase) Delete(ctx context.Context, id int64) error {
+func (uc *GreeterUseCase) Delete(ctx context.Context, id uint64) error {
 	return uc.tx.Tx(ctx, func(ctx context.Context) error {
 		return uc.repo.Delete(ctx, id)
 	})
 }
 
-func (uc *GreeterUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {
+func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (p *Greeter, err error) {
 	return uc.repo.Get(ctx, id)
 }
 
@@ -74,7 +74,7 @@ func (uc *GreeterWithCacheUseCase) Create(ctx context.Context, item *Greeter) er
 	})
 }
 
-func (uc *GreeterWithCacheUseCase) Update(ctx context.Context, id int64, item *Greeter) error {
+func (uc *GreeterWithCacheUseCase) Update(ctx context.Context, id uint64, item *Greeter) error {
 	return uc.tx.Tx(ctx, func(ctx context.Context) error {
 		return uc.cache.Flush(ctx, func(ctx context.Context) error {
 			return uc.repo.Update(ctx, id, item)
@@ -82,7 +82,7 @@ func (uc *GreeterWithCacheUseCase) Update(ctx context.Context, id int64, item *G
 	})
 }
 
-func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id int64) error {
+func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id uint64) error {
 	return uc.tx.Tx(ctx, func(ctx context.Context) error {
 		return uc.cache.Flush(ctx, func(ctx context.Context) error {
 			return uc.repo.Delete(ctx, id)
@@ -90,7 +90,7 @@ func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id int64) error {
 	})
 }
 
-func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {
+func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id uint64) (p *Greeter, err error) {
 	p = &Greeter{}
 	action := fmt.Sprintf("get_%d", id)
 	str, ok, lock, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
@@ -105,7 +105,7 @@ func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id int64) (p *Greete
 	return
 }
 
-func (uc *GreeterWithCacheUseCase) get(ctx context.Context, action string, id int64) (res string, ok bool) {
+func (uc *GreeterWithCacheUseCase) get(ctx context.Context, action string, id uint64) (res string, ok bool) {
 	// read data from db and write to cache
 	p := &Greeter{}
 	var err error
