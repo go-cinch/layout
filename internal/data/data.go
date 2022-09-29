@@ -47,6 +47,11 @@ func (d *Data) DB(ctx context.Context) *gorm.DB {
 	return d.db.WithContext(ctx)
 }
 
+// Cache can get cache instance
+func (d *Data) Cache() redis.UniversalClient {
+	return d.redis
+}
+
 // NewTransaction .
 func NewTransaction(d *Data) biz.Transaction {
 	return d

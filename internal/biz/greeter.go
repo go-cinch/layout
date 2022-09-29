@@ -93,7 +93,7 @@ func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id int64) error {
 func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id int64) (p *Greeter, err error) {
 	p = &Greeter{}
 	action := fmt.Sprintf("get_%d", id)
-	str, ok, lock := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
+	str, ok, lock, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.get(ctx, action, id)
 	})
 	if ok {
@@ -123,7 +123,7 @@ func (uc *GreeterWithCacheUseCase) get(ctx context.Context, action string, id in
 func (uc *GreeterWithCacheUseCase) List(ctx context.Context, item *Greeter) (list []*Greeter, err error) {
 	list = make([]*Greeter, 0)
 	action := fmt.Sprintf("list_%d_%s_%d", item.Id, item.Name, item.Age)
-	str, ok, lock := uc.cache.Get(ctx, action, func(ctx context.Context) (res string, ok bool) {
+	str, ok, lock, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (res string, ok bool) {
 		return uc.list(ctx, action, item)
 	})
 	if ok {

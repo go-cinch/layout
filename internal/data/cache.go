@@ -18,13 +18,17 @@ type Cache struct {
 	val    string
 }
 
+func (c *Cache) Cache() redis.UniversalClient {
+	return c.redis
+}
+
 func (c *Cache) Register(prefix string) {
 	c.prefix = prefix
 	c.lock = fmt.Sprintf("%s_lock", prefix)
 	c.val = fmt.Sprintf("%s_val", prefix)
 }
 
-func (c *Cache) Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (res string, ok bool, lock bool) {
+func (c *Cache) Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (res string, ok bool, lock bool, db bool) {
 	var err error
 	// 1. first get cache
 	res, err = c.redis.Get(context.Background(), fmt.Sprintf("%s_%s", c.val, action)).Result()
@@ -48,6 +52,7 @@ func (c *Cache) Get(ctx context.Context, action string, write func(context.Conte
 	}
 	if write != nil {
 		res, ok = write(ctx)
+		db = true
 	}
 	return
 }
