@@ -47,11 +47,11 @@ func (uc *GreeterUseCase) Delete(ctx context.Context, id uint64) error {
 	})
 }
 
-func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (p *Greeter, err error) {
+func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (*Greeter, error) {
 	return uc.repo.Get(ctx, id)
 }
 
-func (uc *GreeterUseCase) List(ctx context.Context, item *Greeter) (ps []*Greeter, err error) {
+func (uc *GreeterUseCase) List(ctx context.Context, item *Greeter) ([]*Greeter, error) {
 	return uc.repo.List(ctx, item)
 }
 
@@ -90,14 +90,14 @@ func (uc *GreeterWithCacheUseCase) Delete(ctx context.Context, id uint64) error 
 	})
 }
 
-func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id uint64) (p *Greeter, err error) {
-	p = &Greeter{}
+func (uc *GreeterWithCacheUseCase) Get(ctx context.Context, id uint64) (item *Greeter, err error) {
+	item = &Greeter{}
 	action := fmt.Sprintf("get_%d", id)
 	str, ok, lock, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.get(ctx, action, id)
 	})
 	if ok {
-		utils.Json2Struct(p, str)
+		utils.Json2Struct(item, str)
 	} else if !lock {
 		err = TooManyRequests
 		return
