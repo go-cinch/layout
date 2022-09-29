@@ -4,12 +4,12 @@ go 1.18
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
-	github.com/go-cinch/common/log v0.0.1
+	github.com/go-cinch/common/log v0.0.0-20220927061933-ccf4ca4bccbe
 	github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde
 	github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c
 	github.com/go-cinch/common/plugins/gorm/log v0.0.0-20220927074458-492682a7fa35
 	github.com/go-cinch/common/utils v0.0.0-20220916073718-f317849b1c58
-	github.com/go-cinch/common/worker v0.0.0-20220923043326-8aaacac4188d
+	github.com/go-cinch/common/worker v0.0.0-20220928061921-c9a16406c65f
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20220817101725-ba7223047727
 	github.com/go-kratos/kratos/v2 v2.5.0
 	github.com/go-redis/redis/v8 v8.11.5
