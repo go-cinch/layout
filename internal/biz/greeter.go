@@ -7,7 +7,7 @@ import (
 )
 
 type Greeter struct {
-	Id   uint64 `json:"id"`
+	Id   uint64 `json:"id,string"`
 	Name string `json:"name"`
 	Age  int32  `json:"age"`
 }

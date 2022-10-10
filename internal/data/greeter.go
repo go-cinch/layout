@@ -13,7 +13,7 @@ type greeterRepo struct {
 
 // Greeter is database fields map
 type Greeter struct {
-	Id   uint64 `json:"id"`
+	Id   uint64 `json:"id,string"`
 	Name string `json:"name"`
 	Age  int64  `json:"age"`
 }
@@ -32,6 +32,7 @@ func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error)
 	// u can do create like this:
 	// var m Greeter
 	// copier.Copy(&m, item)
+	// m.Id = ro.data.Id(ctx)
 	// err = ro.data.DB(ctx).Create(&m).Error
 	return
 }

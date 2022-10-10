@@ -28,11 +28,15 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	sonyflake, err := data.NewSonyflake(c)
+	if err != nil {
+		return nil, nil, err
+	}
 	tracerProvider, err := data.NewTracer(c)
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup := data.NewData(universalClient, db, tracerProvider)
+	dataData, cleanup := data.NewData(universalClient, db, sonyflake, tracerProvider)
 	greeterRepo := data.NewGreeterRepo(dataData)
 	transaction := data.NewTransaction(dataData)
 	greeterUseCase := biz.NewGreeterUseCase(greeterRepo, transaction)
