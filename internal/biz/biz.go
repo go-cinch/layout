@@ -7,7 +7,7 @@ import (
 )
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewGreeterUseCase, NewGreeterWithCacheUseCase)
+var ProviderSet = wire.NewSet(NewGreeterUseCase)
 
 type Transaction interface {
 	Tx(ctx context.Context, handler func(context.Context) error) error
@@ -16,8 +16,8 @@ type Transaction interface {
 type Cache interface {
 	// Cache is get redis instance
 	Cache() redis.UniversalClient
-	// Register is register cache key prefix
-	Register(prefix string)
+	// WithPrefix will add cache key prefix
+	WithPrefix(prefix string) Cache
 	// Get is get cache data by key from redis, do write handler if cache is empty
 	Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (string, bool, bool, bool)
 	// Set is set data to redis

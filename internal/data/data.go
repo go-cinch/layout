@@ -16,6 +16,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 	m "gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"net/url"
 	"strconv"
 	"time"
@@ -136,7 +137,11 @@ func NewDB(c *conf.Bootstrap) (db *gorm.DB, err error) {
 				glog.WithSlow(200),
 			)
 			db, err = gorm.Open(m.Open(c.Data.Database.Dsn), &gorm.Config{
-				Logger: l,
+				NamingStrategy: schema.NamingStrategy{
+					SingularTable: true,
+				},
+				QueryFields: true,
+				Logger:      l,
 			})
 			return
 		}),

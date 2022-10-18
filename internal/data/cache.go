@@ -22,10 +22,13 @@ func (c *Cache) Cache() redis.UniversalClient {
 	return c.redis
 }
 
-func (c *Cache) Register(prefix string) {
-	c.prefix = prefix
-	c.lock = fmt.Sprintf("%s_lock", prefix)
-	c.val = fmt.Sprintf("%s_val", prefix)
+func (c *Cache) WithPrefix(prefix string) biz.Cache {
+	return &Cache{
+		redis:  c.redis,
+		prefix: prefix,
+		lock:   fmt.Sprintf("%s_%s", prefix, c.lock),
+		val:    fmt.Sprintf("%s_%s", prefix, c.val),
+	}
 }
 
 func (c *Cache) Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (res string, ok bool, lock bool, db bool) {
@@ -136,6 +139,9 @@ func (c *Cache) Unlock(ctx context.Context, action string) {
 // NewCache .
 func NewCache(client redis.UniversalClient) biz.Cache {
 	return &Cache{
-		redis: client,
+		redis:  client,
+		prefix: "",
+		lock:   "lock",
+		val:    "val",
 	}
 }

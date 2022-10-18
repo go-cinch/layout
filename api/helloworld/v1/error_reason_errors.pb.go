@@ -23,16 +23,38 @@ func ErrorTooManyRequests(format string, args ...interface{}) *errors.Error {
 	return errors.New(429, ErrorReason_TOO_MANY_REQUESTS.String(), fmt.Sprintf(format, args...))
 }
 
-// custom reason
-func IsGreeterNotFound(err error) bool {
+func IsIllegalParameter(err error) bool {
 	if err == nil {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_GREETER_NOT_FOUND.String() && e.Code == 404
+	return e.Reason == ErrorReason_ILLEGAL_PARAMETER.String() && e.Code == 400
 }
 
-// custom reason
-func ErrorGreeterNotFound(format string, args ...interface{}) *errors.Error {
-	return errors.New(404, ErrorReason_GREETER_NOT_FOUND.String(), fmt.Sprintf(format, args...))
+func ErrorIllegalParameter(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_ILLEGAL_PARAMETER.String(), fmt.Sprintf(format, args...))
+}
+
+func IsUnauthorized(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_UNAUTHORIZED.String() && e.Code == 401
+}
+
+func ErrorUnauthorized(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_UNAUTHORIZED.String(), fmt.Sprintf(format, args...))
+}
+
+func IsForbidden(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_FORBIDDEN.String() && e.Code == 403
+}
+
+func ErrorForbidden(format string, args ...interface{}) *errors.Error {
+	return errors.New(403, ErrorReason_FORBIDDEN.String(), fmt.Sprintf(format, args...))
 }

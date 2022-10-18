@@ -2,164 +2,71 @@ package service
 
 import (
 	"context"
-	"github.com/go-cinch/common/log"
-	"github.com/go-cinch/common/worker"
-	helloword "github.com/go-cinch/layout/api/helloworld/v1"
+	"github.com/go-cinch/common/copierx"
+	"github.com/go-cinch/common/page"
+	"github.com/go-cinch/common/utils"
+	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/biz"
-	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 	"go.opentelemetry.io/otel"
-	"time"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *HellowordService) CreateGreeter(ctx context.Context, req *helloword.CreateGreeterRequest) (rp *helloword.CreateGreeterReply, err error) {
+func (s *HellowordService) CreateGreeter(ctx context.Context, req *v1.CreateGreeterRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "CreateGreeter")
 	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.CreateGreeterReply{}
+	rp = &emptypb.Empty{}
 	r := &biz.Greeter{}
-	copier.Copy(&r, req)
+	copierx.Copy(&r, req)
 	err = s.greeter.Create(ctx, r)
-	if err != nil {
-		return
-	}
-	s.task.Once(
-		worker.WithRunUuid(uuid.NewString()),
-		worker.WithRunCategory("create.greeter"),
-		worker.WithRunAt(time.Now().Add(time.Duration(10)*time.Second)),
-		worker.WithRunPayload(req.String()),
-	)
-	copier.Copy(&rp.Item, r)
 	return
 }
 
-func (s *HellowordService) UpdateGreeter(ctx context.Context, req *helloword.UpdateGreeterRequest) (rp *helloword.UpdateGreeterReply, err error) {
-	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "UpdateGreeter")
-	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.UpdateGreeterReply{}
-	r := &biz.Greeter{}
-	copier.Copy(&r, req)
-	err = s.greeter.Update(ctx, req.Id, r)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.Item, r)
-	return
-}
-
-func (s *HellowordService) DeleteGreeter(ctx context.Context, req *helloword.DeleteGreeterRequest) (rp *helloword.DeleteGreeterReply, err error) {
-	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "DeleteGreeter")
-	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.DeleteGreeterReply{}
-	err = s.greeter.Delete(ctx, req.Id)
-	return
-}
-
-func (s *HellowordService) GetGreeter(ctx context.Context, req *helloword.GetGreeterRequest) (rp *helloword.GetGreeterReply, err error) {
+func (s *HellowordService) GetGreeter(ctx context.Context, req *v1.GetGreeterRequest) (rp *v1.GetGreeterReply, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "GetGreeter")
 	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.GetGreeterReply{}
-	rp.Item = &helloword.Greeter{}
+	rp = &v1.GetGreeterReply{}
 	res, err := s.greeter.Get(ctx, req.Id)
 	if err != nil {
 		return
 	}
-	copier.Copy(&rp.Item, res)
+	copierx.Copy(&rp, res)
 	return
 }
 
-func (s *HellowordService) ListGreeter(ctx context.Context, req *helloword.ListGreeterRequest) (rp *helloword.ListGreeterReply, err error) {
+func (s *HellowordService) FindGreeter(ctx context.Context, req *v1.FindGreeterRequest) (rp *v1.FindGreeterReply, err error) {
 	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "ListGreeter")
+	ctx, span := tr.Start(ctx, "FindGreeter")
 	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.ListGreeterReply{}
-	r := &biz.Greeter{}
-	copier.Copy(&r, req)
-	list, err := s.greeter.List(ctx, r)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.List, list)
+	rp = &v1.FindGreeterReply{}
+	rp.Page = &v1.Page{}
+	r := &biz.FindGreeter{}
+	r.Page = page.Page{}
+	copierx.Copy(&r, req)
+	copierx.Copy(&r.Page, req.Page)
+	res := s.greeter.Find(ctx, r)
+	copierx.Copy(&rp.Page, r.Page)
+	copierx.Copy(&rp.List, res)
 	return
 }
 
-func (s *HellowordService) CreateGreeterWithCache(ctx context.Context, req *helloword.CreateGreeterRequest) (rp *helloword.CreateGreeterReply, err error) {
+func (s *HellowordService) UpdateGreeter(ctx context.Context, req *v1.UpdateGreeterRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "CreateGreeterWithCache")
+	ctx, span := tr.Start(ctx, "UpdateGreeter")
 	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.CreateGreeterReply{}
-	r := &biz.Greeter{}
-	copier.Copy(&r, req)
-	err = s.greeterWithCache.Create(ctx, r)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.Item, r)
+	rp = &emptypb.Empty{}
+	r := &biz.UpdateGreeter{}
+	copierx.Copy(&r, req)
+	err = s.greeter.Update(ctx, r)
 	return
 }
 
-func (s *HellowordService) UpdateGreeterWithCache(ctx context.Context, req *helloword.UpdateGreeterRequest) (rp *helloword.UpdateGreeterReply, err error) {
+func (s *HellowordService) DeleteGreeter(ctx context.Context, req *v1.IdsRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "UpdateGreeterWithCache")
+	ctx, span := tr.Start(ctx, "DeleteGreeter")
 	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.UpdateGreeterReply{}
-	r := &biz.Greeter{}
-	copier.Copy(&r, req)
-	err = s.greeterWithCache.Update(ctx, req.Id, r)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.Item, r)
-	return
-}
-
-func (s *HellowordService) DeleteGreeterWithCache(ctx context.Context, req *helloword.DeleteGreeterRequest) (rp *helloword.DeleteGreeterReply, err error) {
-	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "DeleteGreeterWithCache")
-	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.DeleteGreeterReply{}
-	err = s.greeterWithCache.Delete(ctx, req.Id)
-	return
-}
-
-func (s *HellowordService) GetGreeterWithCache(ctx context.Context, req *helloword.GetGreeterRequest) (rp *helloword.GetGreeterReply, err error) {
-	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "GetGreeterWithCache")
-	defer span.End()
-	// log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.GetGreeterReply{}
-	rp.Item = &helloword.Greeter{}
-	res, err := s.greeterWithCache.Get(ctx, req.Id)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.Item, res)
-	return
-}
-
-func (s *HellowordService) ListGreeterWithCache(ctx context.Context, req *helloword.ListGreeterRequest) (rp *helloword.ListGreeterReply, err error) {
-	tr := otel.Tracer("api")
-	ctx, span := tr.Start(ctx, "ListGreeterWithCache")
-	defer span.End()
-	log.WithContext(ctx).Info("input data %v", req)
-	rp = &helloword.ListGreeterReply{}
-	r := &biz.Greeter{}
-	copier.Copy(&r, req)
-	list, err := s.greeterWithCache.List(ctx, r)
-	if err != nil {
-		return
-	}
-	copier.Copy(&rp.List, list)
+	rp = &emptypb.Empty{}
+	err = s.greeter.Delete(ctx, utils.Str2Uint64Arr(req.Ids)...)
 	return
 }

@@ -3,6 +3,7 @@ syntax = "proto3";
 package helloworld.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 // the validate rules:
 // https://github.com/envoyproxy/protoc-gen-validate
 import "validate/validate.proto";
@@ -14,70 +15,48 @@ option java_outer_classname = "HelloworldProtoV1";
 
 // The helloworld service definition.
 service Helloworld {
-  rpc CreateGreeter (CreateGreeterRequest) returns (CreateGreeterReply) {
+  rpc CreateGreeter (CreateGreeterRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/greeter"
+      post: "/greeter"
       body: "*"
-    };
-  }
-  rpc UpdateGreeter (UpdateGreeterRequest) returns (UpdateGreeterReply) {
-    option (google.api.http) = {
-      put: "/v1/greeter/{id}"
-      body: "*",
-      // bind another method
-      additional_bindings {
-        patch: "/v1/greeter/{id}",
-        body: "*",
-      }
-    };
-  }
-  rpc DeleteGreeter (DeleteGreeterRequest) returns (DeleteGreeterReply) {
-    option (google.api.http) = {
-      delete: "/v1/greeter/{id}"
     };
   }
   rpc GetGreeter (GetGreeterRequest) returns (GetGreeterReply) {
     option (google.api.http) = {
-      get: "/v1/greeter/{id}"
+      get: "/greeter/{id}"
     };
   }
-  rpc ListGreeter (ListGreeterRequest) returns (ListGreeterReply) {
+  rpc FindGreeter (FindGreeterRequest) returns (FindGreeterReply) {
     option (google.api.http) = {
-      get: "/v1/greeter"
+      get: "/greeter"
     };
   }
-  rpc CreateGreeterWithCache (CreateGreeterRequest) returns (CreateGreeterReply) {
+  rpc UpdateGreeter (UpdateGreeterRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/greeter_with_cache"
-      body: "*"
-    };
-  }
-  rpc UpdateGreeterWithCache (UpdateGreeterRequest) returns (UpdateGreeterReply) {
-    option (google.api.http) = {
-      put: "/v1/greeter_with_cache/{id}"
+      put: "/greeter/{id}"
       body: "*",
-      // bind another method
       additional_bindings {
-        patch: "/v1/greeter_with_cache/{id}",
+        patch: "/greeter/{id}",
         body: "*",
       }
     };
   }
-  rpc DeleteGreeterWithCache (DeleteGreeterRequest) returns (DeleteGreeterReply) {
+  rpc DeleteGreeter (IdsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/greeter_with_cache/{id}"
+      delete: "/greeter/{ids}"
     };
   }
-  rpc GetGreeterWithCache (GetGreeterRequest) returns (GetGreeterReply) {
-    option (google.api.http) = {
-      get: "/v1/greeter_with_cache/{id}"
-    };
-  }
-  rpc ListGreeterWithCache (ListGreeterRequest) returns (ListGreeterReply) {
-    option (google.api.http) = {
-      get: "/v1/greeter_with_cache"
-    };
-  }
+}
+
+message Page {
+  uint64 num = 1;
+  uint64 size = 2;
+  int64 total = 3;
+  bool disable = 4;
+}
+
+message IdsRequest {
+  string ids = 1;
 }
 
 message Greeter {
@@ -91,38 +70,29 @@ message CreateGreeterRequest {
   int32 age = 2 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
 }
 
-message CreateGreeterReply {
-  Greeter item = 1;
-}
-
-message UpdateGreeterRequest {
-  uint64 id = 1;
-  string name = 2 [(validate.rules).string = {min_len: 2, max_len: 50}]; // the name of string must be between 2 and 50 character
-  int32 age = 3 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
-}
-
-message UpdateGreeterReply {
-  Greeter item = 1;
-}
-
-message DeleteGreeterRequest {
-  uint64 id = 1;
-}
-
-message DeleteGreeterReply {
-}
-
 message GetGreeterRequest {
   uint64 id = 1;
 }
 
 message GetGreeterReply {
-  Greeter item = 1;
+  uint64 id = 1;
+  string name = 2;
+  int32 age = 3;
 }
 
-message ListGreeterRequest {
+message FindGreeterRequest {
+  Page page = 1;
+  optional string name = 2;
+  optional int32 age = 3;
 }
 
-message ListGreeterReply {
-  repeated Greeter list = 1;
+message FindGreeterReply {
+  Page page = 1;
+  repeated Greeter list = 2;
+}
+
+message UpdateGreeterRequest {
+  uint64 id = 1;
+  optional string name = 2 [(validate.rules).string = {min_len: 2, max_len: 50}]; // the name of string must be between 2 and 50 character
+  optional int32 age = 3 [(validate.rules).int32 = {gte: 0}];                     // the age of int32 must be >= 0
 }

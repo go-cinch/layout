@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	// TooManyRequests is too many requests in a short time
-	TooManyRequests = v1.ErrorTooManyRequests(v1.ErrorReason_TOO_MANY_REQUESTS.String())
-
-	// ErrGreeterNotFound is greeter not found.
-	ErrGreeterNotFound = v1.ErrorGreeterNotFound(v1.ErrorReason_GREETER_NOT_FOUND.String())
+	IllegalParameter = v1.ErrorIllegalParameter
+	TooManyRequests  = v1.ErrorTooManyRequests("too many requests, please try again later")
+	DataNotChange    = v1.ErrorIllegalParameter("data has not changed")
+	DuplicateField   = v1.ErrorIllegalParameter("duplicate field")
+	NotFound         = v1.ErrorIllegalParameter("not found")
 )

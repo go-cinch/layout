@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,16 +23,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelloworldClient interface {
-	CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*CreateGreeterReply, error)
-	UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*UpdateGreeterReply, error)
-	DeleteGreeter(ctx context.Context, in *DeleteGreeterRequest, opts ...grpc.CallOption) (*DeleteGreeterReply, error)
+	CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetGreeter(ctx context.Context, in *GetGreeterRequest, opts ...grpc.CallOption) (*GetGreeterReply, error)
-	ListGreeter(ctx context.Context, in *ListGreeterRequest, opts ...grpc.CallOption) (*ListGreeterReply, error)
-	CreateGreeterWithCache(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*CreateGreeterReply, error)
-	UpdateGreeterWithCache(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*UpdateGreeterReply, error)
-	DeleteGreeterWithCache(ctx context.Context, in *DeleteGreeterRequest, opts ...grpc.CallOption) (*DeleteGreeterReply, error)
-	GetGreeterWithCache(ctx context.Context, in *GetGreeterRequest, opts ...grpc.CallOption) (*GetGreeterReply, error)
-	ListGreeterWithCache(ctx context.Context, in *ListGreeterRequest, opts ...grpc.CallOption) (*ListGreeterReply, error)
+	FindGreeter(ctx context.Context, in *FindGreeterRequest, opts ...grpc.CallOption) (*FindGreeterReply, error)
+	UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteGreeter(ctx context.Context, in *IdsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type helloworldClient struct {
@@ -42,27 +38,9 @@ func NewHelloworldClient(cc grpc.ClientConnInterface) HelloworldClient {
 	return &helloworldClient{cc}
 }
 
-func (c *helloworldClient) CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*CreateGreeterReply, error) {
-	out := new(CreateGreeterReply)
+func (c *helloworldClient) CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/CreateGreeter", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *helloworldClient) UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*UpdateGreeterReply, error) {
-	out := new(UpdateGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/UpdateGreeter", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *helloworldClient) DeleteGreeter(ctx context.Context, in *DeleteGreeterRequest, opts ...grpc.CallOption) (*DeleteGreeterReply, error) {
-	out := new(DeleteGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/DeleteGreeter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,54 +56,27 @@ func (c *helloworldClient) GetGreeter(ctx context.Context, in *GetGreeterRequest
 	return out, nil
 }
 
-func (c *helloworldClient) ListGreeter(ctx context.Context, in *ListGreeterRequest, opts ...grpc.CallOption) (*ListGreeterReply, error) {
-	out := new(ListGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/ListGreeter", in, out, opts...)
+func (c *helloworldClient) FindGreeter(ctx context.Context, in *FindGreeterRequest, opts ...grpc.CallOption) (*FindGreeterReply, error) {
+	out := new(FindGreeterReply)
+	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/FindGreeter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *helloworldClient) CreateGreeterWithCache(ctx context.Context, in *CreateGreeterRequest, opts ...grpc.CallOption) (*CreateGreeterReply, error) {
-	out := new(CreateGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/CreateGreeterWithCache", in, out, opts...)
+func (c *helloworldClient) UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/UpdateGreeter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *helloworldClient) UpdateGreeterWithCache(ctx context.Context, in *UpdateGreeterRequest, opts ...grpc.CallOption) (*UpdateGreeterReply, error) {
-	out := new(UpdateGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/UpdateGreeterWithCache", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *helloworldClient) DeleteGreeterWithCache(ctx context.Context, in *DeleteGreeterRequest, opts ...grpc.CallOption) (*DeleteGreeterReply, error) {
-	out := new(DeleteGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/DeleteGreeterWithCache", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *helloworldClient) GetGreeterWithCache(ctx context.Context, in *GetGreeterRequest, opts ...grpc.CallOption) (*GetGreeterReply, error) {
-	out := new(GetGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/GetGreeterWithCache", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *helloworldClient) ListGreeterWithCache(ctx context.Context, in *ListGreeterRequest, opts ...grpc.CallOption) (*ListGreeterReply, error) {
-	out := new(ListGreeterReply)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/ListGreeterWithCache", in, out, opts...)
+func (c *helloworldClient) DeleteGreeter(ctx context.Context, in *IdsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/helloworld.v1.Helloworld/DeleteGreeter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,16 +87,11 @@ func (c *helloworldClient) ListGreeterWithCache(ctx context.Context, in *ListGre
 // All implementations must embed UnimplementedHelloworldServer
 // for forward compatibility
 type HelloworldServer interface {
-	CreateGreeter(context.Context, *CreateGreeterRequest) (*CreateGreeterReply, error)
-	UpdateGreeter(context.Context, *UpdateGreeterRequest) (*UpdateGreeterReply, error)
-	DeleteGreeter(context.Context, *DeleteGreeterRequest) (*DeleteGreeterReply, error)
+	CreateGreeter(context.Context, *CreateGreeterRequest) (*emptypb.Empty, error)
 	GetGreeter(context.Context, *GetGreeterRequest) (*GetGreeterReply, error)
-	ListGreeter(context.Context, *ListGreeterRequest) (*ListGreeterReply, error)
-	CreateGreeterWithCache(context.Context, *CreateGreeterRequest) (*CreateGreeterReply, error)
-	UpdateGreeterWithCache(context.Context, *UpdateGreeterRequest) (*UpdateGreeterReply, error)
-	DeleteGreeterWithCache(context.Context, *DeleteGreeterRequest) (*DeleteGreeterReply, error)
-	GetGreeterWithCache(context.Context, *GetGreeterRequest) (*GetGreeterReply, error)
-	ListGreeterWithCache(context.Context, *ListGreeterRequest) (*ListGreeterReply, error)
+	FindGreeter(context.Context, *FindGreeterRequest) (*FindGreeterReply, error)
+	UpdateGreeter(context.Context, *UpdateGreeterRequest) (*emptypb.Empty, error)
+	DeleteGreeter(context.Context, *IdsRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedHelloworldServer()
 }
 
@@ -153,35 +99,20 @@ type HelloworldServer interface {
 type UnimplementedHelloworldServer struct {
 }
 
-func (UnimplementedHelloworldServer) CreateGreeter(context.Context, *CreateGreeterRequest) (*CreateGreeterReply, error) {
+func (UnimplementedHelloworldServer) CreateGreeter(context.Context, *CreateGreeterRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGreeter not implemented")
-}
-func (UnimplementedHelloworldServer) UpdateGreeter(context.Context, *UpdateGreeterRequest) (*UpdateGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateGreeter not implemented")
-}
-func (UnimplementedHelloworldServer) DeleteGreeter(context.Context, *DeleteGreeterRequest) (*DeleteGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteGreeter not implemented")
 }
 func (UnimplementedHelloworldServer) GetGreeter(context.Context, *GetGreeterRequest) (*GetGreeterReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGreeter not implemented")
 }
-func (UnimplementedHelloworldServer) ListGreeter(context.Context, *ListGreeterRequest) (*ListGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListGreeter not implemented")
+func (UnimplementedHelloworldServer) FindGreeter(context.Context, *FindGreeterRequest) (*FindGreeterReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindGreeter not implemented")
 }
-func (UnimplementedHelloworldServer) CreateGreeterWithCache(context.Context, *CreateGreeterRequest) (*CreateGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGreeterWithCache not implemented")
+func (UnimplementedHelloworldServer) UpdateGreeter(context.Context, *UpdateGreeterRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGreeter not implemented")
 }
-func (UnimplementedHelloworldServer) UpdateGreeterWithCache(context.Context, *UpdateGreeterRequest) (*UpdateGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateGreeterWithCache not implemented")
-}
-func (UnimplementedHelloworldServer) DeleteGreeterWithCache(context.Context, *DeleteGreeterRequest) (*DeleteGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteGreeterWithCache not implemented")
-}
-func (UnimplementedHelloworldServer) GetGreeterWithCache(context.Context, *GetGreeterRequest) (*GetGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGreeterWithCache not implemented")
-}
-func (UnimplementedHelloworldServer) ListGreeterWithCache(context.Context, *ListGreeterRequest) (*ListGreeterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListGreeterWithCache not implemented")
+func (UnimplementedHelloworldServer) DeleteGreeter(context.Context, *IdsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteGreeter not implemented")
 }
 func (UnimplementedHelloworldServer) mustEmbedUnimplementedHelloworldServer() {}
 
@@ -214,6 +145,42 @@ func _Helloworld_CreateGreeter_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Helloworld_GetGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGreeterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloworldServer).GetGreeter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/helloworld.v1.Helloworld/GetGreeter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloworldServer).GetGreeter(ctx, req.(*GetGreeterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Helloworld_FindGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindGreeterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloworldServer).FindGreeter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/helloworld.v1.Helloworld/FindGreeter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloworldServer).FindGreeter(ctx, req.(*FindGreeterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Helloworld_UpdateGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateGreeterRequest)
 	if err := dec(in); err != nil {
@@ -233,7 +200,7 @@ func _Helloworld_UpdateGreeter_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _Helloworld_DeleteGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteGreeterRequest)
+	in := new(IdsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -245,133 +212,7 @@ func _Helloworld_DeleteGreeter_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/helloworld.v1.Helloworld/DeleteGreeter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).DeleteGreeter(ctx, req.(*DeleteGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_GetGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).GetGreeter(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/GetGreeter",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).GetGreeter(ctx, req.(*GetGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_ListGreeter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).ListGreeter(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/ListGreeter",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).ListGreeter(ctx, req.(*ListGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_CreateGreeterWithCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).CreateGreeterWithCache(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/CreateGreeterWithCache",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).CreateGreeterWithCache(ctx, req.(*CreateGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_UpdateGreeterWithCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).UpdateGreeterWithCache(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/UpdateGreeterWithCache",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).UpdateGreeterWithCache(ctx, req.(*UpdateGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_DeleteGreeterWithCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).DeleteGreeterWithCache(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/DeleteGreeterWithCache",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).DeleteGreeterWithCache(ctx, req.(*DeleteGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_GetGreeterWithCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).GetGreeterWithCache(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/GetGreeterWithCache",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).GetGreeterWithCache(ctx, req.(*GetGreeterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Helloworld_ListGreeterWithCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListGreeterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HelloworldServer).ListGreeterWithCache(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/helloworld.v1.Helloworld/ListGreeterWithCache",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldServer).ListGreeterWithCache(ctx, req.(*ListGreeterRequest))
+		return srv.(HelloworldServer).DeleteGreeter(ctx, req.(*IdsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -388,40 +229,20 @@ var Helloworld_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Helloworld_CreateGreeter_Handler,
 		},
 		{
+			MethodName: "GetGreeter",
+			Handler:    _Helloworld_GetGreeter_Handler,
+		},
+		{
+			MethodName: "FindGreeter",
+			Handler:    _Helloworld_FindGreeter_Handler,
+		},
+		{
 			MethodName: "UpdateGreeter",
 			Handler:    _Helloworld_UpdateGreeter_Handler,
 		},
 		{
 			MethodName: "DeleteGreeter",
 			Handler:    _Helloworld_DeleteGreeter_Handler,
-		},
-		{
-			MethodName: "GetGreeter",
-			Handler:    _Helloworld_GetGreeter_Handler,
-		},
-		{
-			MethodName: "ListGreeter",
-			Handler:    _Helloworld_ListGreeter_Handler,
-		},
-		{
-			MethodName: "CreateGreeterWithCache",
-			Handler:    _Helloworld_CreateGreeterWithCache_Handler,
-		},
-		{
-			MethodName: "UpdateGreeterWithCache",
-			Handler:    _Helloworld_UpdateGreeterWithCache_Handler,
-		},
-		{
-			MethodName: "DeleteGreeterWithCache",
-			Handler:    _Helloworld_DeleteGreeterWithCache_Handler,
-		},
-		{
-			MethodName: "GetGreeterWithCache",
-			Handler:    _Helloworld_GetGreeterWithCache_Handler,
-		},
-		{
-			MethodName: "ListGreeterWithCache",
-			Handler:    _Helloworld_ListGreeterWithCache_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

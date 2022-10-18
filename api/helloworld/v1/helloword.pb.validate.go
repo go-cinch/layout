@@ -35,6 +35,213 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on Page with the rules defined in the proto
+// definition for this message. If any rules are violated, the first error
+// encountered is returned, or nil if there are no violations.
+func (m *Page) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Page with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in PageMultiError, or nil if none found.
+func (m *Page) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Page) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Num
+
+	// no validation rules for Size
+
+	// no validation rules for Total
+
+	// no validation rules for Disable
+
+	if len(errors) > 0 {
+		return PageMultiError(errors)
+	}
+
+	return nil
+}
+
+// PageMultiError is an error wrapping multiple validation errors returned by
+// Page.ValidateAll() if the designated constraints aren't met.
+type PageMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PageMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PageMultiError) AllErrors() []error { return m }
+
+// PageValidationError is the validation error returned by Page.Validate if the
+// designated constraints aren't met.
+type PageValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PageValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PageValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PageValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PageValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PageValidationError) ErrorName() string { return "PageValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PageValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPage.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PageValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PageValidationError{}
+
+// Validate checks the field values on IdsRequest with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *IdsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on IdsRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in IdsRequestMultiError, or
+// nil if none found.
+func (m *IdsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *IdsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Ids
+
+	if len(errors) > 0 {
+		return IdsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// IdsRequestMultiError is an error wrapping multiple validation errors
+// returned by IdsRequest.ValidateAll() if the designated constraints aren't met.
+type IdsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m IdsRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m IdsRequestMultiError) AllErrors() []error { return m }
+
+// IdsRequestValidationError is the validation error returned by
+// IdsRequest.Validate if the designated constraints aren't met.
+type IdsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e IdsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e IdsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e IdsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e IdsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e IdsRequestValidationError) ErrorName() string { return "IdsRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e IdsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sIdsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = IdsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = IdsRequestValidationError{}
+
 // Validate checks the field values on Greeter with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -263,600 +470,6 @@ var _ interface {
 	ErrorName() string
 } = CreateGreeterRequestValidationError{}
 
-// Validate checks the field values on CreateGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *CreateGreeterReply) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on CreateGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// CreateGreeterReplyMultiError, or nil if none found.
-func (m *CreateGreeterReply) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *CreateGreeterReply) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if all {
-		switch v := interface{}(m.GetItem()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, CreateGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, CreateGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetItem()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return CreateGreeterReplyValidationError{
-				field:  "Item",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if len(errors) > 0 {
-		return CreateGreeterReplyMultiError(errors)
-	}
-
-	return nil
-}
-
-// CreateGreeterReplyMultiError is an error wrapping multiple validation errors
-// returned by CreateGreeterReply.ValidateAll() if the designated constraints
-// aren't met.
-type CreateGreeterReplyMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m CreateGreeterReplyMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m CreateGreeterReplyMultiError) AllErrors() []error { return m }
-
-// CreateGreeterReplyValidationError is the validation error returned by
-// CreateGreeterReply.Validate if the designated constraints aren't met.
-type CreateGreeterReplyValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e CreateGreeterReplyValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e CreateGreeterReplyValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e CreateGreeterReplyValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e CreateGreeterReplyValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e CreateGreeterReplyValidationError) ErrorName() string {
-	return "CreateGreeterReplyValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e CreateGreeterReplyValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sCreateGreeterReply.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = CreateGreeterReplyValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = CreateGreeterReplyValidationError{}
-
-// Validate checks the field values on UpdateGreeterRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *UpdateGreeterRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on UpdateGreeterRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// UpdateGreeterRequestMultiError, or nil if none found.
-func (m *UpdateGreeterRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *UpdateGreeterRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Id
-
-	if l := utf8.RuneCountInString(m.GetName()); l < 2 || l > 50 {
-		err := UpdateGreeterRequestValidationError{
-			field:  "Name",
-			reason: "value length must be between 2 and 50 runes, inclusive",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if m.GetAge() < 0 {
-		err := UpdateGreeterRequestValidationError{
-			field:  "Age",
-			reason: "value must be greater than or equal to 0",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if len(errors) > 0 {
-		return UpdateGreeterRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// UpdateGreeterRequestMultiError is an error wrapping multiple validation
-// errors returned by UpdateGreeterRequest.ValidateAll() if the designated
-// constraints aren't met.
-type UpdateGreeterRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m UpdateGreeterRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m UpdateGreeterRequestMultiError) AllErrors() []error { return m }
-
-// UpdateGreeterRequestValidationError is the validation error returned by
-// UpdateGreeterRequest.Validate if the designated constraints aren't met.
-type UpdateGreeterRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e UpdateGreeterRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e UpdateGreeterRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e UpdateGreeterRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e UpdateGreeterRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e UpdateGreeterRequestValidationError) ErrorName() string {
-	return "UpdateGreeterRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e UpdateGreeterRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sUpdateGreeterRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = UpdateGreeterRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = UpdateGreeterRequestValidationError{}
-
-// Validate checks the field values on UpdateGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *UpdateGreeterReply) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on UpdateGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// UpdateGreeterReplyMultiError, or nil if none found.
-func (m *UpdateGreeterReply) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *UpdateGreeterReply) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if all {
-		switch v := interface{}(m.GetItem()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, UpdateGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, UpdateGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetItem()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return UpdateGreeterReplyValidationError{
-				field:  "Item",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if len(errors) > 0 {
-		return UpdateGreeterReplyMultiError(errors)
-	}
-
-	return nil
-}
-
-// UpdateGreeterReplyMultiError is an error wrapping multiple validation errors
-// returned by UpdateGreeterReply.ValidateAll() if the designated constraints
-// aren't met.
-type UpdateGreeterReplyMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m UpdateGreeterReplyMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m UpdateGreeterReplyMultiError) AllErrors() []error { return m }
-
-// UpdateGreeterReplyValidationError is the validation error returned by
-// UpdateGreeterReply.Validate if the designated constraints aren't met.
-type UpdateGreeterReplyValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e UpdateGreeterReplyValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e UpdateGreeterReplyValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e UpdateGreeterReplyValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e UpdateGreeterReplyValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e UpdateGreeterReplyValidationError) ErrorName() string {
-	return "UpdateGreeterReplyValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e UpdateGreeterReplyValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sUpdateGreeterReply.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = UpdateGreeterReplyValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = UpdateGreeterReplyValidationError{}
-
-// Validate checks the field values on DeleteGreeterRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteGreeterRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteGreeterRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteGreeterRequestMultiError, or nil if none found.
-func (m *DeleteGreeterRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteGreeterRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Id
-
-	if len(errors) > 0 {
-		return DeleteGreeterRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteGreeterRequestMultiError is an error wrapping multiple validation
-// errors returned by DeleteGreeterRequest.ValidateAll() if the designated
-// constraints aren't met.
-type DeleteGreeterRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteGreeterRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteGreeterRequestMultiError) AllErrors() []error { return m }
-
-// DeleteGreeterRequestValidationError is the validation error returned by
-// DeleteGreeterRequest.Validate if the designated constraints aren't met.
-type DeleteGreeterRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteGreeterRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteGreeterRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteGreeterRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteGreeterRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteGreeterRequestValidationError) ErrorName() string {
-	return "DeleteGreeterRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteGreeterRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteGreeterRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteGreeterRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteGreeterRequestValidationError{}
-
-// Validate checks the field values on DeleteGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteGreeterReply) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteGreeterReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteGreeterReplyMultiError, or nil if none found.
-func (m *DeleteGreeterReply) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteGreeterReply) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if len(errors) > 0 {
-		return DeleteGreeterReplyMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteGreeterReplyMultiError is an error wrapping multiple validation errors
-// returned by DeleteGreeterReply.ValidateAll() if the designated constraints
-// aren't met.
-type DeleteGreeterReplyMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteGreeterReplyMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteGreeterReplyMultiError) AllErrors() []error { return m }
-
-// DeleteGreeterReplyValidationError is the validation error returned by
-// DeleteGreeterReply.Validate if the designated constraints aren't met.
-type DeleteGreeterReplyValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteGreeterReplyValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteGreeterReplyValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteGreeterReplyValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteGreeterReplyValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteGreeterReplyValidationError) ErrorName() string {
-	return "DeleteGreeterReplyValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteGreeterReplyValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteGreeterReply.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteGreeterReplyValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteGreeterReplyValidationError{}
-
 // Validate checks the field values on GetGreeterRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -983,34 +596,11 @@ func (m *GetGreeterReply) validate(all bool) error {
 
 	var errors []error
 
-	if all {
-		switch v := interface{}(m.GetItem()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, GetGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, GetGreeterReplyValidationError{
-					field:  "Item",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetItem()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return GetGreeterReplyValidationError{
-				field:  "Item",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
+	// no validation rules for Id
+
+	// no validation rules for Name
+
+	// no validation rules for Age
 
 	if len(errors) > 0 {
 		return GetGreeterReplyMultiError(errors)
@@ -1090,42 +680,79 @@ var _ interface {
 	ErrorName() string
 } = GetGreeterReplyValidationError{}
 
-// Validate checks the field values on ListGreeterRequest with the rules
+// Validate checks the field values on FindGreeterRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *ListGreeterRequest) Validate() error {
+func (m *FindGreeterRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ListGreeterRequest with the rules
+// ValidateAll checks the field values on FindGreeterRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// ListGreeterRequestMultiError, or nil if none found.
-func (m *ListGreeterRequest) ValidateAll() error {
+// FindGreeterRequestMultiError, or nil if none found.
+func (m *FindGreeterRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ListGreeterRequest) validate(all bool) error {
+func (m *FindGreeterRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	if all {
+		switch v := interface{}(m.GetPage()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, FindGreeterRequestValidationError{
+					field:  "Page",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, FindGreeterRequestValidationError{
+					field:  "Page",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPage()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FindGreeterRequestValidationError{
+				field:  "Page",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if m.Name != nil {
+		// no validation rules for Name
+	}
+
+	if m.Age != nil {
+		// no validation rules for Age
+	}
+
 	if len(errors) > 0 {
-		return ListGreeterRequestMultiError(errors)
+		return FindGreeterRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// ListGreeterRequestMultiError is an error wrapping multiple validation errors
-// returned by ListGreeterRequest.ValidateAll() if the designated constraints
+// FindGreeterRequestMultiError is an error wrapping multiple validation errors
+// returned by FindGreeterRequest.ValidateAll() if the designated constraints
 // aren't met.
-type ListGreeterRequestMultiError []error
+type FindGreeterRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ListGreeterRequestMultiError) Error() string {
+func (m FindGreeterRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -1134,11 +761,11 @@ func (m ListGreeterRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ListGreeterRequestMultiError) AllErrors() []error { return m }
+func (m FindGreeterRequestMultiError) AllErrors() []error { return m }
 
-// ListGreeterRequestValidationError is the validation error returned by
-// ListGreeterRequest.Validate if the designated constraints aren't met.
-type ListGreeterRequestValidationError struct {
+// FindGreeterRequestValidationError is the validation error returned by
+// FindGreeterRequest.Validate if the designated constraints aren't met.
+type FindGreeterRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -1146,24 +773,24 @@ type ListGreeterRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e ListGreeterRequestValidationError) Field() string { return e.field }
+func (e FindGreeterRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ListGreeterRequestValidationError) Reason() string { return e.reason }
+func (e FindGreeterRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ListGreeterRequestValidationError) Cause() error { return e.cause }
+func (e FindGreeterRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ListGreeterRequestValidationError) Key() bool { return e.key }
+func (e FindGreeterRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ListGreeterRequestValidationError) ErrorName() string {
-	return "ListGreeterRequestValidationError"
+func (e FindGreeterRequestValidationError) ErrorName() string {
+	return "FindGreeterRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e ListGreeterRequestValidationError) Error() string {
+func (e FindGreeterRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1175,14 +802,14 @@ func (e ListGreeterRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sListGreeterRequest.%s: %s%s",
+		"invalid %sFindGreeterRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ListGreeterRequestValidationError{}
+var _ error = FindGreeterRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -1190,29 +817,58 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ListGreeterRequestValidationError{}
+} = FindGreeterRequestValidationError{}
 
-// Validate checks the field values on ListGreeterReply with the rules defined
+// Validate checks the field values on FindGreeterReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
-func (m *ListGreeterReply) Validate() error {
+func (m *FindGreeterReply) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ListGreeterReply with the rules
+// ValidateAll checks the field values on FindGreeterReply with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// ListGreeterReplyMultiError, or nil if none found.
-func (m *ListGreeterReply) ValidateAll() error {
+// FindGreeterReplyMultiError, or nil if none found.
+func (m *FindGreeterReply) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ListGreeterReply) validate(all bool) error {
+func (m *FindGreeterReply) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetPage()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, FindGreeterReplyValidationError{
+					field:  "Page",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, FindGreeterReplyValidationError{
+					field:  "Page",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPage()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FindGreeterReplyValidationError{
+				field:  "Page",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	for idx, item := range m.GetList() {
 		_, _ = idx, item
@@ -1221,7 +877,7 @@ func (m *ListGreeterReply) validate(all bool) error {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ListGreeterReplyValidationError{
+					errors = append(errors, FindGreeterReplyValidationError{
 						field:  fmt.Sprintf("List[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1229,7 +885,7 @@ func (m *ListGreeterReply) validate(all bool) error {
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, ListGreeterReplyValidationError{
+					errors = append(errors, FindGreeterReplyValidationError{
 						field:  fmt.Sprintf("List[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
@@ -1238,7 +894,7 @@ func (m *ListGreeterReply) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return ListGreeterReplyValidationError{
+				return FindGreeterReplyValidationError{
 					field:  fmt.Sprintf("List[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -1249,19 +905,19 @@ func (m *ListGreeterReply) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return ListGreeterReplyMultiError(errors)
+		return FindGreeterReplyMultiError(errors)
 	}
 
 	return nil
 }
 
-// ListGreeterReplyMultiError is an error wrapping multiple validation errors
-// returned by ListGreeterReply.ValidateAll() if the designated constraints
+// FindGreeterReplyMultiError is an error wrapping multiple validation errors
+// returned by FindGreeterReply.ValidateAll() if the designated constraints
 // aren't met.
-type ListGreeterReplyMultiError []error
+type FindGreeterReplyMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ListGreeterReplyMultiError) Error() string {
+func (m FindGreeterReplyMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -1270,11 +926,11 @@ func (m ListGreeterReplyMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ListGreeterReplyMultiError) AllErrors() []error { return m }
+func (m FindGreeterReplyMultiError) AllErrors() []error { return m }
 
-// ListGreeterReplyValidationError is the validation error returned by
-// ListGreeterReply.Validate if the designated constraints aren't met.
-type ListGreeterReplyValidationError struct {
+// FindGreeterReplyValidationError is the validation error returned by
+// FindGreeterReply.Validate if the designated constraints aren't met.
+type FindGreeterReplyValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -1282,22 +938,22 @@ type ListGreeterReplyValidationError struct {
 }
 
 // Field function returns field value.
-func (e ListGreeterReplyValidationError) Field() string { return e.field }
+func (e FindGreeterReplyValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ListGreeterReplyValidationError) Reason() string { return e.reason }
+func (e FindGreeterReplyValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ListGreeterReplyValidationError) Cause() error { return e.cause }
+func (e FindGreeterReplyValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ListGreeterReplyValidationError) Key() bool { return e.key }
+func (e FindGreeterReplyValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ListGreeterReplyValidationError) ErrorName() string { return "ListGreeterReplyValidationError" }
+func (e FindGreeterReplyValidationError) ErrorName() string { return "FindGreeterReplyValidationError" }
 
 // Error satisfies the builtin error interface
-func (e ListGreeterReplyValidationError) Error() string {
+func (e FindGreeterReplyValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -1309,14 +965,14 @@ func (e ListGreeterReplyValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sListGreeterReply.%s: %s%s",
+		"invalid %sFindGreeterReply.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ListGreeterReplyValidationError{}
+var _ error = FindGreeterReplyValidationError{}
 
 var _ interface {
 	Field() string
@@ -1324,4 +980,138 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ListGreeterReplyValidationError{}
+} = FindGreeterReplyValidationError{}
+
+// Validate checks the field values on UpdateGreeterRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateGreeterRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateGreeterRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateGreeterRequestMultiError, or nil if none found.
+func (m *UpdateGreeterRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateGreeterRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if m.Name != nil {
+
+		if l := utf8.RuneCountInString(m.GetName()); l < 2 || l > 50 {
+			err := UpdateGreeterRequestValidationError{
+				field:  "Name",
+				reason: "value length must be between 2 and 50 runes, inclusive",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.Age != nil {
+
+		if m.GetAge() < 0 {
+			err := UpdateGreeterRequestValidationError{
+				field:  "Age",
+				reason: "value must be greater than or equal to 0",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return UpdateGreeterRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateGreeterRequestMultiError is an error wrapping multiple validation
+// errors returned by UpdateGreeterRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateGreeterRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateGreeterRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateGreeterRequestMultiError) AllErrors() []error { return m }
+
+// UpdateGreeterRequestValidationError is the validation error returned by
+// UpdateGreeterRequest.Validate if the designated constraints aren't met.
+type UpdateGreeterRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateGreeterRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateGreeterRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateGreeterRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateGreeterRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateGreeterRequestValidationError) ErrorName() string {
+	return "UpdateGreeterRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateGreeterRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateGreeterRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateGreeterRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateGreeterRequestValidationError{}

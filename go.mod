@@ -4,20 +4,21 @@ go 1.18
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
+	github.com/go-cinch/common/constant v0.0.0-20221018025257-d6491f7d825a
+	github.com/go-cinch/common/copierx v0.0.0-20221018025257-d6491f7d825a
 	github.com/go-cinch/common/id v0.0.0-20221010030633-b6fcfb8a6767
-	github.com/go-cinch/common/log v0.0.0-20220927061933-ccf4ca4bccbe
+	github.com/go-cinch/common/log v0.0.0-20221018025257-d6491f7d825a
 	github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde
 	github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c
+	github.com/go-cinch/common/page v0.0.0-20221018025257-d6491f7d825a
 	github.com/go-cinch/common/plugins/gorm/log v0.0.0-20220927074458-492682a7fa35
-	github.com/go-cinch/common/utils v0.0.0-20220929033119-a700c311d11f
+	github.com/go-cinch/common/utils v0.0.0-20221018025257-d6491f7d825a
 	github.com/go-cinch/common/worker v0.0.0-20220928061921-c9a16406c65f
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20220817101725-ba7223047727
-	github.com/go-kratos/kratos/v2 v2.5.0
+	github.com/go-kratos/kratos/v2 v2.5.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
-	github.com/jinzhu/copier v0.3.5
 	github.com/pkg/errors v0.9.1
 	go.opentelemetry.io/otel v1.10.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.10.0
@@ -28,7 +29,7 @@ require (
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.3.6
-	gorm.io/gorm v1.23.10
+	gorm.io/gorm v1.24.0
 )
 
 require (
@@ -54,11 +55,13 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0 // indirect
 	github.com/hibiken/asynq v0.23.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
+	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -67,6 +70,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/r3labs/diff/v3 v3.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rubenv/sql-migrate v1.2.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.21.8 // indirect
@@ -75,16 +79,17 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
+	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.10.0 // indirect
 	go.opentelemetry.io/otel/trace v1.10.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
+	golang.org/x/net v0.0.0-20221017152216-f25eb7ecb193 // indirect
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1 // indirect
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
-	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
+	golang.org/x/time v0.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
