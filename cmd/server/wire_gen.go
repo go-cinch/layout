@@ -10,6 +10,7 @@ import (
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/data"
+	"github.com/go-cinch/layout/internal/idempotent"
 	"github.com/go-cinch/layout/internal/server"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-cinch/layout/internal/task"
@@ -21,6 +22,10 @@ import (
 // wireApp init kratos application.
 func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	universalClient, err := data.NewRedis(c)
+	if err != nil {
+		return nil, nil, err
+	}
+	idempotentIdempotent, err := idempotent.NewIdempotent(universalClient)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -47,8 +52,8 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	hellowordService := service.NewHellowordService(taskTask, greeterUseCase)
-	grpcServer := server.NewGRPCServer(c, hellowordService)
-	httpServer := server.NewHTTPServer(c, hellowordService)
+	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, hellowordService)
+	httpServer := server.NewHTTPServer(c, idempotentIdempotent, hellowordService)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

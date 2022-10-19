@@ -129,6 +129,8 @@ github.com/go-cinch/common/copierx v0.0.0-20221018025257-d6491f7d825a h1:n8szhit
 github.com/go-cinch/common/copierx v0.0.0-20221018025257-d6491f7d825a/go.mod h1:pBmPP6aiPgwl+EYBAYPREsKVlREG1IS/sEZeiQ73gLQ=
 github.com/go-cinch/common/id v0.0.0-20221010030633-b6fcfb8a6767 h1:+lNca2xTpG9esPemNRWlJ/kzJl3Yist5BOT6LT2gvpo=
 github.com/go-cinch/common/id v0.0.0-20221010030633-b6fcfb8a6767/go.mod h1:y2bgFgbiqOgiMGyztMTJUZU7MyBvFSedzUH4BSZpZog=
+github.com/go-cinch/common/idempotent v0.0.0-20221019022337-83b9ba16a81c h1:RT1sXEydkeXDaCZZM/HrhnJ+0BDmc9V1xaKpbO8TlwE=
+github.com/go-cinch/common/idempotent v0.0.0-20221019022337-83b9ba16a81c/go.mod h1:v0TdlbPy6IDEwxbib9WriBevSna/1qAm3GGkGJA63hs=
 github.com/go-cinch/common/lock v0.0.0-20220923034812-0e33807d4680 h1:FL5WbbfigrNbxZ7bucJ9zZXG00RTRCfToGRHu5vOR8E=
 github.com/go-cinch/common/lock v0.0.0-20220923034812-0e33807d4680/go.mod h1:FvTdnnUJB5d4M9HsNE8KxkKTJBOgZRIlsD1Hh5ZumnU=
 github.com/go-cinch/common/log v0.0.0-20221018025257-d6491f7d825a h1:pEbNJsUKoCs+DmcRPAX8dkt5o0/biZepCZ+vZsfA558=

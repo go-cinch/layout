@@ -5,6 +5,8 @@ import (
 	commonMiddleware "github.com/go-cinch/common/middleware"
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/go-cinch/layout/internal/idempotent"
+	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -16,7 +18,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Bootstrap, svc *service.HellowordService) *grpc.Server {
+func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.HellowordService) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -28,6 +30,7 @@ func NewGRPCServer(c *conf.Bootstrap, svc *service.HellowordService) *grpc.Serve
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
 		validate.Validator(),
+		localMiddleware.Idempotent(idt),
 	)
 	var opts = []grpc.ServerOption{grpc.Middleware(middlewares...)}
 	if c.Server.Grpc.Network != "" {
