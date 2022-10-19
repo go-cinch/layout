@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"fmt"
+	"github.com/go-cinch/common/constant"
 	"github.com/go-cinch/common/copierx"
 	"github.com/go-cinch/common/page"
 	"github.com/go-cinch/common/utils"
@@ -64,6 +65,9 @@ func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (rp *Greeter, err 
 	})
 	if ok {
 		utils.Json2Struct(&rp, str)
+		if rp.Id == constant.UI0 {
+			err = NotFound("%s Greeter.id: %d", RecordNotFound.Message, id)
+		}
 	} else if !lock {
 		err = TooManyRequests
 		return
@@ -75,12 +79,12 @@ func (uc *GreeterUseCase) get(ctx context.Context, action string, id uint64) (re
 	// read data from db and write to cache
 	rp := &Greeter{}
 	item, err := uc.repo.Get(ctx, id)
-	if err != nil && !errors.Is(err, NotFound) {
+	if err != nil && !errors.Is(err, RecordNotFound) {
 		return
 	}
 	copierx.Copy(&rp, item)
 	res = utils.Struct2Json(rp)
-	uc.cache.Set(ctx, action, res, errors.Is(err, NotFound))
+	uc.cache.Set(ctx, action, res, errors.Is(err, RecordNotFound))
 	ok = true
 	return
 }

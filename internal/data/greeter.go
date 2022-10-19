@@ -48,7 +48,7 @@ func (ro greeterRepo) Get(ctx context.Context, id uint64) (item *biz.Greeter, er
 		Where("`id` = ?", id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = biz.IllegalParameter("%s Greeter.id: %s", biz.NotFound.Message, id)
+		err = biz.NotFound("%s Greeter.id: %d", biz.RecordNotFound.Message, id)
 		return
 	}
 	copierx.Copy(&item, m)
@@ -84,7 +84,7 @@ func (ro greeterRepo) Update(ctx context.Context, item *biz.UpdateGreeter) (err 
 		Where("`id` = ?", item.Id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = biz.IllegalParameter("%s Greeter.id: %d", biz.NotFound.Message, item.Id)
+		err = biz.NotFound("%s Greeter.id: %d", biz.RecordNotFound.Message, item.Id)
 		return
 	}
 	change := make(map[string]interface{})
@@ -123,7 +123,7 @@ func (ro greeterRepo) NameExists(ctx context.Context, name string) (err error) {
 			Where("`name` = ?", item).
 			First(&m)
 		if m.Id == constant.UI0 {
-			err = biz.IllegalParameter("%s Greeter.name: %s", biz.NotFound.Message, item)
+			err = biz.NotFound("%s Greeter.name: %s", biz.RecordNotFound.Message, item)
 			return
 		}
 	}

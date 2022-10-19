@@ -6,8 +6,9 @@ import (
 
 var (
 	IllegalParameter = v1.ErrorIllegalParameter
+	NotFound         = v1.ErrorNotFound
 	TooManyRequests  = v1.ErrorTooManyRequests("too many requests, please try again later")
 	DataNotChange    = v1.ErrorIllegalParameter("data has not changed")
 	DuplicateField   = v1.ErrorIllegalParameter("duplicate field")
-	NotFound         = v1.ErrorIllegalParameter("not found")
+	RecordNotFound   = v1.ErrorNotFound("not found")
 )
