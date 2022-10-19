@@ -5,13 +5,13 @@ import (
 	"github.com/go-cinch/common/copierx"
 	"github.com/go-cinch/common/page"
 	"github.com/go-cinch/common/utils"
-	v1 "github.com/go-cinch/layout/api/helloworld/v1"
+	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/biz"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *HellowordService) CreateGreeter(ctx context.Context, req *v1.CreateGreeterRequest) (rp *emptypb.Empty, err error) {
+func (s *GreeterService) CreateGreeter(ctx context.Context, req *greeter.CreateGreeterRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "CreateGreeter")
 	defer span.End()
@@ -22,11 +22,11 @@ func (s *HellowordService) CreateGreeter(ctx context.Context, req *v1.CreateGree
 	return
 }
 
-func (s *HellowordService) GetGreeter(ctx context.Context, req *v1.GetGreeterRequest) (rp *v1.GetGreeterReply, err error) {
+func (s *GreeterService) GetGreeter(ctx context.Context, req *greeter.GetGreeterRequest) (rp *greeter.GetGreeterReply, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "GetGreeter")
 	defer span.End()
-	rp = &v1.GetGreeterReply{}
+	rp = &greeter.GetGreeterReply{}
 	res, err := s.greeter.Get(ctx, req.Id)
 	if err != nil {
 		return
@@ -35,12 +35,12 @@ func (s *HellowordService) GetGreeter(ctx context.Context, req *v1.GetGreeterReq
 	return
 }
 
-func (s *HellowordService) FindGreeter(ctx context.Context, req *v1.FindGreeterRequest) (rp *v1.FindGreeterReply, err error) {
+func (s *GreeterService) FindGreeter(ctx context.Context, req *greeter.FindGreeterRequest) (rp *greeter.FindGreeterReply, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "FindGreeter")
 	defer span.End()
-	rp = &v1.FindGreeterReply{}
-	rp.Page = &v1.Page{}
+	rp = &greeter.FindGreeterReply{}
+	rp.Page = &greeter.Page{}
 	r := &biz.FindGreeter{}
 	r.Page = page.Page{}
 	copierx.Copy(&r, req)
@@ -51,7 +51,7 @@ func (s *HellowordService) FindGreeter(ctx context.Context, req *v1.FindGreeterR
 	return
 }
 
-func (s *HellowordService) UpdateGreeter(ctx context.Context, req *v1.UpdateGreeterRequest) (rp *emptypb.Empty, err error) {
+func (s *GreeterService) UpdateGreeter(ctx context.Context, req *greeter.UpdateGreeterRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "UpdateGreeter")
 	defer span.End()
@@ -62,7 +62,7 @@ func (s *HellowordService) UpdateGreeter(ctx context.Context, req *v1.UpdateGree
 	return
 }
 
-func (s *HellowordService) DeleteGreeter(ctx context.Context, req *v1.IdsRequest) (rp *emptypb.Empty, err error) {
+func (s *GreeterService) DeleteGreeter(ctx context.Context, req *greeter.IdsRequest) (rp *emptypb.Empty, err error) {
 	tr := otel.Tracer("api")
 	ctx, span := tr.Start(ctx, "DeleteGreeter")
 	defer span.End()

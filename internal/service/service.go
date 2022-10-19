@@ -1,24 +1,24 @@
 package service
 
 import (
-	helloword "github.com/go-cinch/layout/api/helloworld/v1"
+	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/google/wire"
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(NewHellowordService)
+var ProviderSet = wire.NewSet(NewGreeterService)
 
-// HellowordService is a greeter service.
-type HellowordService struct {
-	helloword.UnimplementedHelloworldServer
+// GreeterService is a greeter service.
+type GreeterService struct {
+	greeter.UnimplementedGreeterServer
 
 	task    *task.Task
 	greeter *biz.GreeterUseCase
 }
 
-// NewHellowordService new a helloword service.
-func NewHellowordService(task *task.Task, greeter *biz.GreeterUseCase) *HellowordService {
-	return &HellowordService{task: task, greeter: greeter}
+// NewGreeterService new a service.
+func NewGreeterService(task *task.Task, greeter *biz.GreeterUseCase) *GreeterService {
+	return &GreeterService{task: task, greeter: greeter}
 }

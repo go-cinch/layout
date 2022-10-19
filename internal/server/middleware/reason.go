@@ -1,8 +1,8 @@
 package middleware
 
-import v1 "github.com/go-cinch/layout/api/helloworld/v1"
+import "github.com/go-cinch/layout/api/reason"
 
 var (
-	MissingIdempotentToken = v1.ErrorIllegalParameter("idempotent token is missing")
-	IdempotentTokenExpired = v1.ErrorIllegalParameter("idempotent token has expired")
+	MissingIdempotentToken = reason.ErrorIllegalParameter("idempotent token is missing")
+	IdempotentTokenExpired = reason.ErrorIllegalParameter("idempotent token has expired")
 )

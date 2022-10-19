@@ -51,9 +51,9 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	hellowordService := service.NewHellowordService(taskTask, greeterUseCase)
-	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, hellowordService)
-	httpServer := server.NewHTTPServer(c, idempotentIdempotent, hellowordService)
+	greeterService := service.NewGreeterService(taskTask, greeterUseCase)
+	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, greeterService)
+	httpServer := server.NewHTTPServer(c, idempotentIdempotent, greeterService)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

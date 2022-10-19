@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/go-cinch/common/log"
 	commonMiddleware "github.com/go-cinch/common/middleware"
-	v1 "github.com/go-cinch/layout/api/helloworld/v1"
+	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -18,7 +18,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.HellowordService) *grpc.Server {
+func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.GreeterService) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -43,6 +43,6 @@ func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.H
 		opts = append(opts, grpc.Timeout(c.Server.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterHelloworldServer(srv, svc)
+	greeter.RegisterGreeterServer(srv, svc)
 	return srv
 }

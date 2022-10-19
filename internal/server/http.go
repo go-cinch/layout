@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/go-cinch/common/log"
 	commonMiddleware "github.com/go-cinch/common/middleware"
-	v1 "github.com/go-cinch/layout/api/helloworld/v1"
+	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -18,7 +18,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.HellowordService) *http.Server {
+func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.GreeterService) *http.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -43,6 +43,6 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.H
 		opts = append(opts, http.Timeout(c.Server.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterHelloworldHTTPServer(srv, svc)
+	greeter.RegisterGreeterHTTPServer(srv, svc)
 	return srv
 }

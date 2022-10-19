@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.0
 // - protoc             v3.17.3
-// source: helloworld/v1/helloword.proto
+// source: greeter-proto/greeter.proto
 
-package v1
+package greeter
 
 import (
 	context "context"
@@ -20,13 +20,13 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationHelloworldCreateGreeter = "/helloworld.v1.Helloworld/CreateGreeter"
-const OperationHelloworldDeleteGreeter = "/helloworld.v1.Helloworld/DeleteGreeter"
-const OperationHelloworldFindGreeter = "/helloworld.v1.Helloworld/FindGreeter"
-const OperationHelloworldGetGreeter = "/helloworld.v1.Helloworld/GetGreeter"
-const OperationHelloworldUpdateGreeter = "/helloworld.v1.Helloworld/UpdateGreeter"
+const OperationGreeterCreateGreeter = "/greeter.v1.Greeter/CreateGreeter"
+const OperationGreeterDeleteGreeter = "/greeter.v1.Greeter/DeleteGreeter"
+const OperationGreeterFindGreeter = "/greeter.v1.Greeter/FindGreeter"
+const OperationGreeterGetGreeter = "/greeter.v1.Greeter/GetGreeter"
+const OperationGreeterUpdateGreeter = "/greeter.v1.Greeter/UpdateGreeter"
 
-type HelloworldHTTPServer interface {
+type GreeterHTTPServer interface {
 	CreateGreeter(context.Context, *CreateGreeterRequest) (*emptypb.Empty, error)
 	DeleteGreeter(context.Context, *IdsRequest) (*emptypb.Empty, error)
 	FindGreeter(context.Context, *FindGreeterRequest) (*FindGreeterReply, error)
@@ -34,23 +34,23 @@ type HelloworldHTTPServer interface {
 	UpdateGreeter(context.Context, *UpdateGreeterRequest) (*emptypb.Empty, error)
 }
 
-func RegisterHelloworldHTTPServer(s *http.Server, srv HelloworldHTTPServer) {
+func RegisterGreeterHTTPServer(s *http.Server, srv GreeterHTTPServer) {
 	r := s.Route("/")
-	r.POST("/greeter", _Helloworld_CreateGreeter0_HTTP_Handler(srv))
-	r.GET("/greeter/{id}", _Helloworld_GetGreeter0_HTTP_Handler(srv))
-	r.GET("/greeter", _Helloworld_FindGreeter0_HTTP_Handler(srv))
-	r.PATCH("/greeter/{id}", _Helloworld_UpdateGreeter0_HTTP_Handler(srv))
-	r.PUT("/greeter/{id}", _Helloworld_UpdateGreeter1_HTTP_Handler(srv))
-	r.DELETE("/greeter/{ids}", _Helloworld_DeleteGreeter0_HTTP_Handler(srv))
+	r.POST("/greeter", _Greeter_CreateGreeter0_HTTP_Handler(srv))
+	r.GET("/greeter/{id}", _Greeter_GetGreeter0_HTTP_Handler(srv))
+	r.GET("/greeter", _Greeter_FindGreeter0_HTTP_Handler(srv))
+	r.PATCH("/greeter/{id}", _Greeter_UpdateGreeter0_HTTP_Handler(srv))
+	r.PUT("/greeter/{id}", _Greeter_UpdateGreeter1_HTTP_Handler(srv))
+	r.DELETE("/greeter/{ids}", _Greeter_DeleteGreeter0_HTTP_Handler(srv))
 }
 
-func _Helloworld_CreateGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_CreateGreeter0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateGreeterRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldCreateGreeter)
+		http.SetOperation(ctx, OperationGreeterCreateGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateGreeter(ctx, req.(*CreateGreeterRequest))
 		})
@@ -63,7 +63,7 @@ func _Helloworld_CreateGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 	}
 }
 
-func _Helloworld_GetGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_GetGreeter0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetGreeterRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -72,7 +72,7 @@ func _Helloworld_GetGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx htt
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldGetGreeter)
+		http.SetOperation(ctx, OperationGreeterGetGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetGreeter(ctx, req.(*GetGreeterRequest))
 		})
@@ -85,13 +85,13 @@ func _Helloworld_GetGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx htt
 	}
 }
 
-func _Helloworld_FindGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_FindGreeter0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in FindGreeterRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldFindGreeter)
+		http.SetOperation(ctx, OperationGreeterFindGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.FindGreeter(ctx, req.(*FindGreeterRequest))
 		})
@@ -104,7 +104,7 @@ func _Helloworld_FindGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx ht
 	}
 }
 
-func _Helloworld_UpdateGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_UpdateGreeter0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateGreeterRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -113,7 +113,7 @@ func _Helloworld_UpdateGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldUpdateGreeter)
+		http.SetOperation(ctx, OperationGreeterUpdateGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateGreeter(ctx, req.(*UpdateGreeterRequest))
 		})
@@ -126,7 +126,7 @@ func _Helloworld_UpdateGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 	}
 }
 
-func _Helloworld_UpdateGreeter1_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_UpdateGreeter1_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateGreeterRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -135,7 +135,7 @@ func _Helloworld_UpdateGreeter1_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldUpdateGreeter)
+		http.SetOperation(ctx, OperationGreeterUpdateGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateGreeter(ctx, req.(*UpdateGreeterRequest))
 		})
@@ -148,7 +148,7 @@ func _Helloworld_UpdateGreeter1_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 	}
 }
 
-func _Helloworld_DeleteGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx http.Context) error {
+func _Greeter_DeleteGreeter0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in IdsRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -157,7 +157,7 @@ func _Helloworld_DeleteGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationHelloworldDeleteGreeter)
+		http.SetOperation(ctx, OperationGreeterDeleteGreeter)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteGreeter(ctx, req.(*IdsRequest))
 		})
@@ -170,7 +170,7 @@ func _Helloworld_DeleteGreeter0_HTTP_Handler(srv HelloworldHTTPServer) func(ctx 
 	}
 }
 
-type HelloworldHTTPClient interface {
+type GreeterHTTPClient interface {
 	CreateGreeter(ctx context.Context, req *CreateGreeterRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	DeleteGreeter(ctx context.Context, req *IdsRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	FindGreeter(ctx context.Context, req *FindGreeterRequest, opts ...http.CallOption) (rsp *FindGreeterReply, err error)
@@ -178,19 +178,19 @@ type HelloworldHTTPClient interface {
 	UpdateGreeter(ctx context.Context, req *UpdateGreeterRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
-type HelloworldHTTPClientImpl struct {
+type GreeterHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewHelloworldHTTPClient(client *http.Client) HelloworldHTTPClient {
-	return &HelloworldHTTPClientImpl{client}
+func NewGreeterHTTPClient(client *http.Client) GreeterHTTPClient {
+	return &GreeterHTTPClientImpl{client}
 }
 
-func (c *HelloworldHTTPClientImpl) CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *GreeterHTTPClientImpl) CreateGreeter(ctx context.Context, in *CreateGreeterRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/greeter"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationHelloworldCreateGreeter))
+	opts = append(opts, http.Operation(OperationGreeterCreateGreeter))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -199,11 +199,11 @@ func (c *HelloworldHTTPClientImpl) CreateGreeter(ctx context.Context, in *Create
 	return &out, err
 }
 
-func (c *HelloworldHTTPClientImpl) DeleteGreeter(ctx context.Context, in *IdsRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *GreeterHTTPClientImpl) DeleteGreeter(ctx context.Context, in *IdsRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/greeter/{ids}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationHelloworldDeleteGreeter))
+	opts = append(opts, http.Operation(OperationGreeterDeleteGreeter))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -212,11 +212,11 @@ func (c *HelloworldHTTPClientImpl) DeleteGreeter(ctx context.Context, in *IdsReq
 	return &out, err
 }
 
-func (c *HelloworldHTTPClientImpl) FindGreeter(ctx context.Context, in *FindGreeterRequest, opts ...http.CallOption) (*FindGreeterReply, error) {
+func (c *GreeterHTTPClientImpl) FindGreeter(ctx context.Context, in *FindGreeterRequest, opts ...http.CallOption) (*FindGreeterReply, error) {
 	var out FindGreeterReply
 	pattern := "/greeter"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationHelloworldFindGreeter))
+	opts = append(opts, http.Operation(OperationGreeterFindGreeter))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -225,11 +225,11 @@ func (c *HelloworldHTTPClientImpl) FindGreeter(ctx context.Context, in *FindGree
 	return &out, err
 }
 
-func (c *HelloworldHTTPClientImpl) GetGreeter(ctx context.Context, in *GetGreeterRequest, opts ...http.CallOption) (*GetGreeterReply, error) {
+func (c *GreeterHTTPClientImpl) GetGreeter(ctx context.Context, in *GetGreeterRequest, opts ...http.CallOption) (*GetGreeterReply, error) {
 	var out GetGreeterReply
 	pattern := "/greeter/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationHelloworldGetGreeter))
+	opts = append(opts, http.Operation(OperationGreeterGetGreeter))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -238,11 +238,11 @@ func (c *HelloworldHTTPClientImpl) GetGreeter(ctx context.Context, in *GetGreete
 	return &out, err
 }
 
-func (c *HelloworldHTTPClientImpl) UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *GreeterHTTPClientImpl) UpdateGreeter(ctx context.Context, in *UpdateGreeterRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/greeter/{id}"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationHelloworldUpdateGreeter))
+	opts = append(opts, http.Operation(OperationGreeterUpdateGreeter))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {

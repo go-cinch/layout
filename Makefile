@@ -31,23 +31,33 @@ config:
 	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
+.PHONY: sub
+# update submodule
+sub:
+	git submodule update --force --recursive --init --remote
+
 .PHONY: api
 # generate api proto
 api:
 	mkdir -p docs
-	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-	go install github.com/envoyproxy/protoc-gen-validate@latest
-	protoc --proto_path=./api \
-		--proto_path=./third_party \
-		--go_out=paths=source_relative:./api \
-		--go-errors_out=paths=source_relative:./api \
-		--go-http_out=paths=source_relative:./api \
-		--go-grpc_out=paths=source_relative:./api \
-		--validate_out=paths=source_relative,lang=go:./api \
-		--openapiv2_out docs \
-		--openapiv2_opt logtostderr=true \
-		--openapiv2_opt json_names_for_fields=false \
-		$(API_PROTO_FILES)
+#	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+#	go install github.com/envoyproxy/protoc-gen-validate@latest
+	for NAME in $(API_PROTO_FILES); do \
+		ROOT=$(shell pwd); \
+		DIR=`echo $$NAME | awk -F '-proto/[^/]*$$' '{print $$1}'`; \
+		echo $$NAME; \
+		protoc --proto_path=./api \
+        	--proto_path=./third_party \
+        	--go_out=. \
+        	--go-errors_out=. \
+        	--go-http_out=. \
+        	--go-grpc_out=. \
+        	--validate_out=lang=go:. \
+        	--openapiv2_out docs \
+        	--openapiv2_opt logtostderr=true \
+        	--openapiv2_opt json_names_for_fields=false \
+        	$$NAME; \
+	done
 	@echo 'You can import *.json into https://editor.swagger.io/'
 
 .PHONY: build
