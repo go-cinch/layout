@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"context"
-	"github.com/go-cinch/layout/internal/idempotent"
+	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport"

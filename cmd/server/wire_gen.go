@@ -10,10 +10,10 @@ import (
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/data"
-	"github.com/go-cinch/layout/internal/idempotent"
+	"github.com/go-cinch/layout/internal/pkg/idempotent"
+	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/go-cinch/layout/internal/server"
 	"github.com/go-cinch/layout/internal/service"
-	"github.com/go-cinch/layout/internal/task"
 	"github.com/go-kratos/kratos/v2"
 )
 

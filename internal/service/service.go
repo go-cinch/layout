@@ -3,7 +3,7 @@ package service
 import (
 	helloword "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/biz"
-	"github.com/go-cinch/layout/internal/task"
+	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/google/wire"
 )
 

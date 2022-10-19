@@ -5,7 +5,7 @@ import (
 	commonMiddleware "github.com/go-cinch/common/middleware"
 	v1 "github.com/go-cinch/layout/api/helloworld/v1"
 	"github.com/go-cinch/layout/internal/conf"
-	"github.com/go-cinch/layout/internal/idempotent"
+	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
