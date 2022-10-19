@@ -46,7 +46,7 @@ type GreeterUseCase struct {
 
 func NewGreeterUseCase(c *conf.Bootstrap, repo GreeterRepo, tx Transaction, cache Cache) *GreeterUseCase {
 	// prefix rule = project name + _ + business name, example: layout_greeter
-	return &GreeterUseCase{c: c, repo: repo, tx: tx, cache: cache.WithPrefix("layout_greeter")}
+	return &GreeterUseCase{c: c, repo: repo, tx: tx, cache: cache.WithPrefix(fmt.Sprintf("%s_greeter", c.Name))}
 }
 
 func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {
