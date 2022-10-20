@@ -6,3 +6,7 @@
 	path = api/greeter-proto
 	url = https://github.com/go-cinch/greeter-proto.git
 	branch = master
+[submodule "api/auth-proto"]
+	path = api/auth-proto
+	url = https://github.com/go-cinch/auth-proto.git
+	branch = master
