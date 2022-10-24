@@ -1,0 +1,2 @@
+client:
+  auth: '${CLIENT_AUTH:auth:6160}'

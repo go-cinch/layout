@@ -7,6 +7,7 @@ import (
 	"github.com/go-cinch/common/migrate"
 	glog "github.com/go-cinch/common/plugins/gorm/log"
 	"github.com/go-cinch/common/utils"
+	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-redis/redis/v8"
@@ -23,13 +24,19 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewRedis, NewDB, NewSonyflake, NewTracer, NewData, NewTransaction, NewCache, NewGreeterRepo)
+var ProviderSet = wire.NewSet(
+	NewRedis, NewDB, NewSonyflake, NewTracer, NewData, NewTransaction, NewCache,
+	NewAuthClient,
+	NewGreeterRepo,
+)
 
 // Data .
 type Data struct {
 	db        *gorm.DB
 	redis     redis.UniversalClient
 	sonyflake *id.Sonyflake
+
+	auth auth.AuthClient
 }
 
 type contextTxKey struct{}
@@ -67,11 +74,15 @@ func NewTransaction(d *Data) biz.Transaction {
 }
 
 // NewData .
-func NewData(redis redis.UniversalClient, db *gorm.DB, sonyflake *id.Sonyflake, tp *trace.TracerProvider) (d *Data, cleanup func()) {
+func NewData(
+	redis redis.UniversalClient, db *gorm.DB, sonyflake *id.Sonyflake, tp *trace.TracerProvider,
+	auth auth.AuthClient,
+) (d *Data, cleanup func()) {
 	d = &Data{
 		redis:     redis,
 		db:        db,
 		sonyflake: sonyflake,
+		auth:      auth,
 	}
 	cleanup = func() {
 		if tp != nil {

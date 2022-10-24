@@ -12,6 +12,7 @@ message Bootstrap {
   Data data = 4;
   Tracer tracer = 5;
   repeated Task tasks = 6;
+  Client client = 7;
 }
 
 message Server {
@@ -53,6 +54,10 @@ message Tracer {
   bool enable = 1;
   Otlp otlp = 2;
   Stdout stdout = 3;
+}
+
+message Client {
+  string auth = 1;
 }
 
 message Task {
