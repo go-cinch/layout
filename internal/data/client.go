@@ -5,7 +5,9 @@ import (
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/pkg/errors"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
@@ -21,6 +23,8 @@ func NewAuthClient(c *conf.Bootstrap) (client auth.AuthClient, err error) {
 	ops := []grpc.ClientOption{
 		grpc.WithEndpoint(c.Client.Auth),
 		grpc.WithMiddleware(
+			tracing.Client(),
+			metadata.Client(),
 			recovery.Recovery(),
 		),
 	}

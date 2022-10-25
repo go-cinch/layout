@@ -29,6 +29,10 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	authClient, err := data.NewAuthClient(c)
+	if err != nil {
+		return nil, nil, err
+	}
 	db, err := data.NewDB(c)
 	if err != nil {
 		return nil, nil, err
@@ -38,10 +42,6 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	tracerProvider, err := data.NewTracer(c)
-	if err != nil {
-		return nil, nil, err
-	}
-	authClient, err := data.NewAuthClient(c)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -56,8 +56,8 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	greeterService := service.NewGreeterService(taskTask, greeterUseCase)
-	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, greeterService)
-	httpServer := server.NewHTTPServer(c, idempotentIdempotent, greeterService)
+	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, authClient, greeterService)
+	httpServer := server.NewHTTPServer(c, idempotentIdempotent, authClient, greeterService)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

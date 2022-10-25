@@ -36,7 +36,6 @@ const OperationAuthIdempotent = "/auth.v1.Auth/Idempotent"
 const OperationAuthInfo = "/auth.v1.Auth/Info"
 const OperationAuthLogin = "/auth.v1.Auth/Login"
 const OperationAuthLogout = "/auth.v1.Auth/Logout"
-const OperationAuthPermission = "/auth.v1.Auth/Permission"
 const OperationAuthPwd = "/auth.v1.Auth/Pwd"
 const OperationAuthRefresh = "/auth.v1.Auth/Refresh"
 const OperationAuthRegister = "/auth.v1.Auth/Register"
@@ -63,7 +62,6 @@ type AuthHTTPServer interface {
 	Info(context.Context, *emptypb.Empty) (*InfoReply, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	Logout(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
-	Permission(context.Context, *PermissionRequest) (*PermissionReply, error)
 	Pwd(context.Context, *PwdRequest) (*emptypb.Empty, error)
 	Refresh(context.Context, *RefreshRequest) (*LoginReply, error)
 	Register(context.Context, *RegisterRequest) (*emptypb.Empty, error)
@@ -89,7 +87,6 @@ func RegisterAuthHTTPServer(s *http.Server, srv AuthHTTPServer) {
 	r.PATCH("/user/{id}", _Auth_UpdateUser0_HTTP_Handler(srv))
 	r.PUT("/user/{id}", _Auth_UpdateUser1_HTTP_Handler(srv))
 	r.DELETE("/user/{ids}", _Auth_DeleteUser0_HTTP_Handler(srv))
-	r.POST("/permission", _Auth_Permission0_HTTP_Handler(srv))
 	r.POST("/action", _Auth_CreateAction0_HTTP_Handler(srv))
 	r.GET("/action", _Auth_FindAction0_HTTP_Handler(srv))
 	r.PATCH("/action/{id}", _Auth_UpdateAction0_HTTP_Handler(srv))
@@ -359,25 +356,6 @@ func _Auth_DeleteUser0_HTTP_Handler(srv AuthHTTPServer) func(ctx http.Context) e
 			return err
 		}
 		reply := out.(*emptypb.Empty)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _Auth_Permission0_HTTP_Handler(srv AuthHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in PermissionRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationAuthPermission)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Permission(ctx, req.(*PermissionRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*PermissionReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -711,7 +689,6 @@ type AuthHTTPClient interface {
 	Info(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *InfoReply, err error)
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	Logout(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	Permission(ctx context.Context, req *PermissionRequest, opts ...http.CallOption) (rsp *PermissionReply, err error)
 	Pwd(ctx context.Context, req *PwdRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	Refresh(ctx context.Context, req *RefreshRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -930,19 +907,6 @@ func (c *AuthHTTPClientImpl) Logout(ctx context.Context, in *emptypb.Empty, opts
 	pattern := "/logout"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAuthLogout))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *AuthHTTPClientImpl) Permission(ctx context.Context, in *PermissionRequest, opts ...http.CallOption) (*PermissionReply, error) {
-	var out PermissionReply
-	pattern := "/permission"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationAuthPermission))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

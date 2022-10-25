@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/go-cinch/common/log"
 	commonMiddleware "github.com/go-cinch/common/middleware"
+	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
@@ -10,6 +11,7 @@ import (
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -18,7 +20,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.GreeterService) *grpc.Server {
+func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GreeterService) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -29,6 +31,8 @@ func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.G
 	middlewares = append(
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
+		metadata.Server(),
+		localMiddleware.Permission(authClient),
 		validate.Validator(),
 		localMiddleware.Idempotent(idt),
 	)

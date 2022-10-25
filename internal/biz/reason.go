@@ -9,4 +9,5 @@ var (
 	DataNotChange    = reason.ErrorIllegalParameter("data has not changed")
 	DuplicateField   = reason.ErrorIllegalParameter("duplicate field")
 	RecordNotFound   = reason.ErrorNotFound("not found")
+	NoPermission     = reason.ErrorForbidden("no permission to access this resource")
 )

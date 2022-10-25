@@ -2696,8 +2696,6 @@ func (m *PermissionRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for UserCode
-
 	// no validation rules for Resource
 
 	if len(errors) > 0 {

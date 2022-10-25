@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/go-cinch/common/log"
 	commonMiddleware "github.com/go-cinch/common/middleware"
+	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
@@ -18,7 +19,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.GreeterService) *http.Server {
+func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GreeterService) *http.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -29,6 +30,7 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, svc *service.G
 	middlewares = append(
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
+		localMiddleware.Permission(authClient),
 		validate.Validator(),
 		localMiddleware.Idempotent(idt),
 	)
