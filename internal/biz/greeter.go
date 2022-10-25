@@ -23,6 +23,11 @@ type FindGreeter struct {
 	Age  *int32    `json:"age"`
 }
 
+type FindGreeterCache struct {
+	Page page.Page `json:"page"`
+	List []Greeter `json:"list"`
+}
+
 type UpdateGreeter struct {
 	Id   *uint64 `json:"id,string,omitempty"`
 	Name *string `json:"name,omitempty"`
@@ -90,24 +95,27 @@ func (uc *GreeterUseCase) get(ctx context.Context, action string, id uint64) (re
 }
 
 func (uc *GreeterUseCase) Find(ctx context.Context, condition *FindGreeter) (rp []Greeter) {
-	rp = make([]Greeter, 0)
 	// use md5 string as cache replay json str, key is short
 	action := fmt.Sprintf("find_%s", utils.StructMd5(condition))
 	str, ok, _, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.find(ctx, action, condition)
 	})
 	if ok {
-		utils.Json2Struct(&rp, str)
+		var cache FindGreeterCache
+		utils.Json2Struct(&cache, str)
+		condition.Page = cache.Page
+		rp = cache.List
 	}
 	return
 }
 
 func (uc *GreeterUseCase) find(ctx context.Context, action string, condition *FindGreeter) (res string, ok bool) {
 	// read data from db and write to cache
-	rp := make([]Greeter, 0)
 	list := uc.repo.Find(ctx, condition)
-	copierx.Copy(&rp, list)
-	res = utils.Struct2Json(rp)
+	var cache FindGreeterCache
+	cache.List = list
+	cache.Page = condition.Page
+	res = utils.Struct2Json(cache)
 	uc.cache.Set(ctx, action, res, len(list) == 0)
 	ok = true
 	return
