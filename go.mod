@@ -5,10 +5,10 @@ go 1.18
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-cinch/common/constant v0.0.0-20221018025257-d6491f7d825a
-	github.com/go-cinch/common/copierx v0.0.0-20221024083216-826e7d89b526
+	github.com/go-cinch/common/copierx v0.0.0-20221025042139-8f8726f7f347
 	github.com/go-cinch/common/id v0.0.0-20221010030633-b6fcfb8a6767
 	github.com/go-cinch/common/idempotent v0.0.0-20221019022337-83b9ba16a81c
-	github.com/go-cinch/common/jwt v0.0.0-20221025042139-8f8726f7f347
+	github.com/go-cinch/common/jwt v0.0.0-20221025090427-af4882f88716
 	github.com/go-cinch/common/log v0.0.0-20221018025257-d6491f7d825a
 	github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde
 	github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c
@@ -28,7 +28,7 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.10.0
 	go.opentelemetry.io/otel/sdk v1.10.0
 	google.golang.org/genproto v0.0.0-20220914210030-581e60b4ef85
-	google.golang.org/grpc v1.49.0
+	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.24.0

@@ -8,6 +8,8 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 func Permission(authClient auth.AuthClient) middleware.Middleware {
@@ -19,9 +21,13 @@ func Permission(authClient auth.AuthClient) middleware.Middleware {
 					resource = tr.Operation()
 				}
 				ctx = jwtLocal.AppendToClientContext(ctx)
-				res, err := authClient.Permission(ctx, &auth.PermissionRequest{
-					Resource: resource,
-				})
+				var reply metadata.MD
+				res, err := authClient.Permission(ctx,
+					&auth.PermissionRequest{
+						Resource: resource,
+					},
+					grpc.Header(&reply),
+				)
 				if err != nil {
 					return
 				}
@@ -29,6 +35,7 @@ func Permission(authClient auth.AuthClient) middleware.Middleware {
 					err = biz.NoPermission
 					return
 				}
+				ctx = jwtLocal.NewServerContextByReplyMD(ctx, reply)
 				return handler(ctx, req)
 			}
 		},
