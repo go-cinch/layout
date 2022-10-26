@@ -23,6 +23,7 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
+		localMiddleware.Header(),
 	}
 	if c.Tracer.Enable {
 		middlewares = append(middlewares, tracing.Server(), commonMiddleware.TraceId())
