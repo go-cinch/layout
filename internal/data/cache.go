@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+	"github.com/go-cinch/common/bloom"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-redis/redis/v8"
@@ -16,6 +17,7 @@ type Cache struct {
 	prefix string
 	lock   string
 	val    string
+	bloom  *bloom.Bloom
 }
 
 func (c *Cache) Cache() redis.UniversalClient {
@@ -28,6 +30,7 @@ func (c *Cache) WithPrefix(prefix string) biz.Cache {
 		prefix: prefix,
 		lock:   fmt.Sprintf("%s_%s", prefix, c.lock),
 		val:    fmt.Sprintf("%s_%s", prefix, c.val),
+		bloom:  c.bloom,
 	}
 }
 
@@ -53,6 +56,12 @@ func (c *Cache) Get(ctx context.Context, action string, write func(context.Conte
 		ok = true
 		return
 	}
+	// 4. if enable bloom filter, cache maybe exists, db is empty
+	if c.bloom != nil && c.bloom.Exist(action) {
+		ok = true
+		return
+	}
+	// 5. load data from db and write to cache
 	if write != nil {
 		res, ok = write(ctx)
 		db = true
@@ -66,6 +75,10 @@ func (c *Cache) Set(ctx context.Context, action, data string, short bool) {
 	if short {
 		// if record not found, set a short expiration
 		seconds = 60
+		// if enable bloom filter, not need set empty cache
+		if c.bloom != nil {
+			return
+		}
 	}
 	c.SetWithExpiration(ctx, action, data, seconds)
 }
@@ -82,6 +95,10 @@ func (c *Cache) SetWithExpiration(ctx context.Context, action, data string, seco
 				"seconds": seconds,
 			}).
 			Warn("set cache failed")
+		return
+	}
+	if c.bloom != nil {
+		c.bloom.Add(action)
 	}
 }
 
@@ -143,5 +160,6 @@ func NewCache(client redis.UniversalClient) biz.Cache {
 		prefix: "",
 		lock:   "lock",
 		val:    "val",
+		bloom:  bloom.New(bloom.WithRedis(client), bloom.WithTimeout(5)),
 	}
 }
