@@ -65,7 +65,7 @@ func (uc *GreeterUseCase) Create(ctx context.Context, item *Greeter) error {
 func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (rp *Greeter, err error) {
 	rp = &Greeter{}
 	action := fmt.Sprintf("get_%d", id)
-	str, ok, lock, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
+	str, ok := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.get(ctx, action, id)
 	})
 	if ok {
@@ -73,10 +73,9 @@ func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (rp *Greeter, err 
 		if rp.Id == constant.UI0 {
 			err = NotFound("%s Greeter.id: %d", RecordNotFound.Message, id)
 		}
-	} else if !lock {
-		err = TooManyRequests
 		return
 	}
+	err = TooManyRequests
 	return
 }
 
@@ -97,7 +96,7 @@ func (uc *GreeterUseCase) get(ctx context.Context, action string, id uint64) (re
 func (uc *GreeterUseCase) Find(ctx context.Context, condition *FindGreeter) (rp []Greeter) {
 	// use md5 string as cache replay json str, key is short
 	action := fmt.Sprintf("find_%s", utils.StructMd5(condition))
-	str, ok, _, _ := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
+	str, ok := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.find(ctx, action, condition)
 	})
 	if ok {
