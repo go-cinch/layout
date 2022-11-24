@@ -8,6 +8,7 @@ import (
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel"
 )
 
 // ProviderSet is task providers.
@@ -56,7 +57,7 @@ func NewTask(c *conf.Bootstrap, greeter *biz.GreeterUseCase) (tk *Task, err erro
 	if len(c.Tasks) > 0 {
 		for _, item := range c.Tasks {
 			err = tk.worker.Cron(
-				worker.WithRunCategory(item.Category),
+				worker.WithRunGroup(item.Category),
 				worker.WithRunUuid(item.Uuid),
 				worker.WithRunExpr(item.Expr),
 				worker.WithRunTimeout(int(item.Timeout)),
@@ -80,11 +81,14 @@ type task struct {
 }
 
 func process(t task) (err error) {
-	switch t.payload.Category {
+	tr := otel.Tracer("task")
+	ctx, span := tr.Start(t.ctx, "Task")
+	defer span.End()
+	switch t.payload.Group {
 	case "task1":
-		t.greeter.Get(t.ctx, 1)
+		t.greeter.Get(ctx, 1)
 	case "task2":
-		t.greeter.Get(t.ctx, 2)
+		t.greeter.Get(ctx, 2)
 	}
 	return
 }

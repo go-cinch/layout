@@ -5,30 +5,30 @@ go 1.18
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-cinch/common/bloom v1.0.0
-	github.com/go-cinch/common/constant v0.0.0-20221018025257-d6491f7d825a
-	github.com/go-cinch/common/copierx v0.0.0-20221025092120-e943c1f0990c
-	github.com/go-cinch/common/id v0.0.0-20221010030633-b6fcfb8a6767
-	github.com/go-cinch/common/idempotent v0.0.0-20221019022337-83b9ba16a81c
-	github.com/go-cinch/common/jwt v0.0.0-20221026033610-668efcef4380
-	github.com/go-cinch/common/log v0.0.0-20221018025257-d6491f7d825a
-	github.com/go-cinch/common/middleware v0.0.0-20220921090518-54e9eef45fde
-	github.com/go-cinch/common/migrate v0.0.0-20220915041442-c48afde5a28c
-	github.com/go-cinch/common/page v0.0.0-20221018025257-d6491f7d825a
-	github.com/go-cinch/common/plugins/gorm/log v0.0.0-20220927074458-492682a7fa35
-	github.com/go-cinch/common/utils v0.0.0-20221018025257-d6491f7d825a
-	github.com/go-cinch/common/worker v0.0.0-20220928061921-c9a16406c65f
+	github.com/go-cinch/common/constant v1.0.0
+	github.com/go-cinch/common/copierx v1.0.0
+	github.com/go-cinch/common/id v1.0.0
+	github.com/go-cinch/common/idempotent v1.0.0
+	github.com/go-cinch/common/jwt v1.0.0
+	github.com/go-cinch/common/log v1.0.0
+	github.com/go-cinch/common/middleware v1.0.0
+	github.com/go-cinch/common/migrate v1.0.0
+	github.com/go-cinch/common/page v1.0.0
+	github.com/go-cinch/common/plugins/gorm/log v1.0.0
+	github.com/go-cinch/common/utils v1.0.0
+	github.com/go-cinch/common/worker v1.0.0
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20220817101725-ba7223047727
-	github.com/go-kratos/kratos/v2 v2.5.2
+	github.com/go-kratos/kratos/v2 v2.5.3
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/wire v0.5.0
 	github.com/pkg/errors v0.9.1
-	go.opentelemetry.io/otel v1.10.0
+	go.opentelemetry.io/otel v1.11.1
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.10.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.10.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.10.0
 	go.opentelemetry.io/otel/sdk v1.10.0
-	go.opentelemetry.io/otel/trace v1.10.0
+	go.opentelemetry.io/otel/trace v1.11.1
 	google.golang.org/genproto v0.0.0-20220914210030-581e60b4ef85
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
@@ -43,7 +43,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/go-cinch/common/lock v0.0.0-20220923034812-0e33807d4680 // indirect
+	github.com/go-cinch/common/lock v1.0.0 // indirect
 	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -53,7 +53,7 @@ require (
 	github.com/go-playground/form/v4 v4.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
-	github.com/golang-module/carbon/v2 v2.1.9 // indirect
+	github.com/golang-module/carbon/v2 v2.2.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
