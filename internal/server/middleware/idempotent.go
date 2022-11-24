@@ -13,7 +13,7 @@ func Idempotent(idt *idempotent.Idempotent) middleware.Middleware {
 		func(handler middleware.Handler) middleware.Handler {
 			return func(ctx context.Context, req interface{}) (rp interface{}, err error) {
 				if tr, ok := transport.FromServerContext(ctx); ok {
-					token := tr.RequestHeader().Get("X-IDEMPOTENT")
+					token := tr.RequestHeader().Get("x-idempotent")
 					if token != "" {
 						if idt.Check(ctx, token) {
 							return handler(ctx, req)
