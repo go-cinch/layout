@@ -1,0 +1,7 @@
+too.many.requests: '请求频繁, 请稍候重试'
+data.not.change: '数据没有发生变化'
+duplicate.field: '字段重复'
+record.not.found: '记录不存在'
+no.permission: '无权访问'
+idempotent.token.missing: '缺少幂等性签名'
+idempotent.token.invalid: '幂等性签名无效'

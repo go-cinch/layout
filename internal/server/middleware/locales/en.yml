@@ -1,0 +1,7 @@
+too.many.requests: 'too many requests, please try again later'
+data.not.change: 'data has not changed'
+duplicate.field: 'duplicate field'
+record.not.found: 'record not found'
+no.permission: 'no permission to access this resource'
+idempotent.token.missing: 'idempotent token is missing'
+idempotent.token.invalid: 'idempotent token is invalid'
