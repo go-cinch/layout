@@ -29,6 +29,7 @@ message Server {
   string machineId = 1;
   HTTP http = 2;
   GRPC grpc = 3;
+  string language = 4;
 }
 
 message Data {

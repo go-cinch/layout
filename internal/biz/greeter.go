@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"github.com/go-cinch/common/constant"
 	"github.com/go-cinch/common/copierx"
+	"github.com/go-cinch/common/middleware/i18n"
 	"github.com/go-cinch/common/page"
 	"github.com/go-cinch/common/utils"
+	"github.com/go-cinch/layout/api/reason"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/pkg/errors"
 )
@@ -71,11 +73,11 @@ func (uc *GreeterUseCase) Get(ctx context.Context, id uint64) (rp *Greeter, err 
 	if ok {
 		utils.Json2Struct(&rp, str)
 		if rp.Id == constant.UI0 {
-			err = NotFound("%s Greeter.id: %d", RecordNotFound.Message, id)
+			err = reason.ErrorNotFound("%s Greeter.id: %d", i18n.FromContext(ctx).T(RecordNotFound), id)
 		}
 		return
 	}
-	err = TooManyRequests
+	err = reason.ErrorTooManyRequests(i18n.FromContext(ctx).T(TooManyRequests))
 	return
 }
 
@@ -83,12 +85,13 @@ func (uc *GreeterUseCase) get(ctx context.Context, action string, id uint64) (re
 	// read data from db and write to cache
 	rp := &Greeter{}
 	item, err := uc.repo.Get(ctx, id)
-	if err != nil && !errors.Is(err, RecordNotFound) {
+	notFound := errors.Is(err, reason.ErrorNotFound(i18n.FromContext(ctx).T(RecordNotFound)))
+	if err != nil && !notFound {
 		return
 	}
 	copierx.Copy(&rp, item)
 	res = utils.Struct2Json(rp)
-	uc.cache.Set(ctx, action, res, errors.Is(err, RecordNotFound))
+	uc.cache.Set(ctx, action, res, notFound)
 	ok = true
 	return
 }

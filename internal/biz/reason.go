@@ -1,13 +1,12 @@
 package biz
 
-import "github.com/go-cinch/layout/api/reason"
+const (
+	IdempotentMissingToken = "idempotent.token.missing"
+	IdempotentTokenExpired = "idempotent.token.invalid"
 
-var (
-	IllegalParameter = reason.ErrorIllegalParameter
-	NotFound         = reason.ErrorNotFound
-	TooManyRequests  = reason.ErrorTooManyRequests("too many requests, please try again later")
-	DataNotChange    = reason.ErrorIllegalParameter("data has not changed")
-	DuplicateField   = reason.ErrorIllegalParameter("duplicate field")
-	RecordNotFound   = reason.ErrorNotFound("not found")
-	NoPermission     = reason.ErrorForbidden("no permission to access this resource")
+	TooManyRequests = "too.many.requests"
+	DataNotChange   = "data.not.change"
+	DuplicateField  = "duplicate.field"
+	RecordNotFound  = "record.not.found"
+	NoPermission    = "no.permission"
 )

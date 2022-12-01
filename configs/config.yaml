@@ -6,6 +6,7 @@ server:
   grpc:
     addr: 0.0.0.0:8180
     timeout: 20s
+  language: 'en'
 data:
   database:
     driver: mysql

@@ -1,8 +1,10 @@
 package server
 
 import (
+	"github.com/go-cinch/common/i18n"
 	"github.com/go-cinch/common/log"
-	commonMiddleware "github.com/go-cinch/common/middleware"
+	i18nMiddleware "github.com/go-cinch/common/middleware/i18n"
+	traceMiddleware "github.com/go-cinch/common/middleware/trace"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/greeter"
 	"github.com/go-cinch/layout/internal/conf"
@@ -16,6 +18,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"golang.org/x/text/language"
 )
 
 // NewHTTPServer new a HTTP server.
@@ -26,11 +29,12 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		localMiddleware.Header(),
 	}
 	if c.Tracer.Enable {
-		middlewares = append(middlewares, tracing.Server(), commonMiddleware.TraceId())
+		middlewares = append(middlewares, tracing.Server(), traceMiddleware.Id())
 	}
 	middlewares = append(
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
+		i18nMiddleware.Translator(i18n.WithLanguage(language.Make(c.Server.Language)), i18n.WithFs(locales)),
 		localMiddleware.Permission(authClient),
 		validate.Validator(),
 		localMiddleware.Idempotent(idt),

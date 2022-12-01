@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/go-cinch/common/constant"
 	"github.com/go-cinch/common/copierx"
+	"github.com/go-cinch/common/middleware/i18n"
 	"github.com/go-cinch/common/utils"
+	"github.com/go-cinch/layout/api/reason"
 	"github.com/go-cinch/layout/internal/biz"
 	"strings"
 )
@@ -31,7 +33,7 @@ func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error)
 	var m Greeter
 	err = ro.NameExists(ctx, item.Name)
 	if err == nil {
-		err = biz.IllegalParameter("%s `name`: %s", biz.DuplicateField.Message, item.Name)
+		err = reason.ErrorIllegalParameter("%s `name`: %s", i18n.FromContext(ctx).T(biz.DuplicateField), item.Name)
 		return
 	}
 	copierx.Copy(&m, item)
@@ -48,7 +50,7 @@ func (ro greeterRepo) Get(ctx context.Context, id uint64) (item *biz.Greeter, er
 		Where("`id` = ?", id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = biz.NotFound("%s Greeter.id: %d", biz.RecordNotFound.Message, id)
+		err = reason.ErrorNotFound("%s Greeter.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), id)
 		return
 	}
 	copierx.Copy(&item, m)
@@ -84,19 +86,19 @@ func (ro greeterRepo) Update(ctx context.Context, item *biz.UpdateGreeter) (err 
 		Where("`id` = ?", item.Id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = biz.NotFound("%s Greeter.id: %d", biz.RecordNotFound.Message, item.Id)
+		err = reason.ErrorNotFound("%s Greeter.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), item.Id)
 		return
 	}
 	change := make(map[string]interface{})
 	utils.CompareDiff(m, item, &change)
 	if len(change) == 0 {
-		err = biz.DataNotChange
+		err = reason.ErrorIllegalParameter(i18n.FromContext(ctx).T(biz.DataNotChange))
 		return
 	}
 	if item.Name != nil && *item.Name != m.Name {
 		err = ro.NameExists(ctx, *item.Name)
 		if err == nil {
-			err = biz.IllegalParameter("%s `name`: %s", biz.DuplicateField.Message, *item.Name)
+			err = reason.ErrorIllegalParameter("%s `name`: %s", i18n.FromContext(ctx).T(biz.DuplicateField), *item.Name)
 			return
 		}
 	}
@@ -123,7 +125,7 @@ func (ro greeterRepo) NameExists(ctx context.Context, name string) (err error) {
 			Where("`name` = ?", item).
 			First(&m)
 		if m.Id == constant.UI0 {
-			err = biz.NotFound("%s Greeter.name: %s", biz.RecordNotFound.Message, item)
+			err = reason.ErrorNotFound("%s Greeter.name: %s", i18n.FromContext(ctx).T(biz.RecordNotFound), item)
 			return
 		}
 	}
