@@ -14,7 +14,7 @@ require (
 	github.com/go-cinch/common/log v1.0.0
 	github.com/go-cinch/common/middleware/i18n v0.0.0-20221201034231-b0a43cc7f7be
 	github.com/go-cinch/common/middleware/trace v0.0.0-20221130081511-deda3317dded
-	github.com/go-cinch/common/migrate v1.0.0
+	github.com/go-cinch/common/migrate v1.0.1-0.20221205030504-9abab76fa56c
 	github.com/go-cinch/common/page v1.0.0
 	github.com/go-cinch/common/plugins/gorm/log v1.0.0
 	github.com/go-cinch/common/utils v1.0.0
@@ -22,7 +22,7 @@ require (
 	github.com/go-kratos/kratos/contrib/config/kubernetes/v2 v2.0.0-20220817101725-ba7223047727
 	github.com/go-kratos/kratos/v2 v2.5.3
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/go-sql-driver/mysql v1.6.0
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/wire v0.5.0
 	github.com/pkg/errors v0.9.1
 	go.opentelemetry.io/otel v1.11.1
@@ -49,7 +49,7 @@ require (
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-cinch/common/lock v1.0.0 // indirect
-	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
+	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/go-kratos/aegis v0.1.2 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
