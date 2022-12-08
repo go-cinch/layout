@@ -141,7 +141,7 @@ Cinch是一套轻量级微服务脚手架, 基于[Kratos], 节省基础服务搭
 ```
 git clone https://github.com/go-cinch/auth
 # 可以指定tag
-# git clone -b v1.0.0 https://github.com/go-cinch/auth
+# git clone -b v1.0.1 https://github.com/go-cinch/auth
 ```
 
 
@@ -150,7 +150,7 @@ git clone https://github.com/go-cinch/auth
 
 ```
 # 1.通过模板创建项目 -r 指定仓库 -b 指定分支
-kratos new game -r https://github.com/go-cinch/layout.git -b dev
+kratos new game -r https://github.com/go-cinch/layout.git -b v1.0.1
 
 # 2. 进入项目
 cd game
