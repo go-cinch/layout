@@ -298,11 +298,11 @@ curl http://127.0.0.1:8080/greeter
 # 文档
 
 以下几个较为常用, 当然你也可以按顺序查看[Docs](https://go-cinch.github.io/docs)
-- [第一个接口](https://go-cinch.github.io/docs/#/started.1.first-api)
-- [配置](https://go-cinch.github.io/docs/#/base.0.config)
-- [数据库](https://go-cinch.github.io/docs/#/base.2.db)
-- [Make命令](https://go-cinch.github.io/docs/#/base.4.make)
-- [错误管理](https://go-cinch.github.io/docs/#/base.5.reason)
+- [第一个接口](https://go-cinch.github.io/docs/#/started/1.first-api)
+- [配置](https://go-cinch.github.io/docs/#/base/0.config)
+- [数据库](https://go-cinch.github.io/docs/#/base/2.db)
+- [Make命令](https://go-cinch.github.io/docs/#/base/4.make)
+- [错误管理](https://go-cinch.github.io/docs/#/base/5.reason)
 
 
 [Kratos]: (https://go-kratos.dev/docs/)
