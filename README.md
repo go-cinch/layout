@@ -119,18 +119,94 @@ Cinch是一套轻量级微服务脚手架, 基于[Kratos], 节省基础服务搭
 ## 环境准备
 
 
-启动项目前, 我默认你已准备好:
-- [go](https://golang.org/dl/)
+启动项目前, 我默认你已准备好(部分软件按建议方式安装即可):
+- [go](https://golang.org/dl)1.18+(建议使用[g](https://github.com/voidint/g))
+  ```bash
+  curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
+  echo "unalias g" >> ~/.bashrc
+  source "$HOME/.g/env"
+  # g --version
+  # g version 1.5.0
+  
+  g install 1.18
+  # go version
+  # go version go1.18 linux/amd64
+  
+  echo "export GOPATH=/home/ubuntu" >> ~/.bashrc 
+  # 设置go/bin目录到PATH, 若不设置, go安装的一些文件无法识别
+  echo "export PATH=$PATH:/home/ubuntu/.g/go/bin:$GOPATH/go/bin" >> ~/.bashrc
+  source ~/.bashrc
+  ```
 - 开启go modules
 - [mysql](https://www.mysql.com)(本地测试建议使用docker-compose搭建)
 - [redis](https://redis.io)(本地测试建议使用docker-compose搭建)
+  ```bash
+  # 安装docker
+  sudo apt-get update
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo apt-key fingerprint 0EBFCD88
+  sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  sudo apt-get update
+  sudo apt-get install -y docker-ce
+  # sudo docker -v
+  # Docker version 23.0.1, build a5ee5b1
+
+  # 国内加速安装
+  sudo apt-get update
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+  curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+  sudo apt-get update
+  sudo apt-get install -y docker-ce
+  # sudo docker -v
+  # Docker version 23.0.1, build a5ee5b1
+
+  # 去除docker sudo
+  sudo groupadd docker
+  sudo gpasswd -a ${USER} docker
+  sudo systemctl restart docker
+  sudo chmod a+rw /var/run/docker.sock
+  # docker -v
+  # Docker version 23.0.1, build a5ee5b1
+
+  # docker-compose
+  sudo curl -L https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  # docker-compose -v
+  # Docker Compose version v2.10.2
+
+  
+  # 简单启动一个单机版mysql和redis
+  git clone https://github.com/go-cinch/compose
+  cd compose/single
+  # 修改默认密码
+  source myenv
+  docker-compose -f docker-compose.db.yml up -d redis mysql
+  # docker ps
+  # CONTAINER ID  IMAGE         COMMAND                 CREATED            STATUS         PORTS                                                 NAMES
+  # 918328d0aae1  mysql:8.0.19  "docker-entrypoint.s…"  About an hour ago  Up 59 minutes  0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp  mysql
+  # 918b2cfcd72e  redis:7.0     "docker-entrypoint.s…"  About an hour ago  Up 59 minutes  0.0.0.0:6379->6379/tcp, :::6379->6379/tcp             redis
+  ```
 - [protoc](https://github.com/protocolbuffers/protobuf)
+  ```bash
+  curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protoc-3.20.3-`uname -s`-`uname -m`.zip
+  sudo unzip protoc-3.20.3-`uname -s`-`uname -m`.zip -d /usr
+  # protoc --version
+  # libprotoc 3.20.3
+  ```
 - [protoc-gen-go](https://github.com/protocolbuffers/protobuf-go)
+  ```bash
+  go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+  # protoc-gen-go --version
+  # protoc-gen-go v1.28.1
+  ```
 - [git](https://git-scm.com)
 - [kratos cli工具](https://go-kratos.dev/docs/getting-started/usage)
-    ```
-    go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
-    ```
+  ```bash
+  go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
+  # kratos -v
+  kratos version v2.5.3
+  ```
 
 
 ## [Auth服务](https://github.com/go-cinch/auth)
