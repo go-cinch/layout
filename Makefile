@@ -22,6 +22,8 @@ init:
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+	go install github.com/envoyproxy/protoc-gen-validate@latest
 
 .PHONY: config
 # generate internal proto
@@ -40,8 +42,6 @@ sub:
 # generate api proto
 api:
 	mkdir -p docs
-#	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-#	go install github.com/envoyproxy/protoc-gen-validate@latest
 	for NAME in $(API_PROTO_FILES); do \
 		ROOT=$(shell pwd); \
 		DIR=`echo $$NAME | awk -F '-proto/[^/]*$$' '{print $$1}'`; \
