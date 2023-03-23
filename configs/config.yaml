@@ -6,7 +6,11 @@ server:
   grpc:
     addr: 0.0.0.0:8180
     timeout: 20s
+    health: false
   language: 'en'
+  permission: false
+  idempotent: false
+  validate: false
 data:
   database:
     driver: mysql

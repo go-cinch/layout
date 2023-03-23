@@ -25,11 +25,15 @@ message Server {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
+    bool health = 4;
   }
   string machineId = 1;
   HTTP http = 2;
   GRPC grpc = 3;
   string language = 4;
+  bool permission = 5;
+  bool idempotent = 6;
+  bool validate = 7;
 }
 
 message Data {

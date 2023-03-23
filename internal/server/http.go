@@ -35,10 +35,16 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
 		i18nMiddleware.Translator(i18n.WithLanguage(language.Make(c.Server.Language)), i18n.WithFs(locales)),
-		localMiddleware.Permission(authClient),
-		validate.Validator(),
-		localMiddleware.Idempotent(idt),
 	)
+	if c.Server.Permission {
+		middlewares = append(middlewares, localMiddleware.Permission(authClient))
+	}
+	if c.Server.Idempotent {
+		middlewares = append(middlewares, localMiddleware.Idempotent(idt))
+	}
+	if c.Server.Validate {
+		middlewares = append(middlewares, validate.Validator())
+	}
 	var opts = []http.ServerOption{http.Middleware(middlewares...)}
 	if c.Server.Http.Network != "" {
 		opts = append(opts, http.Network(c.Server.Http.Network))

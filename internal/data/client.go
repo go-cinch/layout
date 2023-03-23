@@ -33,11 +33,13 @@ func NewAuthClient(c *conf.Bootstrap) (client auth.AuthClient, err error) {
 		err = errors.WithMessage(err, "initialize auth client failed")
 		return
 	}
-	health := healthpb.NewHealthClient(conn)
-	_, err = health.Check(context.Background(), &healthpb.HealthCheckRequest{})
-	if err != nil {
-		err = errors.WithMessage(err, "initialize auth client failed")
-		return
+	if c.Server.Grpc.Health {
+		health := healthpb.NewHealthClient(conn)
+		_, err = health.Check(context.Background(), &healthpb.HealthCheckRequest{})
+		if err != nil {
+			err = errors.WithMessage(err, "initialize auth client failed")
+			return
+		}
 	}
 	client = auth.NewAuthClient(conn)
 	log.
