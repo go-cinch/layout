@@ -82,13 +82,13 @@ type task struct {
 
 func process(t task) (err error) {
 	tr := otel.Tracer("task")
-	ctx, span := tr.Start(t.ctx, "Task")
+	_, span := tr.Start(t.ctx, "Task")
 	defer span.End()
 	switch t.payload.Group {
-	case "task1":
-		t.game.Get(ctx, 1)
-	case "task2":
-		t.game.Get(ctx, 2)
+	// case "task1":
+	// 	t.game.Get(ctx, 1)
+	// case "task2":
+	// 	t.game.Get(ctx, 2)
 	}
 	return
 }

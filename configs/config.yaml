@@ -30,9 +30,9 @@ tracer:
   stdout:
     prettyPrint: false
 tasks:
-  - category: task1
-    uuid: id1
-    expr: '0/1 * * * ?'
-  - category: task2
-    uuid: id2
-    expr: '0/5 * * * ?'
+#  - category: task1
+#    uuid: id1
+#    expr: '0/1 * * * ?'
+#  - category: task2
+#    uuid: id2
+#    expr: '0/5 * * * ?'
