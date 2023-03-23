@@ -6,7 +6,7 @@ import (
 	i18nMiddleware "github.com/go-cinch/common/middleware/i18n"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
 	"github.com/go-cinch/layout/api/auth"
-	"github.com/go-cinch/layout/api/greeter"
+	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -23,7 +23,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GreeterService) *grpc.Server {
+func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GameService) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -31,6 +31,7 @@ func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 	if c.Tracer.Enable {
 		middlewares = append(middlewares, tracing.Server(), traceMiddleware.Id())
 	}
+
 	middlewares = append(
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
@@ -57,6 +58,6 @@ func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		opts = append(opts, grpc.Timeout(c.Server.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	greeter.RegisterGreeterServer(srv, svc)
+	game.RegisterGameServer(srv, svc)
 	return srv
 }

@@ -27,7 +27,7 @@ func (tk Task) Cron(options ...func(*worker.RunOptions)) error {
 }
 
 // NewTask is initialize task worker from config
-func NewTask(c *conf.Bootstrap, greeter *biz.GreeterUseCase) (tk *Task, err error) {
+func NewTask(c *conf.Bootstrap, game *biz.GameUseCase) (tk *Task, err error) {
 	defer func() {
 		e := recover()
 		if e != nil {
@@ -41,7 +41,7 @@ func NewTask(c *conf.Bootstrap, greeter *biz.GreeterUseCase) (tk *Task, err erro
 			return process(task{
 				ctx:     ctx,
 				payload: p,
-				greeter: greeter,
+				game:    game,
 			})
 		}),
 	)
@@ -77,7 +77,7 @@ func NewTask(c *conf.Bootstrap, greeter *biz.GreeterUseCase) (tk *Task, err erro
 type task struct {
 	ctx     context.Context
 	payload worker.Payload
-	greeter *biz.GreeterUseCase
+	game    *biz.GameUseCase
 }
 
 func process(t task) (err error) {
@@ -86,9 +86,9 @@ func process(t task) (err error) {
 	defer span.End()
 	switch t.payload.Group {
 	case "task1":
-		t.greeter.Get(ctx, 1)
+		t.game.Get(ctx, 1)
 	case "task2":
-		t.greeter.Get(ctx, 2)
+		t.game.Get(ctx, 2)
 	}
 	return
 }

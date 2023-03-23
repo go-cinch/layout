@@ -12,25 +12,25 @@ import (
 	"strings"
 )
 
-type greeterRepo struct {
+type gameRepo struct {
 	data *Data
 }
 
-// Greeter is database fields map
-type Greeter struct {
+// Game is database fields map
+type Game struct {
 	Id   uint64 `json:"id,string"` // auto increment id
 	Name string `json:"name"`      // name
 	Age  int32  `json:"age"`       // age
 }
 
-func NewGreeterRepo(data *Data) biz.GreeterRepo {
-	return &greeterRepo{
+func NewGameRepo(data *Data) biz.GameRepo {
+	return &gameRepo{
 		data: data,
 	}
 }
 
-func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error) {
-	var m Greeter
+func (ro gameRepo) Create(ctx context.Context, item *biz.Game) (err error) {
+	var m Game
 	err = ro.NameExists(ctx, item.Name)
 	if err == nil {
 		err = reason.ErrorIllegalParameter("%s `name`: %s", i18n.FromContext(ctx).T(biz.DuplicateField), item.Name)
@@ -43,27 +43,27 @@ func (ro greeterRepo) Create(ctx context.Context, item *biz.Greeter) (err error)
 	return
 }
 
-func (ro greeterRepo) Get(ctx context.Context, id uint64) (item *biz.Greeter, err error) {
-	item = &biz.Greeter{}
-	var m Greeter
+func (ro gameRepo) Get(ctx context.Context, id uint64) (item *biz.Game, err error) {
+	item = &biz.Game{}
+	var m Game
 	ro.data.DB(ctx).
 		Where("`id` = ?", id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = reason.ErrorNotFound("%s Greeter.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), id)
+		err = reason.ErrorNotFound("%s Game.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), id)
 		return
 	}
 	copierx.Copy(&item, m)
 	return
 }
 
-func (ro greeterRepo) Find(ctx context.Context, condition *biz.FindGreeter) (rp []biz.Greeter) {
+func (ro gameRepo) Find(ctx context.Context, condition *biz.FindGame) (rp []biz.Game) {
 	db := ro.data.DB(ctx)
 	db = db.
-		Model(&Greeter{}).
+		Model(&Game{}).
 		Order("id DESC")
-	rp = make([]biz.Greeter, 0)
-	list := make([]Greeter, 0)
+	rp = make([]biz.Game, 0)
+	list := make([]Game, 0)
 	if condition.Name != nil {
 		db.Where("`name` LIKE ?", fmt.Sprintf("%%%s%%", *condition.Name))
 	}
@@ -79,14 +79,14 @@ func (ro greeterRepo) Find(ctx context.Context, condition *biz.FindGreeter) (rp 
 	return
 }
 
-func (ro greeterRepo) Update(ctx context.Context, item *biz.UpdateGreeter) (err error) {
-	var m Greeter
+func (ro gameRepo) Update(ctx context.Context, item *biz.UpdateGame) (err error) {
+	var m Game
 	db := ro.data.DB(ctx)
 	db.
 		Where("`id` = ?", item.Id).
 		First(&m)
 	if m.Id == constant.UI0 {
-		err = reason.ErrorNotFound("%s Greeter.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), item.Id)
+		err = reason.ErrorNotFound("%s Game.id: %d", i18n.FromContext(ctx).T(biz.RecordNotFound), item.Id)
 		return
 	}
 	change := make(map[string]interface{})
@@ -108,16 +108,16 @@ func (ro greeterRepo) Update(ctx context.Context, item *biz.UpdateGreeter) (err 
 	return
 }
 
-func (ro greeterRepo) Delete(ctx context.Context, ids ...uint64) (err error) {
+func (ro gameRepo) Delete(ctx context.Context, ids ...uint64) (err error) {
 	db := ro.data.DB(ctx)
 	err = db.
 		Where("`id` IN (?)", ids).
-		Delete(&Greeter{}).Error
+		Delete(&Game{}).Error
 	return
 }
 
-func (ro greeterRepo) NameExists(ctx context.Context, name string) (err error) {
-	var m Greeter
+func (ro gameRepo) NameExists(ctx context.Context, name string) (err error) {
+	var m Game
 	db := ro.data.DB(ctx)
 	arr := strings.Split(name, ",")
 	for _, item := range arr {
@@ -125,7 +125,7 @@ func (ro greeterRepo) NameExists(ctx context.Context, name string) (err error) {
 			Where("`name` = ?", item).
 			First(&m)
 		if m.Id == constant.UI0 {
-			err = reason.ErrorNotFound("%s Greeter.name: %s", i18n.FromContext(ctx).T(biz.RecordNotFound), item)
+			err = reason.ErrorNotFound("%s Game.name: %s", i18n.FromContext(ctx).T(biz.RecordNotFound), item)
 			return
 		}
 	}

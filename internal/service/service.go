@@ -1,24 +1,24 @@
 package service
 
 import (
-	"github.com/go-cinch/layout/api/greeter"
+	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/google/wire"
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(NewGreeterService)
+var ProviderSet = wire.NewSet(NewGameService)
 
-// GreeterService is a greeter service.
-type GreeterService struct {
-	greeter.UnimplementedGreeterServer
+// GameService is a game service.
+type GameService struct {
+	game.UnimplementedGameServer
 
-	task    *task.Task
-	greeter *biz.GreeterUseCase
+	task *task.Task
+	game *biz.GameUseCase
 }
 
-// NewGreeterService new a service.
-func NewGreeterService(task *task.Task, greeter *biz.GreeterUseCase) *GreeterService {
-	return &GreeterService{task: task, greeter: greeter}
+// NewGameService new a service.
+func NewGameService(task *task.Task, game *biz.GameUseCase) *GameService {
+	return &GameService{task: task, game: game}
 }

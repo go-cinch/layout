@@ -6,7 +6,7 @@ import (
 	i18nMiddleware "github.com/go-cinch/common/middleware/i18n"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
 	"github.com/go-cinch/layout/api/auth"
-	"github.com/go-cinch/layout/api/greeter"
+	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -22,7 +22,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GreeterService) *http.Server {
+func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GameService) *http.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
 		ratelimit.Server(),
@@ -56,6 +56,6 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		opts = append(opts, http.Timeout(c.Server.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	greeter.RegisterGreeterHTTPServer(srv, svc)
+	game.RegisterGameHTTPServer(srv, svc)
 	return srv
 }

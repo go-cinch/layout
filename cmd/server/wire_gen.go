@@ -46,18 +46,18 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	dataData, cleanup := data.NewData(universalClient, db, sonyflake, tracerProvider, authClient)
-	greeterRepo := data.NewGreeterRepo(dataData)
+	gameRepo := data.NewGameRepo(dataData)
 	transaction := data.NewTransaction(dataData)
 	cache := data.NewCache(universalClient)
-	greeterUseCase := biz.NewGreeterUseCase(c, greeterRepo, transaction, cache)
-	taskTask, err := task.NewTask(c, greeterUseCase)
+	gameUseCase := biz.NewGameUseCase(c, gameRepo, transaction, cache)
+	taskTask, err := task.NewTask(c, gameUseCase)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	greeterService := service.NewGreeterService(taskTask, greeterUseCase)
-	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, authClient, greeterService)
-	httpServer := server.NewHTTPServer(c, idempotentIdempotent, authClient, greeterService)
+	gameService := service.NewGameService(taskTask, gameUseCase)
+	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, authClient, gameService)
+	httpServer := server.NewHTTPServer(c, idempotentIdempotent, authClient, gameService)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

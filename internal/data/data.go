@@ -27,7 +27,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewRedis, NewDB, NewSonyflake, NewTracer, NewData, NewTransaction, NewCache,
 	NewAuthClient,
-	NewGreeterRepo,
+	NewGameRepo,
 )
 
 // Data .
