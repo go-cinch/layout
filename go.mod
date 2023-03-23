@@ -1,6 +1,6 @@
 module github.com/go-cinch/layout
 
-go 1.18
+go 1.20
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
