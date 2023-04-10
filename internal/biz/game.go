@@ -2,7 +2,6 @@ package biz
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-cinch/common/constant"
 	"github.com/go-cinch/common/copierx"
 	"github.com/go-cinch/common/middleware/i18n"
@@ -11,6 +10,8 @@ import (
 	"github.com/go-cinch/layout/api/reason"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/pkg/errors"
+	"strconv"
+	"strings"
 )
 
 type Game struct {
@@ -53,7 +54,7 @@ type GameUseCase struct {
 
 func NewGameUseCase(c *conf.Bootstrap, repo GameRepo, tx Transaction, cache Cache) *GameUseCase {
 	// prefix rule = project name + _ + business name, example: layout_game
-	return &GameUseCase{c: c, repo: repo, tx: tx, cache: cache.WithPrefix(fmt.Sprintf("%s_game", c.Name))}
+	return &GameUseCase{c: c, repo: repo, tx: tx, cache: cache.WithPrefix(strings.Join([]string{c.Name, "game"}, "_"))}
 }
 
 func (uc *GameUseCase) Create(ctx context.Context, item *Game) error {
@@ -66,7 +67,7 @@ func (uc *GameUseCase) Create(ctx context.Context, item *Game) error {
 
 func (uc *GameUseCase) Get(ctx context.Context, id uint64) (rp *Game, err error) {
 	rp = &Game{}
-	action := fmt.Sprintf("get_%d", id)
+	action := strings.Join([]string{"get", strconv.FormatUint(id, 10)}, "_")
 	str, ok := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.get(ctx, action, id)
 	})
@@ -98,7 +99,7 @@ func (uc *GameUseCase) get(ctx context.Context, action string, id uint64) (res s
 
 func (uc *GameUseCase) Find(ctx context.Context, condition *FindGame) (rp []Game) {
 	// use md5 string as cache replay json str, key is short
-	action := fmt.Sprintf("find_%s", utils.StructMd5(condition))
+	action := strings.Join([]string{"find", utils.StructMd5(condition)}, "_")
 	str, ok := uc.cache.Get(ctx, action, func(ctx context.Context) (string, bool) {
 		return uc.find(ctx, action, condition)
 	})

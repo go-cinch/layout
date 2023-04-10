@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/common/utils"
 	"github.com/go-cinch/layout/internal/conf"
@@ -16,6 +15,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"os"
+	"strings"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -83,7 +83,7 @@ func main() {
 			k8sConfig.Namespace(namespace),
 		}
 		if flagK8sLabel != "" {
-			opts = append(opts, k8sConfig.LabelSelector(fmt.Sprintf("app=%s", flagK8sLabel)))
+			opts = append(opts, k8sConfig.LabelSelector(strings.Join([]string{"app", flagK8sLabel}, "=")))
 		}
 		sources = append(sources, k8sConfig.NewSource(opts...))
 	} else {

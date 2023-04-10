@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-cinch/common/constant"
 	"github.com/go-cinch/common/copierx"
 	"github.com/go-cinch/common/middleware/i18n"
@@ -65,7 +64,7 @@ func (ro gameRepo) Find(ctx context.Context, condition *biz.FindGame) (rp []biz.
 	rp = make([]biz.Game, 0)
 	list := make([]Game, 0)
 	if condition.Name != nil {
-		db.Where("`name` LIKE ?", fmt.Sprintf("%%%s%%", *condition.Name))
+		db.Where("`name` LIKE ?", strings.Join([]string{"%", *condition.Name, "%"}, ""))
 	}
 	if condition.Age != nil {
 		db.Where("`age` = ?", condition.Age)
