@@ -2,8 +2,8 @@ package biz
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
+	"github.com/redis/go-redis/v9"
 )
 
 // ProviderSet is biz providers.

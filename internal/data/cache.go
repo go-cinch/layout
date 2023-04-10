@@ -6,7 +6,7 @@ import (
 	"github.com/go-cinch/common/bloom"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/internal/biz"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"math/rand"
 	"strings"
 	"time"
