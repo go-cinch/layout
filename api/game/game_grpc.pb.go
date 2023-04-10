@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Game_Idempotent_FullMethodName = "/game.v1.Game/Idempotent"
 	Game_CreateGame_FullMethodName = "/game.v1.Game/CreateGame"
 	Game_GetGame_FullMethodName    = "/game.v1.Game/GetGame"
 	Game_FindGame_FullMethodName   = "/game.v1.Game/FindGame"
@@ -31,6 +32,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GameClient interface {
+	Idempotent(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*IdempotentReply, error)
 	CreateGame(ctx context.Context, in *CreateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetGame(ctx context.Context, in *GetGameRequest, opts ...grpc.CallOption) (*GetGameReply, error)
 	FindGame(ctx context.Context, in *FindGameRequest, opts ...grpc.CallOption) (*FindGameReply, error)
@@ -44,6 +46,15 @@ type gameClient struct {
 
 func NewGameClient(cc grpc.ClientConnInterface) GameClient {
 	return &gameClient{cc}
+}
+
+func (c *gameClient) Idempotent(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*IdempotentReply, error) {
+	out := new(IdempotentReply)
+	err := c.cc.Invoke(ctx, Game_Idempotent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *gameClient) CreateGame(ctx context.Context, in *CreateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -95,6 +106,7 @@ func (c *gameClient) DeleteGame(ctx context.Context, in *IdsRequest, opts ...grp
 // All implementations must embed UnimplementedGameServer
 // for forward compatibility
 type GameServer interface {
+	Idempotent(context.Context, *emptypb.Empty) (*IdempotentReply, error)
 	CreateGame(context.Context, *CreateGameRequest) (*emptypb.Empty, error)
 	GetGame(context.Context, *GetGameRequest) (*GetGameReply, error)
 	FindGame(context.Context, *FindGameRequest) (*FindGameReply, error)
@@ -107,6 +119,9 @@ type GameServer interface {
 type UnimplementedGameServer struct {
 }
 
+func (UnimplementedGameServer) Idempotent(context.Context, *emptypb.Empty) (*IdempotentReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Idempotent not implemented")
+}
 func (UnimplementedGameServer) CreateGame(context.Context, *CreateGameRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGame not implemented")
 }
@@ -133,6 +148,24 @@ type UnsafeGameServer interface {
 
 func RegisterGameServer(s grpc.ServiceRegistrar, srv GameServer) {
 	s.RegisterService(&Game_ServiceDesc, srv)
+}
+
+func _Game_Idempotent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServer).Idempotent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Game_Idempotent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServer).Idempotent(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Game_CreateGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -232,6 +265,10 @@ var Game_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "game.v1.Game",
 	HandlerType: (*GameServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Idempotent",
+			Handler:    _Game_Idempotent_Handler,
+		},
 		{
 			MethodName: "CreateGame",
 			Handler:    _Game_CreateGame_Handler,

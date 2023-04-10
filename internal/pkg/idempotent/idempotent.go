@@ -4,9 +4,10 @@ import (
 	"context"
 	"github.com/go-cinch/common/idempotent"
 	"github.com/go-cinch/common/log"
-	"github.com/go-redis/redis/v8"
+	"github.com/go-cinch/layout/internal/conf"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
+	"github.com/redis/go-redis/v9"
 )
 
 var ProviderSet = wire.NewSet(NewIdempotent)
@@ -24,14 +25,17 @@ func (idt Idempotent) Check(ctx context.Context, token string) bool {
 }
 
 // NewIdempotent is initialize idempotent from config
-func NewIdempotent(redis redis.UniversalClient) (idt *Idempotent, err error) {
+func NewIdempotent(c *conf.Bootstrap, redis redis.UniversalClient) (idt *Idempotent, err error) {
 	defer func() {
 		e := recover()
 		if e != nil {
 			err = errors.Errorf("%v", e)
 		}
 	}()
-	ins := idempotent.New(idempotent.WithRedis(redis))
+	ins := idempotent.New(
+		idempotent.WithPrefix(c.Name),
+		idempotent.WithRedis(redis),
+	)
 	idt = &Idempotent{
 		idempotent: ins,
 	}

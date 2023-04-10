@@ -25,7 +25,7 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	idempotentIdempotent, err := idempotent.NewIdempotent(universalClient)
+	idempotentIdempotent, err := idempotent.NewIdempotent(c, universalClient)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -55,7 +55,7 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	gameService := service.NewGameService(taskTask, gameUseCase)
+	gameService := service.NewGameService(taskTask, idempotentIdempotent, gameUseCase)
 	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, authClient, gameService)
 	httpServer := server.NewHTTPServer(c, idempotentIdempotent, authClient, gameService)
 	app := newApp(grpcServer, httpServer)

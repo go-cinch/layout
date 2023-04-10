@@ -24,6 +24,7 @@ const OperationGameCreateGame = "/game.v1.Game/CreateGame"
 const OperationGameDeleteGame = "/game.v1.Game/DeleteGame"
 const OperationGameFindGame = "/game.v1.Game/FindGame"
 const OperationGameGetGame = "/game.v1.Game/GetGame"
+const OperationGameIdempotent = "/game.v1.Game/Idempotent"
 const OperationGameUpdateGame = "/game.v1.Game/UpdateGame"
 
 type GameHTTPServer interface {
@@ -31,17 +32,38 @@ type GameHTTPServer interface {
 	DeleteGame(context.Context, *IdsRequest) (*emptypb.Empty, error)
 	FindGame(context.Context, *FindGameRequest) (*FindGameReply, error)
 	GetGame(context.Context, *GetGameRequest) (*GetGameReply, error)
+	Idempotent(context.Context, *emptypb.Empty) (*IdempotentReply, error)
 	UpdateGame(context.Context, *UpdateGameRequest) (*emptypb.Empty, error)
 }
 
 func RegisterGameHTTPServer(s *http.Server, srv GameHTTPServer) {
 	r := s.Route("/")
+	r.GET("/idempotent", _Game_Idempotent0_HTTP_Handler(srv))
 	r.POST("/game", _Game_CreateGame0_HTTP_Handler(srv))
 	r.GET("/game/{id}", _Game_GetGame0_HTTP_Handler(srv))
 	r.GET("/game", _Game_FindGame0_HTTP_Handler(srv))
 	r.PATCH("/game/{id}", _Game_UpdateGame0_HTTP_Handler(srv))
 	r.PUT("/game/{id}", _Game_UpdateGame1_HTTP_Handler(srv))
 	r.DELETE("/game/{ids}", _Game_DeleteGame0_HTTP_Handler(srv))
+}
+
+func _Game_Idempotent0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameIdempotent)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Idempotent(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*IdempotentReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Game_CreateGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
@@ -175,6 +197,7 @@ type GameHTTPClient interface {
 	DeleteGame(ctx context.Context, req *IdsRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	FindGame(ctx context.Context, req *FindGameRequest, opts ...http.CallOption) (rsp *FindGameReply, err error)
 	GetGame(ctx context.Context, req *GetGameRequest, opts ...http.CallOption) (rsp *GetGameReply, err error)
+	Idempotent(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *IdempotentReply, err error)
 	UpdateGame(ctx context.Context, req *UpdateGameRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
@@ -230,6 +253,19 @@ func (c *GameHTTPClientImpl) GetGame(ctx context.Context, in *GetGameRequest, op
 	pattern := "/game/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationGameGetGame))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *GameHTTPClientImpl) Idempotent(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*IdempotentReply, error) {
+	var out IdempotentReply
+	pattern := "/idempotent"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationGameIdempotent))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
