@@ -65,9 +65,9 @@ api:
 build:
 	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
 
-.PHONY: generate
-# generate
-generate:
+.PHONY: gen
+# generate wire
+gen:
 	go mod tidy
 	go get github.com/google/wire/cmd/wire@latest
 	go generate ./...
@@ -78,7 +78,7 @@ generate:
 all:
 	make api;
 	make config;
-	make generate;
+	make gen;
 
 # show help
 help:
