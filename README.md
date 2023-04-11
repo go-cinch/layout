@@ -122,19 +122,20 @@ Cinch是一套轻量级微服务脚手架, 基于[Kratos], 节省基础服务搭
 启动项目前, 我默认你已准备好(部分软件按建议方式安装即可):
 - [go](https://golang.org/dl)1.18+(建议使用[g](https://github.com/voidint/g))
   ```bash
+  # sudo apt update
+  # sudo apt install -y curl
   curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
-  echo "unalias g" >> ~/.bashrc
   source "$HOME/.g/env"
   # g --version
   # g version 1.5.0
   
-  g install 1.18
+  g install 1.20
   # go version
-  # go version go1.18 linux/amd64
+  # go version go1.20 linux/amd64
   
-  echo "export GOPATH=/home/ubuntu" >> ~/.bashrc 
+  echo "export GOPATH=/home/ubuntu/go" >> ~/.bashrc 
   # 设置go/bin目录到PATH, 若不设置, go安装的一些文件无法识别
-  echo "export PATH=$PATH:/home/ubuntu/.g/go/bin:$GOPATH/go/bin" >> ~/.bashrc
+  echo "export PATH=$PATH:/home/ubuntu/.g/go/bin:/home/ubuntu/go/bin" >> ~/.bashrc
   source ~/.bashrc
   ```
 - 开启go modules
@@ -190,22 +191,27 @@ Cinch是一套轻量级微服务脚手架, 基于[Kratos], 节省基础服务搭
 - [protoc](https://github.com/protocolbuffers/protobuf)
   ```bash
   curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protoc-3.20.3-`uname -s`-`uname -m`.zip
+  # apt install -y unzip
   sudo unzip protoc-3.20.3-`uname -s`-`uname -m`.zip -d /usr
   # protoc --version
   # libprotoc 3.20.3
   ```
 - [protoc-gen-go](https://github.com/protocolbuffers/protobuf-go)
   ```bash
-  go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+  go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.30.0
   # protoc-gen-go --version
-  # protoc-gen-go v1.28.1
+  # protoc-gen-go v1.30.0
   ```
 - [git](https://git-scm.com)
-- [kratos cli工具](https://go-kratos.dev/docs/getting-started/usage)
   ```bash
-  go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
-  # kratos -v
-  kratos version v2.5.3
+  sudo apt update
+  sudo apt install -y git
+  ```
+- cinch cli工具
+  ```bash
+  go install github.com/go-cinch/cinch/cmd/cinch@latest
+  # cinch -v
+  cinch version v1.0.0
   ```
 
 
@@ -214,42 +220,48 @@ Cinch是一套轻量级微服务脚手架, 基于[Kratos], 节省基础服务搭
 
 权限认证服务无需再开发, 下载开箱即用
 
-```
+```bash
 git clone https://github.com/go-cinch/auth
 # 可以指定tag
-# git clone -b v1.0.1 https://github.com/go-cinch/auth
+# git clone -b v1.0.2 https://github.com/go-cinch/auth
 ```
 
 
 ## 创建Game服务
 
 
-```
+```bash
 # 1.通过模板创建项目 -r 指定仓库 -b 指定分支
-kratos new game -r https://github.com/go-cinch/layout.git -b v1.0.1
+cinch new game -r https://github.com/go-cinch/layout.git -b dev
 
 # 2. 进入项目
 cd game
-git init
 # 一般的我们建议以dev作为开发分支
-git checkout -b dev
+git init -b dev
+# 如果你的git版本较低
+# git init
+# git checkout -b dev
 
 # 3. 初始化submodule
-rm -rf api/auth-proto
 # -b指定分支 --name指定submodule名称
 git submodule add -b master --name api/auth-proto https://github.com/go-cinch/auth-proto.git ./api/auth-proto
 
-rm -rf api/reason-proto
 # -b指定分支 --name指定submodule名称
 git submodule add -b master --name api/reason-proto https://github.com/go-cinch/reason-proto.git ./api/reason-proto
 
-# 这里用greeter作为示例
-rm -rf api/greeter-proto
+# 这里用game作为示例, 按需修改
 # -b指定分支 --name指定submodule名称
-git submodule add -b master --name api/greeter-proto https://github.com/go-cinch/greeter-proto.git ./api/greeter-proto
+git submodule add -b master --name api/game-proto https://github.com/go-cinch/game-proto.git ./api/game-proto
 
-# 4. 下载依赖
-go mod download
+# 删除一个已经存在的submodule
+# git submodule deinit api/game-proto
+# git rm --cached api/game-proto
+# rm -rf .git/modules/api/game-proto
+# rm -rf api/game-proto
+
+# 4. 初始化依赖项(需确保已经安装make)
+# sudo apt install -y make
+make init
 
 # 5. 编译项目
 make all
@@ -259,40 +271,102 @@ make all
 ## 启动
 
 
-```
+### 配置文件
+
+
+```bash
+# 修改auth项目配置
+# 将mysql/redis的配置修改成你本地配置
+vim auth/configs/config.yaml
+
+# 修改game项目配置
+# 将mysql/redis的配置修改成你本地配置
+vim game/configs/config.yaml
+# 将auth服务host和端口修改成你本地配置
+vim game/configs/client.yaml
+
 # 启动auth
 cd auth
-export AUTH_DATA_DATABASE_DSN=root:root@tcp(127.0.0.1:3306)/auth?parseTime=True
-export AUTH_DATA_REDIS_DSN=redis://127.0.0.1:6379/0
-kratos run
+cinch run
 
 # 启动game
 cd game
-export CINCH_DATA_DATABASE_DSN=root:root@tcp(127.0.0.1:3306)/game?parseTime=True
-export CINCH_DATA_REDIS_DSN=redis://127.0.0.1:6379/0
-export CINCH_CLIENT_AUTH=127.0.0.1:6160
-kratos run
+cinch run
 ```
 
 
-## 测试访问
+### 环境变量
+
+
+```bash
+# 启动auth
+# 如果你用的是compose/single
+# export AUTH_DATA_DATABASE_DSN='root:mysqlrootpwd@tcp(127.0.0.1:3306)/auth?parseTime=True'
+# export AUTH_DATA_REDIS_DSN='redis://:redispwd@127.0.0.1:6379/0'
+export AUTH_DATA_DATABASE_DSN='root:root@tcp(127.0.0.1:3306)/auth?parseTime=True'
+export AUTH_DATA_REDIS_DSN='redis://127.0.0.1:6379/0'
+cd auth
+cinch run
+
+# 启动game
+# 如果你用的是compose/single
+# export CINCH_DATA_DATABASE_DSN='root:mysqlrootpwd@tcp(127.0.0.1:3306)/game?parseTime=True'
+# export CINCH_DATA_REDIS_DSN='redis://:redispwd@127.0.0.1:6379/0'
+export CINCH_DATA_DATABASE_DSN='root:root@tcp(127.0.0.1:3306)/game?parseTime=True'
+export CINCH_DATA_REDIS_DSN='redis://127.0.0.1:6379/0'
+export CINCH_CLIENT_AUTH='127.0.0.1:6160'
+cd game
+cinch run
+```
+
+?> Tips: 环境变量前缀可在cmd/xxx/main.go中修改, 参见[环境变量前缀](https://go-cinch.github.io/docs/#/base/0.config?id=%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e5%89%8d%e7%bc%80)
+
+
+### 测试访问
 
 
 auth服务:
-```
+```bash
 curl http://127.0.0.1:6060/idempotent
 # 输出如下说明服务通了只是没有权限, 出现其他说明配置有误
 # {"code":401, "reason":"UNAUTHORIZED", "message":"token is missing", "metadata":{}}
 ```
 
 game服务:
-```
-curl http://127.0.0.1:8080/greeter
+```bash
+curl http://127.0.0.1:8080/game
 # 输出如下说明服务通了只是没有权限, 出现其他说明配置有误
 # {"code":401, "reason":"UNAUTHORIZED", "message":"token is missing", "metadata":{}}
 ```
 
-> 至此, 微服务已启动完毕, auth以及game, 接下来可以自定义你的game啦~
+### 临时关闭校验
+
+
+为了测试方便, 可临时关闭Jwt、权限、接口幂等性校验
+
+```bash
+cd auth
+vim configs/config.yaml
+```
+
+```yml
+server:
+  jwt: false
+  permission: false
+  idempotent: false
+```
+
+重启auth服务再测试:
+```bash
+curl http://127.0.0.1:6060/idempotent
+# 输出包含token字段说明配置对了
+# {"token":"041c12d3-ddd0-4c63-b3fb-454f3e7ec40a"}
+```
+
+!> 仅用作本地测试, 正式环境还是开启校验, 避免恶意调用
+
+
+?> 至此, 微服务已启动完毕, auth以及game, 接下来可以自定义你的game啦~
 
 
 # 文档
