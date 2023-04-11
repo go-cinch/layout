@@ -139,7 +139,7 @@ func (c *Cache) Flush(ctx context.Context, handler func(ctx context.Context) err
 		return
 	}
 	ctx = getDefaultTimeoutCtx(ctx)
-	action := c.prefix + "*"
+	action := strings.Join([]string{c.prefix, "*"}, "")
 	arr := c.redis.Keys(ctx, action).Val()
 	p := c.redis.Pipeline()
 	for _, item := range arr {
