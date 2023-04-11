@@ -8,9 +8,9 @@ server:
     timeout: 20s
     health: false
   language: 'en'
-  permission: false
-  idempotent: false
-  validate: false
+  permission: true
+  idempotent: true
+  validate: true
 data:
   database:
     driver: mysql
