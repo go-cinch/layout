@@ -1,7 +1,7 @@
 <h1 align="center">Go Cinch Layout</h1>
 
 <div align="center">
-Cinch Layout是一套轻量级微服务项目模版.
+Layout是一套轻量级微服务项目模版.
 <p align="center">
 <img src="https://img.shields.io/github/go-mod/go-version/go-cinch/layout" alt="Go version"/>
 <img src="https://img.shields.io/badge/Kratos-v2.5.3-brightgreen" alt="Kratos version"/>

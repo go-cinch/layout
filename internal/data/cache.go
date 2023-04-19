@@ -21,6 +21,17 @@ type Cache struct {
 	bloom  *bloom.Bloom
 }
 
+// NewCache .
+func NewCache(client redis.UniversalClient) biz.Cache {
+	return &Cache{
+		redis:  client,
+		prefix: "",
+		lock:   "lock",
+		val:    "val",
+		bloom:  bloom.New(bloom.WithRedis(client)),
+	}
+}
+
 func (c *Cache) Cache() redis.UniversalClient {
 	return c.redis
 }
@@ -32,17 +43,6 @@ func (c *Cache) WithPrefix(prefix string) biz.Cache {
 		lock:   strings.Join([]string{prefix, c.lock}, "_"),
 		val:    strings.Join([]string{prefix, c.val}, "_"),
 		bloom:  c.bloom,
-	}
-}
-
-// NewCache .
-func NewCache(client redis.UniversalClient) biz.Cache {
-	return &Cache{
-		redis:  client,
-		prefix: "",
-		lock:   "lock",
-		val:    "val",
-		bloom:  bloom.New(bloom.WithRedis(client)),
 	}
 }
 
