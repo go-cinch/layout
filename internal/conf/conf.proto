@@ -20,26 +20,29 @@ message Server {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
+    string path = 4;
+    bool permission = 5;
   }
   message GRPC {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
     bool health = 4;
+    bool permission = 5;
   }
   string machineId = 1;
   HTTP http = 2;
   GRPC grpc = 3;
   string language = 4;
-  bool permission = 5;
-  bool idempotent = 6;
-  bool validate = 7;
+  bool idempotent = 5;
+  bool validate = 6;
 }
 
 message Data {
   message Database {
     string driver = 1;
     string dsn = 2;
+    map<string, string> tenants = 3;
   }
   message Redis {
     string dsn = 1;

@@ -10,30 +10,30 @@ import (
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-cinch/layout/internal/data"
-	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/go-cinch/layout/internal/server"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2"
 )
 
+import (
+	_ "github.com/go-cinch/common/plugins/gorm/filter"
+	_ "github.com/go-cinch/common/plugins/kratos/encoding/yml"
+)
+
 // Injectors from wire.go:
 
 // wireApp init kratos application.
 func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
+	taskTask, err := task.New(c)
+	if err != nil {
+		return nil, nil, err
+	}
 	universalClient, err := data.NewRedis(c)
 	if err != nil {
 		return nil, nil, err
 	}
-	idempotentIdempotent, err := idempotent.NewIdempotent(c, universalClient)
-	if err != nil {
-		return nil, nil, err
-	}
-	authClient, err := data.NewAuthClient(c)
-	if err != nil {
-		return nil, nil, err
-	}
-	db, err := data.NewDB(c)
+	tenant, err := data.NewDB(c)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -45,19 +45,18 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup := data.NewData(universalClient, db, sonyflake, tracerProvider, authClient)
-	gameRepo := data.NewGameRepo(dataData)
-	transaction := data.NewTransaction(dataData)
-	cache := data.NewCache(universalClient)
-	gameUseCase := biz.NewGameUseCase(c, gameRepo, transaction, cache)
-	taskTask, err := task.NewTask(c, gameUseCase)
+	authClient, err := data.NewAuthClient(c)
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
-	gameService := service.NewGameService(taskTask, idempotentIdempotent, gameUseCase)
-	grpcServer := server.NewGRPCServer(c, idempotentIdempotent, authClient, gameService)
-	httpServer := server.NewHTTPServer(c, idempotentIdempotent, authClient, gameService)
+	dataData, cleanup := data.NewData(universalClient, tenant, sonyflake, tracerProvider, authClient)
+	gameRepo := data.NewGameRepo(dataData)
+	transaction := data.NewTransaction(dataData)
+	cache := data.NewCache(c, universalClient)
+	gameUseCase := biz.NewGameUseCase(c, gameRepo, transaction, cache)
+	gameService := service.NewGameService(taskTask, gameUseCase)
+	grpcServer := server.NewGRPCServer(c, gameService, authClient)
+	httpServer := server.NewHTTPServer(c, gameService, authClient)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

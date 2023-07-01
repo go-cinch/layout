@@ -3,13 +3,15 @@ package data
 import (
 	"context"
 	"errors"
-	"github.com/go-cinch/common/bloom"
-	"github.com/go-cinch/common/log"
-	"github.com/go-cinch/layout/internal/biz"
-	"github.com/redis/go-redis/v9"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/go-cinch/common/log"
+	"github.com/go-cinch/common/plugins/gorm/tenant"
+	"github.com/go-cinch/layout/internal/biz"
+	"github.com/go-cinch/layout/internal/conf"
+	"github.com/redis/go-redis/v9"
 )
 
 // Cache .
@@ -18,17 +20,15 @@ type Cache struct {
 	prefix string
 	lock   string
 	val    string
-	bloom  *bloom.Bloom
 }
 
 // NewCache .
-func NewCache(client redis.UniversalClient) biz.Cache {
+func NewCache(c *conf.Bootstrap, client redis.UniversalClient) biz.Cache {
 	return &Cache{
 		redis:  client,
-		prefix: "",
+		prefix: c.Name,
 		lock:   "lock",
 		val:    "val",
-		bloom:  bloom.New(bloom.WithRedis(client)),
 	}
 }
 
@@ -39,16 +39,19 @@ func (c *Cache) Cache() redis.UniversalClient {
 func (c *Cache) WithPrefix(prefix string) biz.Cache {
 	return &Cache{
 		redis:  c.redis,
-		prefix: prefix,
-		lock:   strings.Join([]string{prefix, c.lock}, "_"),
-		val:    strings.Join([]string{prefix, c.val}, "_"),
-		bloom:  c.bloom,
+		prefix: strings.Join([]string{c.prefix, prefix}, "_"),
+		lock:   c.lock,
+		val:    c.val,
 	}
 }
 
-func (c *Cache) Get(ctx context.Context, action string, write func(context.Context) (string, bool)) (res string, ok bool) {
+func (c *Cache) Get(
+	ctx context.Context,
+	action string,
+	write func(context.Context) (string, bool),
+) (res string, ok bool) {
 	ctx = getDefaultTimeoutCtx(ctx)
-	key := strings.Join([]string{c.val, action}, "_")
+	key := c.getValKey(ctx, action)
 	var err error
 	// 1. first get cache
 	res, err = c.redis.Get(ctx, key).Result()
@@ -70,12 +73,7 @@ func (c *Cache) Get(ctx context.Context, action string, write func(context.Conte
 		ok = true
 		return
 	}
-	// 4. if enable bloom filter, cache maybe exists, db is empty
-	if c.bloom != nil && c.bloom.Exist(action) {
-		ok = true
-		return
-	}
-	// 5. load data from db and write to cache
+	// 4. load data from db and write to cache
 	if write != nil {
 		res, ok = write(ctx)
 	}
@@ -89,10 +87,6 @@ func (c *Cache) Set(ctx context.Context, action, data string, short bool) {
 	if short {
 		// if record not found, set a short expiration
 		seconds = 60
-		// if enable bloom filter, not need set empty cache
-		if c.bloom != nil {
-			return
-		}
 	}
 	c.SetWithExpiration(ctx, action, data, seconds)
 }
@@ -100,7 +94,7 @@ func (c *Cache) Set(ctx context.Context, action, data string, short bool) {
 func (c *Cache) SetWithExpiration(ctx context.Context, action, data string, seconds int64) {
 	ctx = getDefaultTimeoutCtx(ctx)
 	// set random expiration avoid a large number of keys expire at the same time
-	err := c.redis.Set(ctx, strings.Join([]string{c.val, action}, "_"), data, time.Duration(seconds)*time.Second).Err()
+	err := c.redis.Set(ctx, c.getValKey(ctx, action), data, time.Duration(seconds)*time.Second).Err()
 	if err != nil {
 		log.
 			WithContext(ctx).
@@ -112,14 +106,11 @@ func (c *Cache) SetWithExpiration(ctx context.Context, action, data string, seco
 			Warn("set cache failed")
 		return
 	}
-	if c.bloom != nil {
-		c.bloom.Add(action)
-	}
 }
 
 func (c *Cache) Del(ctx context.Context, action string) {
 	ctx = getDefaultTimeoutCtx(ctx)
-	key := strings.Join([]string{c.val, action}, "_")
+	key := c.getValKey(ctx, action)
 	err := c.redis.Del(ctx, key).Err()
 	if err != nil {
 		log.
@@ -139,7 +130,7 @@ func (c *Cache) Flush(ctx context.Context, handler func(ctx context.Context) err
 		return
 	}
 	ctx = getDefaultTimeoutCtx(ctx)
-	action := strings.Join([]string{c.prefix, "*"}, "")
+	action := c.getPrefixKey(ctx)
 	arr := c.redis.Keys(ctx, action).Val()
 	p := c.redis.Pipeline()
 	for _, item := range arr {
@@ -166,8 +157,10 @@ func (c *Cache) Lock(ctx context.Context, action string) (ok bool) {
 	var e error
 	for retry < 20 && !ok {
 		ctx = getDefaultTimeoutCtx(ctx)
-		ok, e = c.redis.SetNX(ctx, strings.Join([]string{c.lock, action}, "_"), 1, time.Minute).Result()
-		if errors.Is(e, context.DeadlineExceeded) || errors.Is(e, context.Canceled) || (e != nil && e.Error() == "redis: connection pool timeout") {
+		ok, e = c.redis.SetNX(ctx, c.getLockKey(ctx, action), 1, time.Minute).Result()
+		if errors.Is(e, context.DeadlineExceeded) ||
+			errors.Is(e, context.Canceled) ||
+			(e != nil && e.Error() == "redis: connection pool timeout") {
 			log.
 				WithContext(ctx).
 				WithError(e).
@@ -185,7 +178,7 @@ func (c *Cache) Lock(ctx context.Context, action string) (ok bool) {
 
 func (c *Cache) Unlock(ctx context.Context, action string) {
 	ctx = getDefaultTimeoutCtx(ctx)
-	err := c.redis.Del(ctx, strings.Join([]string{c.lock, action}, "_")).Err()
+	err := c.redis.Del(ctx, c.getLockKey(ctx, action)).Err()
 	if err != nil {
 		log.
 			WithContext(ctx).
@@ -195,4 +188,27 @@ func (c *Cache) Unlock(ctx context.Context, action string) {
 			}).
 			Warn("unlock cache failed")
 	}
+}
+
+func (c *Cache) getPrefixKey(ctx context.Context) string {
+	id := tenant.FromContext(ctx)
+	prefix := c.prefix
+	if strings.TrimSpace(c.prefix) == "" {
+		// avoid flush all key
+		log.
+			WithContext(ctx).
+			Warn("invalid prefix")
+		prefix = "prefix"
+	}
+	return strings.Join([]string{id, prefix, "*"}, "_")
+}
+
+func (c *Cache) getValKey(ctx context.Context, action string) string {
+	id := tenant.FromContext(ctx)
+	return strings.Join([]string{id, c.prefix, c.val, action}, "_")
+}
+
+func (c *Cache) getLockKey(ctx context.Context, action string) string {
+	id := tenant.FromContext(ctx)
+	return strings.Join([]string{id, c.prefix, c.lock, action}, "_")
 }

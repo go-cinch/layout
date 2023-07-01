@@ -2,7 +2,13 @@ package main
 
 import (
 	"flag"
+	"os"
+	"strings"
+
 	"github.com/go-cinch/common/log"
+	_ "github.com/go-cinch/common/plugins/gorm/filter"
+	"github.com/go-cinch/common/plugins/gorm/tenant"
+	_ "github.com/go-cinch/common/plugins/kratos/encoding/yml"
 	"github.com/go-cinch/common/utils"
 	"github.com/go-cinch/layout/internal/conf"
 	k8sConfig "github.com/go-kratos/kratos/contrib/config/kubernetes/v2"
@@ -14,8 +20,6 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"os"
-	"strings"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -68,6 +72,7 @@ func main() {
 				"service.version", Version,
 				"trace.id", tracing.TraceID(),
 				"span.id", tracing.SpanID(),
+				"tenant.id", tenant.ID(),
 			),
 		),
 	)

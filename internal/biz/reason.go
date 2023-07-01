@@ -2,7 +2,6 @@ package biz
 
 const (
 	IdempotentMissingToken = "idempotent.token.missing"
-	IdempotentTokenExpired = "idempotent.token.invalid"
 
 	TooManyRequests = "too.many.requests"
 	DataNotChange   = "data.not.change"

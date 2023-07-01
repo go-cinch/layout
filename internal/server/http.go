@@ -4,27 +4,34 @@ import (
 	"github.com/go-cinch/common/i18n"
 	"github.com/go-cinch/common/log"
 	i18nMiddleware "github.com/go-cinch/common/middleware/i18n"
+	tenantMiddleware "github.com/go-cinch/common/middleware/tenant"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
-	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/go-kratos/kratos/v2/transport/http/pprof"
 	"golang.org/x/text/language"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GameService) *http.Server {
+func NewHTTPServer(
+	c *conf.Bootstrap,
+	svc *service.GameService,
+	authClient auth.AuthClient,
+) *http.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
+		tenantMiddleware.Tenant(),
 		ratelimit.Server(),
 		localMiddleware.Header(),
 	}
@@ -35,12 +42,13 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		middlewares,
 		logging.Server(log.DefaultWrapper.Options().Logger()),
 		i18nMiddleware.Translator(i18n.WithLanguage(language.Make(c.Server.Language)), i18n.WithFs(locales)),
+		metadata.Server(),
 	)
-	if c.Server.Permission {
-		middlewares = append(middlewares, localMiddleware.Permission(authClient))
+	if c.Server.Http.Permission {
+		middlewares = append(middlewares, localMiddleware.Permission(c, authClient))
 	}
 	if c.Server.Idempotent {
-		middlewares = append(middlewares, localMiddleware.Idempotent(idt))
+		middlewares = append(middlewares, localMiddleware.Idempotent(authClient))
 	}
 	if c.Server.Validate {
 		middlewares = append(middlewares, validate.Validator())
@@ -57,5 +65,6 @@ func NewHTTPServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 	}
 	srv := http.NewServer(opts...)
 	game.RegisterGameHTTPServer(srv, svc)
+	srv.HandlePrefix("/", pprof.NewHandler())
 	return srv
 }

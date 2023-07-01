@@ -1,0 +1,53 @@
+run:
+  go: '1.20'
+  timeout: '5m'
+  skip-files:
+    - 'internal/server/grpc.go'
+    - 'internal/server/http.go'
+    - 'internal/service/service.go'
+    - 'internal/data/data.go'
+
+linters:
+  enable:
+    - gci
+    - revive
+  disable-all: true
+
+linters-settings:
+  revive:
+    rules:
+      - name: var-naming # 变量命名
+        arguments: [ [ "ID" ] ]
+      - name: line-length-limit # 单行字符长度
+        arguments: [ 150 ]
+      - name: argument-limit # 函数参数个数
+        arguments: [ 5 ]
+      - name: function-result-limit # 函数响应个数
+        arguments: [ 5 ]
+      - name: blank-imports # 空引用
+      - name: duplicated-imports  # 重复引用
+      - name: bool-literal-in-expr # 判断bool常量
+      - name: constant-logical-expr  # 判断结果是常量
+      - name: context-as-argument # context参数第一位
+      - name: error-return # error响应最后一位
+      - name: deep-exit  # 结束程序
+      - name: defer  # 不规范的defer
+      - name: early-return # 减少else
+      - name: indent-error-flow  # 减少else
+      - name: if-return # 减少else
+      - name: superfluous-else # 减少else
+      - name: empty-block # 空代码块
+      - name: get-return # Get/get方法必须有返回值
+      - name: increment-decrement # 自增1
+      - name: modifies-value-receiver # 修改值
+      - name: range # range第二个值
+      - name: range-val-in-closure # routine中使用range的值
+      - name: receiver-naming # 方法接收者
+      - name: string-of-int # 整数转字符串
+      - name: struct-tag # 结构体标签
+      - name: unexported-naming # 成员变量命名
+      - name: unexported-return # return私有成员
+      - name: unreachable-code # 永远不会执行
+      - name: unused-parameter # 未使用的参数
+      - name: unused-receiver # 未使用的接收者
+      - name: waitgroup-by-value # WaitGroup作为参数

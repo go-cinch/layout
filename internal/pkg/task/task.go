@@ -2,9 +2,9 @@ package task
 
 import (
 	"context"
+
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/common/worker"
-	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/google/wire"
 	"github.com/pkg/errors"
@@ -12,7 +12,7 @@ import (
 )
 
 // ProviderSet is task providers.
-var ProviderSet = wire.NewSet(NewTask)
+var ProviderSet = wire.NewSet(New)
 
 type Task struct {
 	worker *worker.Worker
@@ -26,8 +26,8 @@ func (tk Task) Cron(options ...func(*worker.RunOptions)) error {
 	return tk.worker.Cron(options...)
 }
 
-// NewTask is initialize task worker from config
-func NewTask(c *conf.Bootstrap, game *biz.GameUseCase) (tk *Task, err error) {
+// New is initialize task worker from config
+func New(c *conf.Bootstrap) (tk *Task, err error) {
 	defer func() {
 		e := recover()
 		if e != nil {
@@ -41,7 +41,6 @@ func NewTask(c *conf.Bootstrap, game *biz.GameUseCase) (tk *Task, err error) {
 			return process(task{
 				ctx:     ctx,
 				payload: p,
-				game:    game,
 			})
 		}),
 	)
@@ -77,7 +76,6 @@ func NewTask(c *conf.Bootstrap, game *biz.GameUseCase) (tk *Task, err error) {
 type task struct {
 	ctx     context.Context
 	payload worker.Payload
-	game    *biz.GameUseCase
 }
 
 func process(t task) (err error) {
@@ -85,10 +83,10 @@ func process(t task) (err error) {
 	_, span := tr.Start(t.ctx, "Task")
 	defer span.End()
 	switch t.payload.Group {
-	// case "task1":
-	// 	t.game.Get(ctx, 1)
-	// case "task2":
-	// 	t.game.Get(ctx, 2)
+	case "task1":
+		// t.game.Get(ctx, 1)
+	case "task2":
+		// t.game.Get(ctx, 2)
 	}
 	return
 }

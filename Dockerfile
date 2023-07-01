@@ -1,12 +1,13 @@
-FROM golang:1.20 AS builder
+FROM golang:1.20.5 AS builder
+
+#ENV GOPROXY=https://goproxy.cn
 
 COPY . /src
 WORKDIR /src
 
-#RUN GOPROXY=https://goproxy.cn make build
 RUN make build
 
-FROM debian:stable-slim
+FROM ubuntu:20.04
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates netbase && \
@@ -18,8 +19,8 @@ COPY --from=builder /src/bin /app
 
 WORKDIR /app
 
-EXPOSE 8000
-EXPOSE 9000
+EXPOSE 6060
+EXPOSE 6160
 COPY configs /data/conf
 
 CMD ["sh", "-c", "./server -c /data/conf"]

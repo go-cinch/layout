@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/internal/conf"

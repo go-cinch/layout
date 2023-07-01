@@ -2,6 +2,7 @@ package server
 
 import (
 	"embed"
+
 	"github.com/google/wire"
 )
 
