@@ -25,6 +25,7 @@ init:
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 	go install github.com/envoyproxy/protoc-gen-validate@latest
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
 .PHONY: config
 # generate internal proto
@@ -74,12 +75,18 @@ gen:
 	go generate ./...
 	go mod tidy
 
+.PHONY: lint
+# golangci-lint
+lint:
+	golangci-lint run --fix
+
 .PHONY: all
 # generate all
 all:
 	make api;
 	make config;
 	make gen;
+	make lint;
 
 # show help
 help:

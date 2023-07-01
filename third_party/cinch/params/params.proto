@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package params;
+
+option go_package = "github.com/go-cinch/common/proto/params;params";
+option java_multiple_files = true;
+option java_package = "com.github.go-cinch.params";
+option objc_class_prefix = "CinchParams";
+
+message Page {
+  uint64 num = 1;
+  uint64 size = 2;
+  int64 total = 3;
+  bool disable = 4;
+}
+
+message IdsRequest {
+  string ids = 1;
+}

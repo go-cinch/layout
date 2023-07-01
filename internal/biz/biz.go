@@ -2,12 +2,15 @@ package biz
 
 import (
 	"context"
+
 	"github.com/google/wire"
 	"github.com/redis/go-redis/v9"
 )
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewGameUseCase)
+var ProviderSet = wire.NewSet(
+	NewGameUseCase,
+)
 
 type Transaction interface {
 	Tx(ctx context.Context, handler func(context.Context) error) error

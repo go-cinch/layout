@@ -4,11 +4,11 @@ import (
 	"github.com/go-cinch/common/i18n"
 	"github.com/go-cinch/common/log"
 	i18nMiddleware "github.com/go-cinch/common/middleware/i18n"
+	tenantMiddleware "github.com/go-cinch/common/middleware/tenant"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
-	"github.com/go-cinch/layout/internal/pkg/idempotent"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
 	"github.com/go-cinch/layout/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -23,9 +23,14 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient auth.AuthClient, svc *service.GameService) *grpc.Server {
+func NewGRPCServer(
+	c *conf.Bootstrap,
+	svc *service.GameService,
+	authClient auth.AuthClient,
+) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
+		tenantMiddleware.Tenant(),
 		ratelimit.Server(),
 	}
 	if c.Tracer.Enable {
@@ -38,11 +43,11 @@ func NewGRPCServer(c *conf.Bootstrap, idt *idempotent.Idempotent, authClient aut
 		i18nMiddleware.Translator(i18n.WithLanguage(language.Make(c.Server.Language)), i18n.WithFs(locales)),
 		metadata.Server(),
 	)
-	if c.Server.Permission {
-		middlewares = append(middlewares, localMiddleware.Permission(authClient))
+	if c.Server.Grpc.Permission {
+		middlewares = append(middlewares, localMiddleware.Permission(c, authClient))
 	}
 	if c.Server.Idempotent {
-		middlewares = append(middlewares, localMiddleware.Idempotent(idt))
+		middlewares = append(middlewares, localMiddleware.Idempotent(authClient))
 	}
 	if c.Server.Validate {
 		middlewares = append(middlewares, validate.Validator())

@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,24 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Game_Idempotent_FullMethodName = "/game.v1.Game/Idempotent"
-	Game_CreateGame_FullMethodName = "/game.v1.Game/CreateGame"
-	Game_GetGame_FullMethodName    = "/game.v1.Game/GetGame"
-	Game_FindGame_FullMethodName   = "/game.v1.Game/FindGame"
-	Game_UpdateGame_FullMethodName = "/game.v1.Game/UpdateGame"
-	Game_DeleteGame_FullMethodName = "/game.v1.Game/DeleteGame"
+	Game_HelloWorld_FullMethodName = "/game.v1.Game/HelloWorld"
 )
 
 // GameClient is the client API for Game service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GameClient interface {
-	Idempotent(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*IdempotentReply, error)
-	CreateGame(ctx context.Context, in *CreateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetGame(ctx context.Context, in *GetGameRequest, opts ...grpc.CallOption) (*GetGameReply, error)
-	FindGame(ctx context.Context, in *FindGameRequest, opts ...grpc.CallOption) (*FindGameReply, error)
-	UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteGame(ctx context.Context, in *IdsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	HelloWorld(ctx context.Context, in *HelloWorldRequest, opts ...grpc.CallOption) (*HelloWorldReply, error)
 }
 
 type gameClient struct {
@@ -48,54 +37,9 @@ func NewGameClient(cc grpc.ClientConnInterface) GameClient {
 	return &gameClient{cc}
 }
 
-func (c *gameClient) Idempotent(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*IdempotentReply, error) {
-	out := new(IdempotentReply)
-	err := c.cc.Invoke(ctx, Game_Idempotent_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameClient) CreateGame(ctx context.Context, in *CreateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Game_CreateGame_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameClient) GetGame(ctx context.Context, in *GetGameRequest, opts ...grpc.CallOption) (*GetGameReply, error) {
-	out := new(GetGameReply)
-	err := c.cc.Invoke(ctx, Game_GetGame_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameClient) FindGame(ctx context.Context, in *FindGameRequest, opts ...grpc.CallOption) (*FindGameReply, error) {
-	out := new(FindGameReply)
-	err := c.cc.Invoke(ctx, Game_FindGame_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameClient) UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Game_UpdateGame_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameClient) DeleteGame(ctx context.Context, in *IdsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Game_DeleteGame_FullMethodName, in, out, opts...)
+func (c *gameClient) HelloWorld(ctx context.Context, in *HelloWorldRequest, opts ...grpc.CallOption) (*HelloWorldReply, error) {
+	out := new(HelloWorldReply)
+	err := c.cc.Invoke(ctx, Game_HelloWorld_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,12 +50,7 @@ func (c *gameClient) DeleteGame(ctx context.Context, in *IdsRequest, opts ...grp
 // All implementations must embed UnimplementedGameServer
 // for forward compatibility
 type GameServer interface {
-	Idempotent(context.Context, *emptypb.Empty) (*IdempotentReply, error)
-	CreateGame(context.Context, *CreateGameRequest) (*emptypb.Empty, error)
-	GetGame(context.Context, *GetGameRequest) (*GetGameReply, error)
-	FindGame(context.Context, *FindGameRequest) (*FindGameReply, error)
-	UpdateGame(context.Context, *UpdateGameRequest) (*emptypb.Empty, error)
-	DeleteGame(context.Context, *IdsRequest) (*emptypb.Empty, error)
+	HelloWorld(context.Context, *HelloWorldRequest) (*HelloWorldReply, error)
 	mustEmbedUnimplementedGameServer()
 }
 
@@ -119,23 +58,8 @@ type GameServer interface {
 type UnimplementedGameServer struct {
 }
 
-func (UnimplementedGameServer) Idempotent(context.Context, *emptypb.Empty) (*IdempotentReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Idempotent not implemented")
-}
-func (UnimplementedGameServer) CreateGame(context.Context, *CreateGameRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGame not implemented")
-}
-func (UnimplementedGameServer) GetGame(context.Context, *GetGameRequest) (*GetGameReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGame not implemented")
-}
-func (UnimplementedGameServer) FindGame(context.Context, *FindGameRequest) (*FindGameReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindGame not implemented")
-}
-func (UnimplementedGameServer) UpdateGame(context.Context, *UpdateGameRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateGame not implemented")
-}
-func (UnimplementedGameServer) DeleteGame(context.Context, *IdsRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteGame not implemented")
+func (UnimplementedGameServer) HelloWorld(context.Context, *HelloWorldRequest) (*HelloWorldReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HelloWorld not implemented")
 }
 func (UnimplementedGameServer) mustEmbedUnimplementedGameServer() {}
 
@@ -150,110 +74,20 @@ func RegisterGameServer(s grpc.ServiceRegistrar, srv GameServer) {
 	s.RegisterService(&Game_ServiceDesc, srv)
 }
 
-func _Game_Idempotent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+func _Game_HelloWorld_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloWorldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GameServer).Idempotent(ctx, in)
+		return srv.(GameServer).HelloWorld(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Game_Idempotent_FullMethodName,
+		FullMethod: Game_HelloWorld_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).Idempotent(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Game_CreateGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGameRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameServer).CreateGame(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Game_CreateGame_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).CreateGame(ctx, req.(*CreateGameRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Game_GetGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGameRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameServer).GetGame(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Game_GetGame_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).GetGame(ctx, req.(*GetGameRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Game_FindGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindGameRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameServer).FindGame(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Game_FindGame_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).FindGame(ctx, req.(*FindGameRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Game_UpdateGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateGameRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameServer).UpdateGame(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Game_UpdateGame_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).UpdateGame(ctx, req.(*UpdateGameRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Game_DeleteGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameServer).DeleteGame(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Game_DeleteGame_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).DeleteGame(ctx, req.(*IdsRequest))
+		return srv.(GameServer).HelloWorld(ctx, req.(*HelloWorldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,28 +100,8 @@ var Game_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*GameServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Idempotent",
-			Handler:    _Game_Idempotent_Handler,
-		},
-		{
-			MethodName: "CreateGame",
-			Handler:    _Game_CreateGame_Handler,
-		},
-		{
-			MethodName: "GetGame",
-			Handler:    _Game_GetGame_Handler,
-		},
-		{
-			MethodName: "FindGame",
-			Handler:    _Game_FindGame_Handler,
-		},
-		{
-			MethodName: "UpdateGame",
-			Handler:    _Game_UpdateGame_Handler,
-		},
-		{
-			MethodName: "DeleteGame",
-			Handler:    _Game_DeleteGame_Handler,
+			MethodName: "HelloWorld",
+			Handler:    _Game_HelloWorld_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
