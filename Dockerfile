@@ -1,13 +1,18 @@
 FROM golang:1.20.5 AS builder
 
 #ENV GOPROXY=https://goproxy.cn
+# CGO_ENABLED=1, need check `ldd --version` is same as builder
+ENV CGO_ENABLED=0
 
 COPY . /src
 WORKDIR /src
 
+# install cinch tool
+RUN go install github.com/go-cinch/cinch/cmd/cinch@latest
+
 RUN make build
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates netbase && \
@@ -16,11 +21,12 @@ RUN apt-get update && \
     apt-get autoclean -y
 
 COPY --from=builder /src/bin /app
+COPY --from=builder /go/bin/cinch /go/bin
 
 WORKDIR /app
 
-EXPOSE 6060
-EXPOSE 6160
+EXPOSE 8080
+EXPOSE 8180
 COPY configs /data/conf
 
 CMD ["sh", "-c", "./server -c /data/conf"]
