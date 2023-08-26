@@ -25,8 +25,6 @@ COPY --from=builder /go/bin/cinch /go/bin
 
 WORKDIR /app
 
-EXPOSE 8080
-EXPOSE 8180
 COPY configs /data/conf
 
 CMD ["sh", "-c", "./server -c /data/conf"]

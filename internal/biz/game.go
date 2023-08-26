@@ -1,8 +1,7 @@
 package biz
 
-import (
-	"github.com/go-cinch/layout/internal/conf"
-)
+import "github.com/go-cinch/layout/internal/conf"
+
 
 type GameRepo interface{}
 

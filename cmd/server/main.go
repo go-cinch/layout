@@ -8,13 +8,13 @@ import (
 	"github.com/go-cinch/common/log"
 	_ "github.com/go-cinch/common/plugins/gorm/filter"
 	"github.com/go-cinch/common/plugins/gorm/tenant"
+	"github.com/go-cinch/common/plugins/kratos/config/env"
 	_ "github.com/go-cinch/common/plugins/kratos/encoding/yml"
 	"github.com/go-cinch/common/utils"
 	"github.com/go-cinch/layout/internal/conf"
 	k8sConfig "github.com/go-kratos/kratos/contrib/config/kubernetes/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/env"
 	"github.com/go-kratos/kratos/v2/config/file"
 	kratosLog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -27,7 +27,7 @@ var (
 	// Name is the name of the compiled software.
 	Name = "layout"
 	// EnvPrefix is the prefix of the env params
-	EnvPrefix = "LAYOUT_"
+	EnvPrefix = "LAYOUT"
 	// Version is the version of the compiled software.
 	Version string
 	// flagConf is the config flag.
@@ -76,9 +76,7 @@ func main() {
 			),
 		),
 	)
-	sources := []config.Source{
-		env.NewSource(EnvPrefix),
-	}
+	var sources []config.Source
 	if flagK8sNamespace != "" || flagK8sLabel != "" {
 		namespace := "default"
 		if flagK8sNamespace != "" {
@@ -94,7 +92,17 @@ func main() {
 	} else {
 		sources = append(sources, file.NewSource(flagConf))
 	}
-	c := config.New(config.WithSource(sources...))
+	c := config.New(
+		config.WithSource(sources...),
+		config.WithResolver(
+			env.NewRevolver(
+				env.WithPrefix(EnvPrefix),
+				env.WithLoaded(func(k string, v interface{}) {
+					log.Debug("env loaded: %s=%v", k, v)
+				}),
+			),
+		),
+	)
 	defer c.Close()
 
 	if err := c.Load(); err != nil {

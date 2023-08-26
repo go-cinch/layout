@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	fmt "fmt"
 	"github.com/go-cinch/common/id"
 	"github.com/go-cinch/common/log"
 	glog "github.com/go-cinch/common/plugins/gorm/log"
@@ -149,7 +150,18 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 			ops = append(ops, tenant.WithDSN(k, v))
 		}
 	} else {
-		ops = append(ops, tenant.WithDSN("", c.Data.Database.Dsn))
+		dsn := c.Data.Database.Dsn
+		if dsn == "" {
+			dsn = fmt.Sprintf(
+				"%s:%s@tcp(%s)/%s?%s",
+				c.Data.Database.Username,
+				c.Data.Database.Password,
+				c.Data.Database.Endpoint,
+				c.Data.Database.Schema,
+				c.Data.Database.Query,
+			)
+		}
+		ops = append(ops, tenant.WithDSN("", dsn))
 	}
 	ops = append(ops, tenant.WithSQLFile(db.SQLFiles))
 	ops = append(ops, tenant.WithSQLRoot(db.SQLRoot))
@@ -186,7 +198,7 @@ func NewSonyflake(c *conf.Bootstrap) (sf *id.Sonyflake, err error) {
 		return
 	}
 	log.
-		WithField("sonyflake.id", machineId).
+		WithField("machine.id", machineId).
 		Info("initialize sonyflake success")
 	return
 }

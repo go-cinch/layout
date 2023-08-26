@@ -140,6 +140,8 @@ github.com/go-cinch/common/plugins/gorm/log v1.0.3 h1:33xHygFi0KBdR3cIvoopRRfwfV
 github.com/go-cinch/common/plugins/gorm/log v1.0.3/go.mod h1:mBb1X++Q9/WZxryqP/jYu6BzzS2RJIJf93MBzc7uhdI=
 github.com/go-cinch/common/plugins/gorm/tenant v1.0.0 h1:hyP8nd0H3TxgJEqQ11l3z/aecEK5v7woZbyesntkP4I=
 github.com/go-cinch/common/plugins/gorm/tenant v1.0.0/go.mod h1:m9IyLKtJgI3qw5V39EEsjhKtyB9YQ5caH0t/qvviEtA=
+github.com/go-cinch/common/plugins/kratos/config/env v1.0.0 h1:eZwWFqvKqlLfHfsf+4J3PaX12yAhrWtWrM4DVk5H0Bo=
+github.com/go-cinch/common/plugins/kratos/config/env v1.0.0/go.mod h1:BdOZMgVNicSy5fjE3LBugbKBU8QerY8AlGeVe8NZd0A=
 github.com/go-cinch/common/plugins/kratos/encoding/yml v1.0.0 h1:8/hdj/ADRccK2vvEtkpLhaAvQCdrgjpnirI6cefqpr4=
 github.com/go-cinch/common/plugins/kratos/encoding/yml v1.0.0/go.mod h1:podQ9ixQq3XVYqTe3r9Bi+gMVRpP6XZfAXRCQl0/9To=
 github.com/go-cinch/common/proto/params v1.0.0 h1:e7eWB9zYDrIPzI+lVUTXwvED5HbziSR+B5uVLXgynBM=
