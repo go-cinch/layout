@@ -14,6 +14,7 @@ require (
 	github.com/go-cinch/common/plugins/gorm/filter v1.0.0
 	github.com/go-cinch/common/plugins/gorm/log v1.0.3
 	github.com/go-cinch/common/plugins/gorm/tenant v1.0.0
+	github.com/go-cinch/common/plugins/kratos/config/env v1.0.0
 	github.com/go-cinch/common/plugins/kratos/encoding/yml v1.0.0
 	github.com/go-cinch/common/proto/params v1.0.0
 	github.com/go-cinch/common/utils v1.0.3
@@ -28,6 +29,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.11.2
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.11.2
 	go.opentelemetry.io/otel/sdk v1.11.2
+	go.opentelemetry.io/otel/trace v1.11.2
 	golang.org/x/text v0.10.0
 	google.golang.org/genproto v0.0.0-20220914210030-581e60b4ef85
 	google.golang.org/grpc v1.51.0
@@ -95,7 +97,6 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.11.2 // indirect
-	go.opentelemetry.io/otel/trace v1.11.2 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	golang.org/x/mod v0.11.0 // indirect
 	golang.org/x/net v0.11.0 // indirect

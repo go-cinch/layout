@@ -1,8 +1,6 @@
 package data
 
-import (
-	"github.com/go-cinch/layout/internal/biz"
-)
+import "github.com/go-cinch/layout/internal/biz"
 
 type gameRepo struct {
 	data *Data

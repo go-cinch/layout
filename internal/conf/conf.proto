@@ -40,9 +40,14 @@ message Server {
 
 message Data {
   message Database {
-    string driver = 1;
-    string dsn = 2;
-    map<string, string> tenants = 3;
+    string dsn = 1;
+    string driver = 2;
+    string endpoint = 3;
+    string username = 4;
+    string password = 5;
+    string schema = 6;
+    string query = 7;
+    map<string, string> tenants = 8;
   }
   message Redis {
     string dsn = 1;
