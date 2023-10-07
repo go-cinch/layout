@@ -34,6 +34,9 @@ func New(c *conf.Bootstrap) (tk *Task, err error) {
 			err = errors.Errorf("%v", e)
 		}
 	}()
+	if len(c.Tasks) == 0 {
+		return
+	}
 	w := worker.New(
 		worker.WithRedisUri(c.Data.Redis.Dsn),
 		worker.WithGroup(c.Name),
@@ -53,19 +56,17 @@ func New(c *conf.Bootstrap) (tk *Task, err error) {
 		worker: w,
 	}
 
-	if len(c.Tasks) > 0 {
-		for _, item := range c.Tasks {
-			err = tk.worker.Cron(
-				worker.WithRunGroup(item.Category),
-				worker.WithRunUuid(item.Uuid),
-				worker.WithRunExpr(item.Expr),
-				worker.WithRunTimeout(int(item.Timeout)),
-				worker.WithRunMaxRetry(int(item.Retry)),
-			)
-			if err != nil {
-				err = errors.WithMessage(err, "initialize worker failed")
-				return
-			}
+	for _, item := range c.Tasks {
+		err = tk.worker.Cron(
+			worker.WithRunGroup(item.Category),
+			worker.WithRunUuid(item.Uuid),
+			worker.WithRunExpr(item.Expr),
+			worker.WithRunTimeout(int(item.Timeout)),
+			worker.WithRunMaxRetry(int(item.Retry)),
+		)
+		if err != nil {
+			err = errors.WithMessage(err, "initialize worker failed")
+			return
 		}
 	}
 

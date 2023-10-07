@@ -5,9 +5,7 @@ import (
 	"strings"
 
 	jwtLocal "github.com/go-cinch/common/jwt"
-	"github.com/go-cinch/common/middleware/i18n"
 	"github.com/go-cinch/layout/api/auth"
-	"github.com/go-cinch/layout/api/reason"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -40,7 +38,7 @@ func Permission(c *conf.Bootstrap, authClient auth.AuthClient) middleware.Middle
 			var reply metadata.MD
 			_, err = authClient.Permission(ctx, &v, grpc.Header(&reply))
 			if err != nil {
-				err = reason.ErrorForbidden(i18n.FromContext(ctx).T(biz.NoPermission))
+				err = biz.ErrNoPermission(ctx)
 				return
 			}
 			ctx = jwtLocal.NewServerContextByReplyMD(ctx, reply)

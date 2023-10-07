@@ -28,5 +28,3 @@ WORKDIR /app
 COPY configs /data/conf
 
 CMD ["sh", "-c", "./server -c /data/conf"]
-# enable k8s config map
-#CMD ["sh", "-c", "./server -c /data/conf -n cinch -l layout"]

@@ -2,7 +2,11 @@ package data
 
 import (
 	"context"
-	fmt "fmt"
+	"fmt"
+	"net/url"
+	"strconv"
+	"time"
+
 	"github.com/go-cinch/common/id"
 	"github.com/go-cinch/common/log"
 	glog "github.com/go-cinch/common/plugins/gorm/log"
@@ -17,9 +21,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/sdk/trace"
 	"gorm.io/gorm"
-	"net/url"
-	"strconv"
-	"time"
 )
 
 // ProviderSet is data providers.

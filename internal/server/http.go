@@ -65,6 +65,7 @@ func NewHTTPServer(
 	}
 	srv := http.NewServer(opts...)
 	game.RegisterGameHTTPServer(srv, svc)
-	srv.HandlePrefix("/", pprof.NewHandler())
+	srv.HandlePrefix("/debug/pprof", pprof.NewHandler())
+	srv.HandlePrefix("/pub/healthcheck", HealthHandler(svc))
 	return srv
 }

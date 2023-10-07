@@ -1,11 +1,21 @@
 package biz
 
-const (
-	IdempotentMissingToken = "idempotent.token.missing"
+import (
+	"context"
 
-	TooManyRequests = "too.many.requests"
-	DataNotChange   = "data.not.change"
-	DuplicateField  = "duplicate.field"
-	RecordNotFound  = "record.not.found"
-	NoPermission    = "no.permission"
+	"github.com/go-cinch/common/constant"
+	"github.com/go-cinch/common/middleware/i18n"
+	"github.com/go-cinch/layout/api/reason"
+)
+
+var (
+	ErrIdempotentMissingToken = func(ctx context.Context) error {
+		return reason.ErrorIllegalParameter(i18n.FromContext(ctx).T(constant.IdempotentMissingToken))
+	}
+	ErrTooManyRequests = func(ctx context.Context) error {
+		return reason.ErrorTooManyRequests(i18n.FromContext(ctx).T(constant.TooManyRequests))
+	}
+	ErrNoPermission = func(ctx context.Context) error {
+		return reason.ErrorForbidden(i18n.FromContext(ctx).T(constant.NoPermission))
+	}
 )
