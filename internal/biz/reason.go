@@ -12,10 +12,17 @@ var (
 	ErrIdempotentMissingToken = func(ctx context.Context) error {
 		return reason.ErrorIllegalParameter(i18n.FromContext(ctx).T(constant.IdempotentMissingToken))
 	}
+
 	ErrTooManyRequests = func(ctx context.Context) error {
 		return reason.ErrorTooManyRequests(i18n.FromContext(ctx).T(constant.TooManyRequests))
 	}
-	ErrNoPermission = func(ctx context.Context) error {
-		return reason.ErrorForbidden(i18n.FromContext(ctx).T(constant.NoPermission))
+	ErrDataNotChange = func(ctx context.Context) error {
+		return reason.ErrorIllegalParameter(i18n.FromContext(ctx).T(constant.DataNotChange))
+	}
+	ErrDuplicateField = func(ctx context.Context, k, v string) error {
+		return reason.ErrorIllegalParameter("%s `%s`: %s", i18n.FromContext(ctx).T(constant.DuplicateField), k, v)
+	}
+	ErrRecordNotFound = func(ctx context.Context) error {
+		return reason.ErrorNotFound(i18n.FromContext(ctx).T(constant.RecordNotFound))
 	}
 )

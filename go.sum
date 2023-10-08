@@ -87,8 +87,6 @@ github.com/go-cinch/common/i18n v1.0.4 h1:pq2WS1TWlYpnTuXWamPJHB1RMA1kBDMKOJT+Gg
 github.com/go-cinch/common/i18n v1.0.4/go.mod h1:URXatJBnKNtnLLSH9XnYBuvW57FjJ8OIuhNqadqACUY=
 github.com/go-cinch/common/id v1.0.4 h1:bMjcxMq5lL19o2a/ty6OnS8tIn7kc98FznAq2vypUJs=
 github.com/go-cinch/common/id v1.0.4/go.mod h1:ZeuOCZyx1ZKuCexzLRW0gBCnwDUKH8XDs1S0dNv4Z+k=
-github.com/go-cinch/common/jwt v1.0.3 h1:/jznvjevW+2KsmWm666O1NxkHLSfVmrjoWwkuWAqewk=
-github.com/go-cinch/common/jwt v1.0.3/go.mod h1:++p7kddWh9SyCYIYWEb5mfiR+ljKC3I5puiyjz7oGNs=
 github.com/go-cinch/common/log v1.0.4 h1:cXOG6g9Oo5IyC0e+tDZ0qZ1AZFLN50EZdyxgEEnxeSs=
 github.com/go-cinch/common/log v1.0.4/go.mod h1:jKHISgmad+oMSoxYP74L3CWqNI9FP68D1jXPqEXS+Rs=
 github.com/go-cinch/common/middleware/i18n v1.0.1 h1:E1XJiWHbckVV+Zm6/hN1hAkBPGre9VLAG9Ki2Uy3m6Y=
@@ -146,8 +144,6 @@ github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9
 github.com/gobuffalo/logger v1.0.6 h1:nnZNpxYo0zx+Aj9RfMPBm+x9zAU2OayFh/xrAWi34HU=
 github.com/gobuffalo/packd v1.0.1 h1:U2wXfRr4E9DH8IdsDLlRFwTZTK7hLfq9qT/QHXGVe/0=
 github.com/gobuffalo/packr/v2 v2.8.3 h1:xE1yzvnO56cUC0sTpKR3DIbxZgB54AftTFMhB2XEWlY=
-github.com/golang-jwt/jwt/v4 v4.5.0 h1:7cYmW1XlMY7h7ii7UhUyChSgS5wUJEnm9uZVTGqOWzg=
-github.com/golang-jwt/jwt/v4 v4.5.0/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
 github.com/golang-module/carbon/v2 v2.2.8 h1:a1VxHHKAR7fc1ho7sYXhS1s5S4x7+oqAf2EY5p8C46A=
 github.com/golang-module/carbon/v2 v2.2.8/go.mod h1:XDALX7KgqmHk95xyLeaqX9/LJGbfLATyruTziq68SZ8=
 github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 h1:au07oEsX2xN0ktxqI+Sida1w446QrXBRJ0nee3SNZlA=
