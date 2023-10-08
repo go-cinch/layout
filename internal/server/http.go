@@ -44,9 +44,6 @@ func NewHTTPServer(
 		i18nMiddleware.Translator(i18n.WithLanguage(language.Make(c.Server.Language)), i18n.WithFs(locales)),
 		metadata.Server(),
 	)
-	if c.Server.Http.Permission {
-		middlewares = append(middlewares, localMiddleware.Permission(c, authClient))
-	}
 	if c.Server.Idempotent {
 		middlewares = append(middlewares, localMiddleware.Idempotent(authClient))
 	}
@@ -65,6 +62,7 @@ func NewHTTPServer(
 	}
 	srv := http.NewServer(opts...)
 	game.RegisterGameHTTPServer(srv, svc)
-	srv.HandlePrefix("/", pprof.NewHandler())
+	srv.HandlePrefix("/debug/pprof", pprof.NewHandler())
+	srv.HandlePrefix("/pub/healthcheck", HealthHandler(svc))
 	return srv
 }

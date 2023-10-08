@@ -1,5 +1,5 @@
 syntax = "proto3";
-package kratos.api;
+package cinch.conf;
 
 option go_package = "github.com/go-cinch/layout/internal/conf;conf";
 
@@ -20,15 +20,11 @@ message Server {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
-    string path = 4;
-    bool permission = 5;
   }
   message GRPC {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
-    bool health = 4;
-    bool permission = 5;
   }
   string machineId = 1;
   HTTP http = 2;
@@ -36,6 +32,8 @@ message Server {
   string language = 4;
   bool idempotent = 5;
   bool validate = 6;
+  bool nocache = 7;
+  string logLevel = 8;
 }
 
 message Data {
@@ -70,7 +68,9 @@ message Tracer {
 }
 
 message Client {
-  string auth = 1;
+  bool health = 1;
+  google.protobuf.Duration timeout = 2;
+  string auth = 3;
 }
 
 message Task {

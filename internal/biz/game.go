@@ -1,7 +1,10 @@
 package biz
 
-import "github.com/go-cinch/layout/internal/conf"
+import (
+	"strings"
 
+	"github.com/go-cinch/layout/internal/conf"
+)
 
 type GameRepo interface{}
 
@@ -14,9 +17,11 @@ type GameUseCase struct {
 
 func NewGameUseCase(c *conf.Bootstrap, repo GameRepo, tx Transaction, cache Cache) *GameUseCase {
 	return &GameUseCase{
-		c:     c,
-		repo:  repo,
-		tx:    tx,
-		cache: cache.WithPrefix("game"),
+		c:    c,
+		repo: repo,
+		tx:   tx,
+		cache: cache.WithPrefix(strings.Join([]string{
+			c.Name, "game",
+		}, "_")),
 	}
 }

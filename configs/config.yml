@@ -3,23 +3,21 @@ server:
   http:
     addr: 0.0.0.0:8080
     timeout: 20s
-    # service path prefix, check permission will use it
-    path: '/layout'
-    # use nginx auth_request, disable this
-    permission: false
   grpc:
     addr: 0.0.0.0:8180
     timeout: 20s
-    health: false
-    permission: true
   language: 'en'
   idempotent: true
   validate: true
+  # disable biz.Cache or not
+  nocache: false
+  logLevel: 'info'
 data:
   database:
     driver: mysql
-    endpoint: '127.0.0.1:3306'
     # dsn: 'root:root@tcp(127.0.0.1:3306)/layout?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+    dsn: ''
+    endpoint: '127.0.0.1:3306'
     username: 'root'
     password: 'root'
     schema: 'layout'
@@ -38,7 +36,8 @@ tracer:
   enable: false
   otlp:
     # how to run a otel-collector? see this: https://github.com/SigNoz/signoz/blob/develop/deploy/README.md#using-docker-compose
-    endpoint: '127.0.0.1:4317'
+    # endpoint: '127.0.0.1:4317'
+    endpoint: ''
     insecure: true
   stdout:
     prettyPrint: false

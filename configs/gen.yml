@@ -1,2 +1,9 @@
+# go install github.com/go-cinch/cinch/cmd/cinch@latest
+# cinch gen gorm
 gen:
-  dsn: 'root:passwd@tcp(127.0.0.1:3306)/layout?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+  dsn: 'root:root@tcp(127.0.0.1:3306)/layout?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+  tables:
+  exclude:
+  - schema_migrations
+  association:
+  field-with-string-tag:
