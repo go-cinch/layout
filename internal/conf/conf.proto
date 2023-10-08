@@ -20,14 +20,11 @@ message Server {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
-    string path = 4;
-    bool permission = 5;
   }
   message GRPC {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
-    bool permission = 4;
   }
   string machineId = 1;
   HTTP http = 2;

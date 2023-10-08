@@ -3,14 +3,9 @@ server:
   http:
     addr: 0.0.0.0:8080
     timeout: 20s
-    # service path prefix, check permission will use it
-    path: '/layout'
-    # use nginx auth_request, disable this
-    permission: false
   grpc:
     addr: 0.0.0.0:8180
     timeout: 20s
-    permission: true
   language: 'en'
   idempotent: true
   validate: true
