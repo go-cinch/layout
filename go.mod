@@ -4,11 +4,11 @@ go 1.20
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.10.1
-	github.com/go-cinch/common/constant v1.0.4
-	github.com/go-cinch/common/i18n v1.0.4
+	github.com/go-cinch/common/constant v1.0.5
+	github.com/go-cinch/common/i18n v1.0.6
 	github.com/go-cinch/common/id v1.0.4
 	github.com/go-cinch/common/log v1.0.4
-	github.com/go-cinch/common/middleware/i18n v1.0.1
+	github.com/go-cinch/common/middleware/i18n v1.0.5
 	github.com/go-cinch/common/middleware/tenant v1.0.1
 	github.com/go-cinch/common/middleware/trace v1.0.1
 	github.com/go-cinch/common/plugins/gorm/filter v1.0.0
