@@ -4,12 +4,14 @@ FROM golang:1.20.5 AS builder
 # CGO_ENABLED=1, need check `ldd --version` is same as builder
 ENV CGO_ENABLED=0
 
-COPY . /src
-WORKDIR /src
-
 # install cinch tool
 RUN go install github.com/go-cinch/cinch/cmd/cinch@latest
 
+WORKDIR /src
+# download first can use docker build cache if go.mod not change
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
 RUN make build
 
 FROM ubuntu:22.04

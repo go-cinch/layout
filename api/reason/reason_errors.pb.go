@@ -11,6 +11,18 @@ import (
 // is compatible with the kratos package it is being compiled against.
 const _ = errors.SupportPackageIsVersion1
 
+func IsInternal(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_INTERNAL.String() && e.Code == 500
+}
+
+func ErrorInternal(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, ErrorReason_INTERNAL.String(), fmt.Sprintf(format, args...))
+}
+
 func IsTooManyRequests(err error) bool {
 	if err == nil {
 		return false
