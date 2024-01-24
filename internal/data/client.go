@@ -8,6 +8,7 @@ import (
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/go-kratos/kratos/v2/middleware/circuitbreaker"
 	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -33,6 +34,7 @@ func NewClient[T any](name, endpoint string, health bool, timeout time.Duration,
 		grpc.WithMiddleware(
 			tracing.Client(),
 			metadata.Client(),
+			circuitbreaker.Client(),
 			recovery.Recovery(),
 		),
 		grpc.WithOptions(g.WithDisableHealthCheck()),
