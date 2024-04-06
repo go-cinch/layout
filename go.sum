@@ -748,8 +748,9 @@ github.com/go-cinch/common/i18n v1.0.6 h1:aRY3ixEhfIDYp6YDJLXljpH7sZf/J8H4warDxk
 github.com/go-cinch/common/i18n v1.0.6/go.mod h1:URXatJBnKNtnLLSH9XnYBuvW57FjJ8OIuhNqadqACUY=
 github.com/go-cinch/common/id v1.0.4 h1:bMjcxMq5lL19o2a/ty6OnS8tIn7kc98FznAq2vypUJs=
 github.com/go-cinch/common/id v1.0.4/go.mod h1:ZeuOCZyx1ZKuCexzLRW0gBCnwDUKH8XDs1S0dNv4Z+k=
-github.com/go-cinch/common/log v1.0.5 h1:wvmH8vj/BtaQY6i3QZXPh8L3rOth89XXebB3mFTmYzk=
 github.com/go-cinch/common/log v1.0.5/go.mod h1:jKHISgmad+oMSoxYP74L3CWqNI9FP68D1jXPqEXS+Rs=
+github.com/go-cinch/common/log v1.0.6 h1:/CmRUwz8v7sWgr/j8iRjjeltmUpH0vb8+HJOaGuqX4A=
+github.com/go-cinch/common/log v1.0.6/go.mod h1:jKHISgmad+oMSoxYP74L3CWqNI9FP68D1jXPqEXS+Rs=
 github.com/go-cinch/common/middleware/i18n v1.0.5 h1:SmxEMljqYF8xraaaa3KZgvNbKIE06ShQAZ34w87wkvs=
 github.com/go-cinch/common/middleware/i18n v1.0.5/go.mod h1:TiyZB9yzBx+giZqngOPQDXtDtYnqgMUgGqs4ebCgnQU=
 github.com/go-cinch/common/middleware/tenant v1.0.1 h1:avbK5rb2MEDzykoZ0gKhtDf7/2k2xpXJWovUks9L8XU=
