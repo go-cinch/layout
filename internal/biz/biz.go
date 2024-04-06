@@ -31,6 +31,6 @@ type Cache interface {
 	SetWithExpiration(ctx context.Context, action, data string, seconds int64)
 	// Flush is clean association cache if handler err=nil
 	Flush(ctx context.Context, handler func(context.Context) error) error
-	// FlushByPrefix clean cache by prefix
-	FlushByPrefix(ctx context.Context, prefix string) (err error)
+	// FlushByPrefix clean cache by prefix, without prefix equals flush all by default cache prefix
+	FlushByPrefix(ctx context.Context, prefix ...string) (err error)
 }

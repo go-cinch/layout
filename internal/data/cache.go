@@ -160,8 +160,8 @@ func (c *Cache) Flush(ctx context.Context, handler func(ctx context.Context) err
 	return
 }
 
-func (c *Cache) FlushByPrefix(ctx context.Context, prefix string) (err error) {
-	action := c.getPrefixKey(ctx, prefix)
+func (c *Cache) FlushByPrefix(ctx context.Context, prefix ...string) (err error) {
+	action := c.getPrefixKey(ctx, prefix...)
 	arr := c.redis.Keys(ctx, action).Val()
 	p := c.redis.Pipeline()
 	for _, item := range arr {
