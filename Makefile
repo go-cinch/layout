@@ -17,15 +17,14 @@ endif
 .PHONY: init
 # init env
 init:
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.32.0
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2@latest
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
-	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-	go install github.com/envoyproxy/protoc-gen-validate@latest
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
+	go install github.com/google/gnostic/cmd/protoc-gen-openapi@v0.7.0
+	go install github.com/envoyproxy/protoc-gen-validate@v1.0.4
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.55.2
 
 .PHONY: config
 # generate internal proto
@@ -55,9 +54,7 @@ api:
         	--go-http_out=. \
         	--go-grpc_out=. \
         	--validate_out=lang=go:. \
-        	--openapiv2_out docs \
-        	--openapiv2_opt logtostderr=true \
-        	--openapiv2_opt json_names_for_fields=false \
+        	--openapi_out=fq_schema_naming=true,default_response=false,output_mode=source_relative:docs \
         	$$NAME; \
 	done
 	@echo 'You can import *.json into https://editor.swagger.io/'

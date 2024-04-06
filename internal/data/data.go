@@ -21,6 +21,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/sdk/trace"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 // ProviderSet is data providers.
@@ -166,6 +167,17 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 	}
 	ops = append(ops, tenant.WithSQLFile(db.SQLFiles))
 	ops = append(ops, tenant.WithSQLRoot(db.SQLRoot))
+	ops = append(ops, tenant.WithConfig(&gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+		QueryFields: true,
+		Logger: glog.New(
+			glog.WithColorful(true),
+			glog.WithSlow(200),
+			glog.WithLevel(log.NewLevel(c.Server.LogLevel)),
+		),
+	}))
 
 	gormTenant, err = tenant.New(ops...)
 	if err != nil {

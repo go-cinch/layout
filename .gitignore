@@ -35,4 +35,5 @@ bin/
 .idea/
 *.swp
 
-docs/
+docs/*/*
+!docs/game-proto/game.openapi.yaml

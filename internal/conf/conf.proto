@@ -26,14 +26,15 @@ message Server {
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
-  string machineId = 1;
-  HTTP http = 2;
-  GRPC grpc = 3;
-  string language = 4;
-  bool idempotent = 5;
-  bool validate = 6;
-  bool nocache = 7;
-  string logLevel = 8;
+  bool prod = 1;
+  string machineId = 2;
+  HTTP http = 3;
+  GRPC grpc = 4;
+  string language = 5;
+  bool idempotent = 6;
+  bool validate = 7;
+  bool nocache = 8;
+  string logLevel = 9;
 }
 
 message Data {

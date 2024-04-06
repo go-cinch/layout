@@ -31,6 +31,8 @@ var (
 	Version string
 	// flagConf is the config flag.
 	flagConf string
+	// beforeReadConfigLogLevel is log level before read config.
+	beforeReadConfigLogLevel = log.InfoLevel
 
 	id, _ = os.Hostname()
 )
@@ -59,7 +61,7 @@ func main() {
 	logOps := []func(*log.Options){
 		log.WithLogger(
 			kratosLog.With(
-				kratosLog.NewStdLogger(os.Stdout),
+				kratosLog.DefaultLogger,
 				"ts", kratosLog.DefaultTimestamp,
 				"service.id", id,
 				"service.name", Name,
@@ -68,7 +70,7 @@ func main() {
 				"span.id", tracing.SpanID(),
 			),
 		),
-		log.WithLevel(log.InfoLevel),
+		log.WithLevel(beforeReadConfigLogLevel),
 	}
 	log.DefaultWrapper = log.NewWrapper(logOps...)
 	c := config.New(
@@ -115,6 +117,7 @@ func main() {
 			bc.Server.MachineId = "0"
 		}
 	}
+	// os.Setenv("COPIERX_UTC", "true")
 
 	app, cleanup, err := wireApp(&bc)
 	if err != nil {
