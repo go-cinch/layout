@@ -144,6 +144,7 @@ func MySQLAndRedis() *conf.Bootstrap {
 	return &conf.Bootstrap{
 		Server: &conf.Server{
 			MachineId: "123",
+			LogLevel:  "debug",
 		},
 		Data: &conf.Data{
 			Database: &conf.Data_Database{

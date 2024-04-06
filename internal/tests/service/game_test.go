@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
+	"strconv"
+	"strings"
+	"testing"
+
 	"github.com/go-cinch/common/proto/params"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/tests/mock"
 	"github.com/google/uuid"
-	"strconv"
-	"strings"
-	"testing"
 )
 
 func TestGameService_CreateGame(t *testing.T) {
