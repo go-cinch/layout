@@ -8,8 +8,10 @@ package game
 
 import (
 	context "context"
+	params "github.com/go-cinch/common/proto/params"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,38 +21,173 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationGameHelloWorld = "/game.v1.Game/HelloWorld"
+const OperationGameCreateGame = "/game.v1.Game/CreateGame"
+const OperationGameDeleteGame = "/game.v1.Game/DeleteGame"
+const OperationGameFindGame = "/game.v1.Game/FindGame"
+const OperationGameGetGame = "/game.v1.Game/GetGame"
+const OperationGameUpdateGame = "/game.v1.Game/UpdateGame"
 
 type GameHTTPServer interface {
-	HelloWorld(context.Context, *HelloWorldRequest) (*HelloWorldReply, error)
+	// CreateGame create one Game record
+	CreateGame(context.Context, *CreateGameRequest) (*emptypb.Empty, error)
+	// DeleteGame delete one or more Game record by id
+	DeleteGame(context.Context, *params.IdsRequest) (*emptypb.Empty, error)
+	// FindGame query Game list by page
+	FindGame(context.Context, *FindGameRequest) (*FindGameReply, error)
+	// GetGame query one Game record
+	GetGame(context.Context, *GetGameRequest) (*GetGameReply, error)
+	// UpdateGame update one Game record by id
+	UpdateGame(context.Context, *UpdateGameRequest) (*emptypb.Empty, error)
 }
 
 func RegisterGameHTTPServer(s *http.Server, srv GameHTTPServer) {
 	r := s.Route("/")
-	r.GET("/hello/world", _Game_HelloWorld0_HTTP_Handler(srv))
+	r.POST("/game", _Game_CreateGame0_HTTP_Handler(srv))
+	r.GET("/game/{id}", _Game_GetGame0_HTTP_Handler(srv))
+	r.GET("/game", _Game_FindGame0_HTTP_Handler(srv))
+	r.PATCH("/game/{id}", _Game_UpdateGame0_HTTP_Handler(srv))
+	r.PUT("/game/{id}", _Game_UpdateGame1_HTTP_Handler(srv))
+	r.DELETE("/game", _Game_DeleteGame0_HTTP_Handler(srv))
 }
 
-func _Game_HelloWorld0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+func _Game_CreateGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in HelloWorldRequest
+		var in CreateGameRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationGameHelloWorld)
+		http.SetOperation(ctx, OperationGameCreateGame)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.HelloWorld(ctx, req.(*HelloWorldRequest))
+			return srv.CreateGame(ctx, req.(*CreateGameRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*HelloWorldReply)
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Game_GetGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetGameRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameGetGame)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetGame(ctx, req.(*GetGameRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetGameReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Game_FindGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in FindGameRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameFindGame)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.FindGame(ctx, req.(*FindGameRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*FindGameReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Game_UpdateGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateGameRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameUpdateGame)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateGame(ctx, req.(*UpdateGameRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Game_UpdateGame1_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateGameRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameUpdateGame)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateGame(ctx, req.(*UpdateGameRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Game_DeleteGame0_HTTP_Handler(srv GameHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in params.IdsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGameDeleteGame)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeleteGame(ctx, req.(*params.IdsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type GameHTTPClient interface {
-	HelloWorld(ctx context.Context, req *HelloWorldRequest, opts ...http.CallOption) (rsp *HelloWorldReply, err error)
+	CreateGame(ctx context.Context, req *CreateGameRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	DeleteGame(ctx context.Context, req *params.IdsRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	FindGame(ctx context.Context, req *FindGameRequest, opts ...http.CallOption) (rsp *FindGameReply, err error)
+	GetGame(ctx context.Context, req *GetGameRequest, opts ...http.CallOption) (rsp *GetGameReply, err error)
+	UpdateGame(ctx context.Context, req *UpdateGameRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type GameHTTPClientImpl struct {
@@ -61,13 +198,65 @@ func NewGameHTTPClient(client *http.Client) GameHTTPClient {
 	return &GameHTTPClientImpl{client}
 }
 
-func (c *GameHTTPClientImpl) HelloWorld(ctx context.Context, in *HelloWorldRequest, opts ...http.CallOption) (*HelloWorldReply, error) {
-	var out HelloWorldReply
-	pattern := "/hello/world"
+func (c *GameHTTPClientImpl) CreateGame(ctx context.Context, in *CreateGameRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/game"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationGameCreateGame))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *GameHTTPClientImpl) DeleteGame(ctx context.Context, in *params.IdsRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/game"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationGameHelloWorld))
+	opts = append(opts, http.Operation(OperationGameDeleteGame))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *GameHTTPClientImpl) FindGame(ctx context.Context, in *FindGameRequest, opts ...http.CallOption) (*FindGameReply, error) {
+	var out FindGameReply
+	pattern := "/game"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationGameFindGame))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *GameHTTPClientImpl) GetGame(ctx context.Context, in *GetGameRequest, opts ...http.CallOption) (*GetGameReply, error) {
+	var out GetGameReply
+	pattern := "/game/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationGameGetGame))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *GameHTTPClientImpl) UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/game/{id}"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationGameUpdateGame))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

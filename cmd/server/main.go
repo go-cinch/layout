@@ -117,6 +117,7 @@ func main() {
 			bc.Server.MachineId = "0"
 		}
 	}
+	// os.Setenv("COPIERX_UTC", "true")
 
 	app, cleanup, err := wireApp(&bc)
 	if err != nil {
