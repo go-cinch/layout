@@ -117,6 +117,7 @@ github.com/go-cinch/common/utils v1.0.4 h1:RtvOUtwWRhlKfCblY/6m1Hfm0uI8pbkxWGmVY
 github.com/go-cinch/common/utils v1.0.4/go.mod h1:Nkt/2liz09nz0hsDoCVrQx4c3BZnAHQYt+qDEKkief4=
 github.com/go-cinch/common/worker v1.0.4 h1:NNPkIrgVMliCGCjFez1CU75wGiyY+P8zAbEIrO+eAM8=
 github.com/go-cinch/common/worker v1.0.4/go.mod h1:1r0Odo6FwdRN7mkPN6MunPXXnJ9hNjeGvvF5hhbQg+M=
+github.com/go-cinch/common/worker v1.0.6/go.mod h1:1r0Odo6FwdRN7mkPN6MunPXXnJ9hNjeGvvF5hhbQg+M=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=

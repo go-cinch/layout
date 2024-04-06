@@ -19,7 +19,7 @@ require (
 	github.com/go-cinch/common/plugins/kratos/encoding/yml v1.0.1
 	github.com/go-cinch/common/proto/params v1.0.0
 	github.com/go-cinch/common/utils v1.0.4
-	github.com/go-cinch/common/worker v1.0.4
+	github.com/go-cinch/common/worker v1.0.6
 	github.com/go-kratos/kratos/v2 v2.7.0
 	github.com/google/wire v0.5.0
 	github.com/pkg/errors v0.9.1
