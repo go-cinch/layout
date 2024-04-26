@@ -8,7 +8,7 @@ require (
 	github.com/go-cinch/common/copierx v1.0.3
 	github.com/go-cinch/common/i18n v1.0.6
 	github.com/go-cinch/common/id v1.0.4
-	github.com/go-cinch/common/log v1.0.6
+	github.com/go-cinch/common/log v1.1.0
 	github.com/go-cinch/common/middleware/i18n v1.0.5
 	github.com/go-cinch/common/middleware/tenant v1.0.1
 	github.com/go-cinch/common/middleware/trace v1.0.1
@@ -93,7 +93,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sony/sonyflake v1.1.0 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/tetratelabs/wazero v1.1.0 // indirect

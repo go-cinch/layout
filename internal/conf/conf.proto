@@ -13,6 +13,7 @@ message Bootstrap {
   Tracer tracer = 5;
   repeated Task tasks = 6;
   Client client = 7;
+  Log log = 8;
 }
 
 message Server {
@@ -34,7 +35,6 @@ message Server {
   bool idempotent = 6;
   bool validate = 7;
   bool nocache = 8;
-  string logLevel = 9;
 }
 
 message Data {
@@ -53,6 +53,12 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+}
+
+message Log {
+  string level = 1;
+  bool JSON = 2;
+  bool showSQL = 3;
 }
 
 message Tracer {

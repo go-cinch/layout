@@ -167,6 +167,12 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 	}
 	ops = append(ops, tenant.WithSQLFile(db.SQLFiles))
 	ops = append(ops, tenant.WithSQLRoot(db.SQLRoot))
+
+	level := log.NewLevel(c.Log.Level)
+	// force to warn level when show sql is false
+	if level > log.WarnLevel && !c.Log.ShowSQL {
+		level = log.WarnLevel
+	}
 	ops = append(ops, tenant.WithConfig(&gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
@@ -175,7 +181,7 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 		Logger: glog.New(
 			glog.WithColorful(true),
 			glog.WithSlow(200),
-			glog.WithLevel(log.NewLevel(c.Server.LogLevel)),
+			glog.WithLevel(level),
 		),
 	}))
 

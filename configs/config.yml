@@ -12,7 +12,6 @@ server:
   validate: true
   # disable biz.Cache or not
   nocache: false
-  logLevel: 'info'
 data:
   database:
     driver: mysql
