@@ -24,7 +24,7 @@ func NewGameRepo(data *Data) biz.GameRepo {
 	}
 }
 
-func (ro gameRepo) Create(ctx context.Context, item *biz.Game) (err error) {
+func (ro gameRepo) Create(ctx context.Context, item *biz.CreateGame) (err error) {
 	err = ro.NameExists(ctx, item.Name)
 	if err == nil {
 		err = biz.ErrDuplicateField(ctx, "name", item.Name)
@@ -34,7 +34,7 @@ func (ro gameRepo) Create(ctx context.Context, item *biz.Game) (err error) {
 	copierx.Copy(&m, item)
 	p := query.Use(ro.data.DB(ctx)).Game
 	db := p.WithContext(ctx)
-	m.ID = ro.data.Id(ctx)
+	m.ID = ro.data.ID(ctx)
 	err = db.Create(&m)
 	return
 }
@@ -78,7 +78,7 @@ func (ro gameRepo) Find(ctx context.Context, condition *biz.FindGame) (rp []biz.
 func (ro gameRepo) Update(ctx context.Context, item *biz.UpdateGame) (err error) {
 	p := query.Use(ro.data.DB(ctx)).Game
 	db := p.WithContext(ctx)
-	m := db.GetByID(item.Id)
+	m := db.GetByID(item.ID)
 	if m.ID == constant.UI0 {
 		err = biz.ErrRecordNotFound(ctx)
 		return
@@ -97,7 +97,7 @@ func (ro gameRepo) Update(ctx context.Context, item *biz.UpdateGame) (err error)
 		}
 	}
 	_, err = db.
-		Where(p.ID.Eq(item.Id)).
+		Where(p.ID.Eq(item.ID)).
 		Updates(&change)
 	return
 }

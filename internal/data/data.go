@@ -93,8 +93,8 @@ func (d *Data) Cache() redis.UniversalClient {
 	return d.redis
 }
 
-// Id can get unique id
-func (d *Data) Id(ctx context.Context) uint64 {
+// ID can get unique id
+func (d *Data) ID(ctx context.Context) uint64 {
 	return d.sonyflake.Id(ctx)
 }
 
