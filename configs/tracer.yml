@@ -1,0 +1,12 @@
+tracer:
+  # enable tracer or not, if gcp=false, otlp endpoint='', will use stdout
+  enable: true
+  # samples ratio
+  ratio: 1
+  otlp:
+    # how to run a otel-collector? see this: https://github.com/SigNoz/signoz/blob/develop/deploy/README.md#using-docker-compose
+    # endpoint: '127.0.0.1:4317'
+    endpoint: ''
+    insecure: true
+  stdout:
+    prettyPrint: false

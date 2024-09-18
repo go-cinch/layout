@@ -22,6 +22,7 @@ type Cache struct {
 	prefix  string
 	lock    string
 	val     string
+	refresh bool
 }
 
 // NewCache .
@@ -48,6 +49,17 @@ func (c *Cache) WithPrefix(prefix string) biz.Cache {
 	}
 }
 
+func (c *Cache) WithRefresh() biz.Cache {
+	return &Cache{
+		redis:   c.redis,
+		disable: c.disable,
+		prefix:  c.prefix,
+		lock:    c.lock,
+		val:     c.val,
+		refresh: true,
+	}
+}
+
 func (c *Cache) Get(
 	ctx context.Context,
 	action string,
@@ -57,11 +69,13 @@ func (c *Cache) Get(
 		return write(ctx)
 	}
 	key := c.getValKey(ctx, action)
-	// 1. first get cache
-	res, err = c.redis.Get(ctx, key).Result()
-	if err == nil {
-		// cache exists
-		return
+	if !c.refresh {
+		// 1. first get cache
+		res, err = c.redis.Get(ctx, key).Result()
+		if err == nil {
+			// cache exists
+			return
+		}
 	}
 	// 2. get lock before read db
 	ok := c.Lock(ctx, action)
@@ -70,11 +84,13 @@ func (c *Cache) Get(
 		return
 	}
 	defer c.Unlock(ctx, action)
-	// 3. double check cache exists(avoid concurrency step 1 ok=false)
-	res, err = c.redis.Get(ctx, key).Result()
-	if err == nil {
-		// cache exists
-		return
+	if !c.refresh {
+		// 3. double check cache exists(avoid concurrency step 1 ok=false)
+		res, err = c.redis.Get(ctx, key).Result()
+		if err == nil {
+			// cache exists
+			return
+		}
 	}
 	// 4. load data from db and write to cache
 	if write != nil {
@@ -190,7 +206,7 @@ func (c *Cache) Lock(ctx context.Context, action string) (ok bool) {
 	}
 	retry := 0
 	var e error
-	for retry < 20 && !ok {
+	for retry < 600 && !ok {
 		ok, e = c.redis.SetNX(ctx, c.getLockKey(ctx, action), 1, time.Minute).Result()
 		if errors.Is(e, context.DeadlineExceeded) ||
 			errors.Is(e, context.Canceled) ||
@@ -244,9 +260,9 @@ func (c *Cache) getPrefixKey(ctx context.Context, arr ...string) string {
 		prefix = "prefix"
 	}
 	if id == "" {
-		return strings.Join([]string{prefix, "*"}, "_")
+		return strings.Join([]string{prefix, "*"}, "")
 	}
-	return strings.Join([]string{id, prefix, "*"}, "_")
+	return strings.Join([]string{id, "_", prefix, "*"}, "")
 }
 
 func (c *Cache) getValKey(ctx context.Context, action string) string {

@@ -11,7 +11,7 @@ message Bootstrap {
   Server server = 3;
   Data data = 4;
   Tracer tracer = 5;
-  repeated Task tasks = 6;
+  map<string, Task> task = 6;
   Client client = 7;
   Log log = 8;
 }
@@ -70,8 +70,9 @@ message Tracer {
     bool prettyPrint = 1;
   }
   bool enable = 1;
-  Otlp otlp = 2;
-  Stdout stdout = 3;
+  float ratio = 2;
+  Otlp otlp = 3;
+  Stdout stdout = 4;
 }
 
 message Client {
@@ -81,9 +82,8 @@ message Client {
 }
 
 message Task {
-  string category = 1;
-  string uuid = 2;
-  string expr = 3;
-  int64 timeout = 4;
-  int64 retry = 5;
+  string name = 1;
+  string expr = 2;
+  int64 timeout = 3;
+  int64 retry = 4;
 }

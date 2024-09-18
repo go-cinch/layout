@@ -15,11 +15,11 @@ linters-settings:
     - name: var-naming
       arguments: [ [ "ID", "IDS" ] ]
     - name: line-length-limit
-      arguments: [ 150 ]
+      arguments: [ 200 ]
     - name: argument-limit
-      arguments: [ 5 ]
+      arguments: [ 10 ]
     - name: function-result-limit
-      arguments: [ 5 ]
+      arguments: [ 10 ]
     - name: blank-imports
     - name: duplicated-imports
     - name: bool-literal-in-expr

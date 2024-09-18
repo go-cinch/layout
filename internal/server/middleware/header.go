@@ -17,6 +17,7 @@ func Header() middleware.Middleware {
 						tr.ReplyHeader().Set("x-content-type-options", "nosniff")
 						tr.ReplyHeader().Set("x-xss-protection", "1; mode=block")
 						tr.ReplyHeader().Set("x-frame-options", "deny")
+						tr.ReplyHeader().Set("Cache-Control", "private")
 					}
 				}
 			}

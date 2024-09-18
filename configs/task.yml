@@ -1,0 +1,9 @@
+task:
+  task1:
+    name: 'every10s'
+    expr: '0/10 * * * * * *'
+  task2:
+    name: 'every3min'
+    expr: '0 0/3 * * * * *'
+    timeout: 60
+    retry: 10

@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/go-cinch/common/log/caller"
 	"os"
 	"strconv"
 
 	"github.com/go-cinch/common/log"
+	"github.com/go-cinch/common/log/caller"
 	_ "github.com/go-cinch/common/plugins/gorm/filter"
 	"github.com/go-cinch/common/plugins/k8s/pod"
 	"github.com/go-cinch/common/plugins/kratos/config/env"
@@ -32,7 +32,7 @@ var (
 	// flagConf is the config flag.
 	flagConf string
 	// beforeReadConfigLogLevel is log level before read config.
-	beforeReadConfigLogLevel = log.DebugLevel
+	beforeReadConfigLogLevel = log.InfoLevel
 
 	id, _ = os.Hostname()
 )
@@ -59,7 +59,7 @@ func main() {
 	flag.Parse()
 	// set default log before read config
 	logOps := []func(*log.Options){
-		log.WithJSON(false),
+		log.WithJSON(true),
 		log.WithLevel(beforeReadConfigLogLevel),
 		log.WithValuer("service.id", id),
 		log.WithValuer("service.name", Name),

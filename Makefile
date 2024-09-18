@@ -42,7 +42,7 @@ sub:
 .PHONY: api
 # generate api proto
 api:
-	mkdir -p docs
+	@mkdir -p docs
 	for NAME in $(API_PROTO_FILES); do \
 		ROOT=$(shell pwd); \
 		DIR=`echo $$NAME | awk -F '-proto/[^/]*$$' '{print $$1}'`; \
