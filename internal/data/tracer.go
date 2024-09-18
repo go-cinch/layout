@@ -14,17 +14,11 @@ import (
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"google.golang.org/grpc"
 )
 
 func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = errors.Errorf("%v", e)
-		}
-	}()
 	if !c.Tracer.Enable {
 		log.Info("skip initialize tracer")
 		return
@@ -32,6 +26,8 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var exporter trace.SpanExporter
+	var resourcer *resource.Resource
+	attrs := []attribute.KeyValue{semconv.ServiceNameKey.String(c.Name)}
 	if c.Tracer.Otlp.Endpoint != "" {
 		// rpc driver
 		driverOpts := []otlptracegrpc.Option{
@@ -43,6 +39,7 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 		}
 		driver := otlptracegrpc.NewClient(driverOpts...)
 		exporter, err = otlptrace.New(ctx, driver)
+		resourcer = resource.NewSchemaless(attrs...)
 	} else {
 		// stdout driver
 		if c.Tracer.Stdout.PrettyPrint {
@@ -50,21 +47,21 @@ func NewTracer(c *conf.Bootstrap) (tp *trace.TracerProvider, err error) {
 		} else {
 			exporter, err = stdouttrace.New()
 		}
+		resourcer = resource.NewSchemaless(attrs...)
 	}
 
 	if err != nil {
-		err = errors.WithMessage(err, "initialize tracer failed")
+		log.Error(err)
+		err = errors.New("initialize tracer failed")
 		return
 	}
-	tp = trace.NewTracerProvider(
-		trace.WithSampler(trace.AlwaysSample()),
-		trace.WithSyncer(exporter),
-		trace.WithResource(resource.NewSchemaless(
-			semconv.ServiceNameKey.String(c.Name),
-			attribute.String("exporter", "otlp"),
-		)),
-	)
+	providerOpts := []trace.TracerProviderOption{
+		trace.WithBatcher(exporter),
+		trace.WithResource(resourcer),
+		trace.WithSampler(trace.TraceIDRatioBased(float64(c.Tracer.Ratio))),
+	}
+	tp = trace.NewTracerProvider(providerOpts...)
 	otel.SetTracerProvider(tp)
-	log.Info("initialize tracer success")
+	log.Info("initialize tracer success, ratio: %v", c.Tracer.Ratio)
 	return
 }

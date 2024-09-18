@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/go-cinch/common/log"
+	"github.com/go-cinch/common/log/caller"
 	_ "github.com/go-cinch/common/plugins/gorm/filter"
 	"github.com/go-cinch/common/plugins/k8s/pod"
 	"github.com/go-cinch/common/plugins/kratos/config/env"
@@ -15,7 +16,6 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
-	kratosLog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
@@ -59,18 +59,18 @@ func main() {
 	flag.Parse()
 	// set default log before read config
 	logOps := []func(*log.Options){
-		log.WithLogger(
-			kratosLog.With(
-				kratosLog.DefaultLogger,
-				"ts", kratosLog.DefaultTimestamp,
-				"service.id", id,
-				"service.name", Name,
-				"service.version", Version,
-				"trace.id", tracing.TraceID(),
-				"span.id", tracing.SpanID(),
-			),
-		),
+		log.WithJSON(true),
 		log.WithLevel(beforeReadConfigLogLevel),
+		log.WithValuer("service.id", id),
+		log.WithValuer("service.name", Name),
+		log.WithValuer("service.version", Version),
+		log.WithValuer("trace.id", tracing.TraceID()),
+		log.WithValuer("span.id", tracing.SpanID()),
+		log.WithCallerOptions(
+			caller.WithSource(false),
+			caller.WithLevel(2),
+			caller.WithVersion(true),
+		),
 	}
 	log.DefaultWrapper = log.NewWrapper(logOps...)
 	c := config.New(
@@ -106,7 +106,12 @@ func main() {
 	bc.Name = Name
 	bc.Version = Version
 	// override log level after read config
-	logOps = append(logOps, log.WithLevel(log.NewLevel(bc.Server.LogLevel)))
+	logOps = append(logOps,
+		[]func(*log.Options){
+			log.WithLevel(log.NewLevel(bc.Log.Level)),
+			log.WithJSON(bc.Log.JSON),
+		}...,
+	)
 	log.DefaultWrapper = log.NewWrapper(logOps...)
 	if bc.Server.MachineId == "" {
 		// if machine id not set, gen from pod ip

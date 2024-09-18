@@ -1,0 +1,6 @@
+log:
+  level: 'info'
+  # text or json
+  JSON: true
+  # show sql or not
+  showSQL: true

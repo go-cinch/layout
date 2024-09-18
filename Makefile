@@ -25,6 +25,7 @@ init:
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@v0.7.0
 	go install github.com/envoyproxy/protoc-gen-validate@v1.0.4
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.55.2
+	go install github.com/go-cinch/cinch/cmd/cinch@latest
 
 .PHONY: config
 # generate internal proto
@@ -42,7 +43,7 @@ sub:
 .PHONY: api
 # generate api proto
 api:
-	mkdir -p docs
+	@mkdir -p docs
 	for NAME in $(API_PROTO_FILES); do \
 		ROOT=$(shell pwd); \
 		DIR=`echo $$NAME | awk -F '-proto/[^/]*$$' '{print $$1}'`; \
@@ -84,6 +85,9 @@ all:
 	make config;
 	make gen;
 	make lint;
+
+local:
+	cinch run
 
 # show help
 help:

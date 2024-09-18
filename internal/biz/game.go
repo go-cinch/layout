@@ -13,8 +13,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+type CreateGame struct {
+	ID   uint64 `json:"id,string"`
+	Name string `json:"name"`
+}
+
 type Game struct {
-	Id   uint64 `json:"id,string"`
+	ID   uint64 `json:"id,string"`
 	Name string `json:"name"`
 }
 
@@ -29,12 +34,12 @@ type FindGameCache struct {
 }
 
 type UpdateGame struct {
-	Id   uint64  `json:"id,string"`
+	ID   uint64  `json:"id,string"`
 	Name *string `json:"name,omitempty"`
 }
 
 type GameRepo interface {
-	Create(ctx context.Context, item *Game) error
+	Create(ctx context.Context, item *CreateGame) error
 	Get(ctx context.Context, id uint64) (*Game, error)
 	Find(ctx context.Context, condition *FindGame) []Game
 	Update(ctx context.Context, item *UpdateGame) error
@@ -59,7 +64,7 @@ func NewGameUseCase(c *conf.Bootstrap, repo GameRepo, tx Transaction, cache Cach
 	}
 }
 
-func (uc *GameUseCase) Create(ctx context.Context, item *Game) error {
+func (uc *GameUseCase) Create(ctx context.Context, item *CreateGame) error {
 	return uc.tx.Tx(ctx, func(ctx context.Context) error {
 		return uc.cache.Flush(ctx, func(ctx context.Context) error {
 			return uc.repo.Create(ctx, item)
@@ -77,7 +82,7 @@ func (uc *GameUseCase) Get(ctx context.Context, id uint64) (rp *Game, err error)
 		return
 	}
 	utils.Json2Struct(&rp, str)
-	if rp.Id == constant.UI0 {
+	if rp.ID == constant.UI0 {
 		err = ErrRecordNotFound(ctx)
 		return
 	}

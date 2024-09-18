@@ -18,7 +18,7 @@ func (s *GameService) CreateGame(ctx context.Context, req *game.CreateGameReques
 	ctx, span := tr.Start(ctx, "CreateGame")
 	defer span.End()
 	rp = &emptypb.Empty{}
-	r := &biz.Game{}
+	r := &biz.CreateGame{}
 	copierx.Copy(&r, req)
 	err = s.game.Create(ctx, r)
 	return

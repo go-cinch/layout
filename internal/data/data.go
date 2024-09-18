@@ -93,8 +93,8 @@ func (d *Data) Cache() redis.UniversalClient {
 	return d.redis
 }
 
-// Id can get unique id
-func (d *Data) Id(ctx context.Context) uint64 {
+// ID can get unique id
+func (d *Data) ID(ctx context.Context) uint64 {
 	return d.sonyflake.Id(ctx)
 }
 
@@ -105,30 +105,27 @@ func NewTransaction(d *Data) biz.Transaction {
 
 // NewRedis is initialize redis connection from config
 func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = errors.Errorf("%v", e)
-		}
-	}()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var u *url.URL
 	u, err = url.Parse(c.Data.Redis.Dsn)
 	if err != nil {
-		err = errors.WithMessage(err, "initialize redis failed")
+		log.Error(err)
+		err = errors.New("initialize redis failed")
 		return
 	}
 	u.User = url.UserPassword(u.User.Username(), "***")
 	showDsn, _ := url.PathUnescape(u.String())
 	client, err = utils.ParseRedisURI(c.Data.Redis.Dsn)
 	if err != nil {
-		err = errors.WithMessage(err, "initialize redis failed")
+		log.Error(err)
+		err = errors.New("initialize redis failed")
 		return
 	}
 	err = client.Ping(ctx).Err()
 	if err != nil {
-		err = errors.WithMessage(err, "initialize redis failed")
+		log.Error(err)
+		err = errors.New("initialize redis failed")
 		return
 	}
 	log.
@@ -139,13 +136,6 @@ func NewRedis(c *conf.Bootstrap) (client redis.UniversalClient, err error) {
 
 // NewDB is initialize db connection from config
 func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = errors.Errorf("%v", e)
-		}
-	}()
-
 	ops := make([]func(*tenant.Options), 0, len(c.Data.Database.Tenants)+3)
 	if len(c.Data.Database.Tenants) > 0 {
 		for k, v := range c.Data.Database.Tenants {
@@ -167,26 +157,34 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 	}
 	ops = append(ops, tenant.WithSQLFile(db.SQLFiles))
 	ops = append(ops, tenant.WithSQLRoot(db.SQLRoot))
+
+	level := log.NewLevel(c.Log.Level)
+	// force to warn level when show sql is false
+	if level > log.WarnLevel && !c.Log.ShowSQL {
+		level = log.WarnLevel
+	}
 	ops = append(ops, tenant.WithConfig(&gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
 		QueryFields: true,
 		Logger: glog.New(
-			glog.WithColorful(true),
+			glog.WithColorful(false),
 			glog.WithSlow(200),
-			glog.WithLevel(log.NewLevel(c.Server.LogLevel)),
+			glog.WithLevel(level),
 		),
 	}))
 
 	gormTenant, err = tenant.New(ops...)
 	if err != nil {
-		err = errors.WithMessage(err, "initialize db failed")
+		log.Error(err)
+		err = errors.New("initialize db failed")
 		return
 	}
 	err = gormTenant.Migrate()
 	if err != nil {
-		err = errors.WithMessage(err, "initialize db failed")
+		log.Error(err)
+		err = errors.New("initialize db failed")
 		return
 	}
 	log.Info("initialize db success")
@@ -195,19 +193,14 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 
 // NewSonyflake is initialize sonyflake id generator
 func NewSonyflake(c *conf.Bootstrap) (sf *id.Sonyflake, err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = errors.Errorf("%v", e)
-		}
-	}()
 	machineId, _ := strconv.ParseUint(c.Server.MachineId, 10, 16)
 	sf = id.NewSonyflake(
 		id.WithSonyflakeMachineId(uint16(machineId)),
 		id.WithSonyflakeStartTime(time.Date(100, 10, 10, 0, 0, 0, 0, time.UTC)),
 	)
 	if sf.Error != nil {
-		err = errors.WithMessage(sf.Error, "initialize sonyflake failed")
+		log.Error(sf.Error)
+		err = errors.New("initialize sonyflake failed")
 		return
 	}
 	log.

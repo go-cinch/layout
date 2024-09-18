@@ -11,8 +11,9 @@ message Bootstrap {
   Server server = 3;
   Data data = 4;
   Tracer tracer = 5;
-  repeated Task tasks = 6;
+  map<string, Task> task = 6;
   Client client = 7;
+  Log log = 8;
 }
 
 message Server {
@@ -34,7 +35,6 @@ message Server {
   bool idempotent = 6;
   bool validate = 7;
   bool nocache = 8;
-  string logLevel = 9;
 }
 
 message Data {
@@ -55,6 +55,12 @@ message Data {
   Redis redis = 2;
 }
 
+message Log {
+  string level = 1;
+  bool JSON = 2;
+  bool showSQL = 3;
+}
+
 message Tracer {
   message Otlp {
     string endpoint = 1;
@@ -64,8 +70,9 @@ message Tracer {
     bool prettyPrint = 1;
   }
   bool enable = 1;
-  Otlp otlp = 2;
-  Stdout stdout = 3;
+  float ratio = 2;
+  Otlp otlp = 3;
+  Stdout stdout = 4;
 }
 
 message Client {
@@ -75,9 +82,8 @@ message Client {
 }
 
 message Task {
-  string category = 1;
-  string uuid = 2;
-  string expr = 3;
-  int64 timeout = 4;
-  int64 retry = 5;
+  string name = 1;
+  string expr = 2;
+  int64 timeout = 3;
+  int64 retry = 4;
 }

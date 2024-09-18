@@ -28,17 +28,8 @@ func (tk Task) Cron(options ...func(*worker.RunOptions)) error {
 
 // New is initialize task worker from config
 func New(c *conf.Bootstrap) (tk *Task, err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = errors.Errorf("%v", e)
-		}
-	}()
-	if len(c.Tasks) == 0 {
-		return
-	}
 	w := worker.New(
-		worker.WithRedisUri(c.Data.Redis.Dsn),
+		worker.WithRedisURI(c.Data.Redis.Dsn),
 		worker.WithGroup(c.Name),
 		worker.WithHandler(func(ctx context.Context, p worker.Payload) error {
 			return process(task{
@@ -48,7 +39,8 @@ func New(c *conf.Bootstrap) (tk *Task, err error) {
 		}),
 	)
 	if w.Error != nil {
-		err = errors.WithMessage(w.Error, "initialize worker failed")
+		log.Error(w.Error)
+		err = errors.New("initialize worker failed")
 		return
 	}
 
@@ -56,16 +48,17 @@ func New(c *conf.Bootstrap) (tk *Task, err error) {
 		worker: w,
 	}
 
-	for _, item := range c.Tasks {
+	for id, item := range c.Task {
 		err = tk.worker.Cron(
-			worker.WithRunGroup(item.Category),
-			worker.WithRunUuid(item.Uuid),
+			worker.WithRunUUID(id),
+			worker.WithRunGroup(item.Name),
 			worker.WithRunExpr(item.Expr),
 			worker.WithRunTimeout(int(item.Timeout)),
 			worker.WithRunMaxRetry(int(item.Retry)),
 		)
 		if err != nil {
-			err = errors.WithMessage(err, "initialize worker failed")
+			log.Error(err)
+			err = errors.New("initialize worker failed")
 			return
 		}
 	}
