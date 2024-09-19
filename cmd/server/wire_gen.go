@@ -25,7 +25,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
-	taskTask, err := task.New(c)
+	worker, err := task.New(c)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -54,7 +54,7 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	transaction := data.NewTransaction(dataData)
 	cache := data.NewCache(c, universalClient)
 	gameUseCase := biz.NewGameUseCase(c, gameRepo, transaction, cache)
-	gameService := service.NewGameService(taskTask, gameUseCase)
+	gameService := service.NewGameService(worker, gameUseCase)
 	grpcServer := server.NewGRPCServer(c, gameService, authClient)
 	httpServer := server.NewHTTPServer(c, gameService, authClient)
 	app := newApp(grpcServer, httpServer)

@@ -14,21 +14,9 @@ import (
 // ProviderSet is task providers.
 var ProviderSet = wire.NewSet(New)
 
-type Task struct {
-	worker *worker.Worker
-}
-
-func (tk Task) Once(options ...func(*worker.RunOptions)) error {
-	return tk.worker.Once(options...)
-}
-
-func (tk Task) Cron(options ...func(*worker.RunOptions)) error {
-	return tk.worker.Cron(options...)
-}
-
 // New is initialize task worker from config
-func New(c *conf.Bootstrap) (tk *Task, err error) {
-	w := worker.New(
+func New(c *conf.Bootstrap) (w *worker.Worker, err error) {
+	w = worker.New(
 		worker.WithRedisURI(c.Data.Redis.Dsn),
 		worker.WithGroup(c.Name),
 		worker.WithHandler(func(ctx context.Context, p worker.Payload) error {
@@ -44,12 +32,8 @@ func New(c *conf.Bootstrap) (tk *Task, err error) {
 		return
 	}
 
-	tk = &Task{
-		worker: w,
-	}
-
 	for id, item := range c.Task {
-		err = tk.worker.Cron(
+		err = w.Cron(
 			worker.WithRunUUID(id),
 			worker.WithRunGroup(item.Name),
 			worker.WithRunExpr(item.Expr),
@@ -74,13 +58,13 @@ type task struct {
 
 func process(t task) (err error) {
 	tr := otel.Tracer("task")
-	_, span := tr.Start(t.ctx, "Task")
+	ctx, span := tr.Start(t.ctx, "Task")
 	defer span.End()
-	switch t.payload.Group {
+	switch t.payload.UID {
 	case "task1":
-		// t.game.Get(ctx, 1)
+		log.WithContext(ctx).Info("task1: %s", t.payload.Payload)
 	case "task2":
-		// t.game.Get(ctx, 2)
+		log.WithContext(ctx).Info("task2: %s", t.payload.Payload)
 	}
 	return
 }

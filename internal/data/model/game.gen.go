@@ -12,10 +12,10 @@ const TableNameGame = "game"
 
 // Game mapped from table <game>
 type Game struct {
-	ID        uint64          `gorm:"column:id;primaryKey;autoIncrement:true;comment:auto increment id" json:"id,string"`
-	CreatedAt carbon.DateTime `gorm:"column:created_at;comment:create time" json:"createdAt"`
-	UpdatedAt carbon.DateTime `gorm:"column:updated_at;comment:update time" json:"updatedAt"`
-	Name      string          `gorm:"column:name;comment:name" json:"name"`
+	ID        uint64          `gorm:"column:id;primaryKey;autoIncrement:true;comment:auto increment id" json:"id,string"` // auto increment id
+	CreatedAt carbon.DateTime `gorm:"column:created_at;comment:create time" json:"createdAt"`                             // create time
+	UpdatedAt carbon.DateTime `gorm:"column:updated_at;comment:update time" json:"updatedAt"`                             // update time
+	Name      string          `gorm:"column:name;comment:name" json:"name"`                                               // name
 }
 
 // TableName Game's table name

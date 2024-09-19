@@ -1,9 +1,9 @@
 package service
 
 import (
+	"github.com/go-cinch/common/worker"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/biz"
-	"github.com/go-cinch/layout/internal/pkg/task"
 	"github.com/google/wire"
 )
 
@@ -14,11 +14,11 @@ var ProviderSet = wire.NewSet(NewGameService)
 type GameService struct {
 	game.UnimplementedGameServer
 
-	task *task.Task
+	task *worker.Worker
 	game *biz.GameUseCase
 }
 
 // NewGameService new a service.
-func NewGameService(task *task.Task, game *biz.GameUseCase) *GameService {
+func NewGameService(task *worker.Worker, game *biz.GameUseCase) *GameService {
 	return &GameService{task: task, game: game}
 }

@@ -764,8 +764,8 @@ github.com/go-cinch/common/middleware/logging v1.0.0 h1:QElVRTRc67g2b/G/6TYtnS3Y
 github.com/go-cinch/common/middleware/logging v1.0.0/go.mod h1:k1e6wSwHfEt4+Hym0c0lmLcyjKftUUleZpjZeUkd+nc=
 github.com/go-cinch/common/middleware/tenant v1.0.1 h1:avbK5rb2MEDzykoZ0gKhtDf7/2k2xpXJWovUks9L8XU=
 github.com/go-cinch/common/middleware/tenant v1.0.1/go.mod h1:5sOSvdx57sqEnMwvn+/j19/eeiVQ5bZGYJ8I4kapmYg=
-github.com/go-cinch/common/middleware/trace v1.0.1 h1:uTDz4ipesj1CfZMmteVi/UVx1P14394OS7AUnpAqXq0=
-github.com/go-cinch/common/middleware/trace v1.0.1/go.mod h1:E0LrUGQkwsM2UXKwQaCwY5+5FzbDZpgbHGoqw1zGMj8=
+github.com/go-cinch/common/middleware/trace v1.0.2 h1:jACrOz4qZU6StPspQfyx8tKP7LKod9x5TBc3YmrdyJk=
+github.com/go-cinch/common/middleware/trace v1.0.2/go.mod h1:Gqwf3vc6//lCIuXdkTJE01N+bvq3+JnHf+Jl3bZpXLs=
 github.com/go-cinch/common/migrate v1.0.4 h1:uhoMLfnRwCvOzOeKGi3xJtGYhBUuUreCybNPgwsWIAQ=
 github.com/go-cinch/common/migrate v1.0.4/go.mod h1:qYXi4lwseM1kDVYWF8bIhBn0TdgLJ9nRfEbHE2AL0oo=
 github.com/go-cinch/common/mock v1.0.0 h1:i+qobSHKt9OxHEFG0m91gxlOAn0q3JkKv0nQ6/NUeko=
@@ -774,8 +774,8 @@ github.com/go-cinch/common/nx v1.0.4 h1:KsrppHZ5Inedapt8VHXcFggwtNHXRtVvAqfABSZ5
 github.com/go-cinch/common/nx v1.0.4/go.mod h1:87d+PfI/Kx9Uv3wQSfy7vAtp6Hr+hVZcDZdaAsDzOwQ=
 github.com/go-cinch/common/page v1.0.4 h1:qJIHVODJkUquLvsoisr4sUYowFxozbo27YGM3pQKFXc=
 github.com/go-cinch/common/page v1.0.4/go.mod h1:tvDQzoioqdq5fURo9yyJRwWDEC0WDGibQW3I87AVSR0=
-github.com/go-cinch/common/plugins/gorm/filter v1.0.0 h1:H+f/gCoGUs+iNva01XHpdSGIUtMe4Bxzd3r7OWcwQfc=
-github.com/go-cinch/common/plugins/gorm/filter v1.0.0/go.mod h1:TaW5GveUIVMRi6Ho3/yPgfO8gLbGHHsKVdSC1NvKICk=
+github.com/go-cinch/common/plugins/gorm/filter v1.0.1 h1:kfFTYlj4S0k/Oyxcz2yvUS8KLhKkGwuqxv8vNMm+x8k=
+github.com/go-cinch/common/plugins/gorm/filter v1.0.1/go.mod h1:TaW5GveUIVMRi6Ho3/yPgfO8gLbGHHsKVdSC1NvKICk=
 github.com/go-cinch/common/plugins/gorm/log v1.0.4 h1:v2qelpFmr6PtE8ZCtIIq0WZ+ffJaf2PA1irXheByC24=
 github.com/go-cinch/common/plugins/gorm/log v1.0.4/go.mod h1:n5IKzf2t48eMEJoLL4CpvWr7vpVhwoqtJwMGaGDkM1g=
 github.com/go-cinch/common/plugins/gorm/tenant v1.0.1 h1:6io1zMge3mipf/88sXBv2EQ0WPo7+8Em5nTAHDMS59M=

@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine3.18 AS builder
+FROM golang:1.22-alpine3.18 AS builder
 
 #ENV GOPROXY=https://goproxy.cn
 # CGO_ENABLED=1, need check `ldd --version` is same as builder
