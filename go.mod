@@ -12,10 +12,10 @@ require (
 	github.com/go-cinch/common/middleware/i18n v1.0.5
 	github.com/go-cinch/common/middleware/logging v1.0.0
 	github.com/go-cinch/common/middleware/tenant v1.0.1
-	github.com/go-cinch/common/middleware/trace v1.0.1
+	github.com/go-cinch/common/middleware/trace v1.0.2
 	github.com/go-cinch/common/mock v1.0.0
 	github.com/go-cinch/common/page v1.0.4
-	github.com/go-cinch/common/plugins/gorm/filter v1.0.0
+	github.com/go-cinch/common/plugins/gorm/filter v1.0.1
 	github.com/go-cinch/common/plugins/gorm/log v1.0.4
 	github.com/go-cinch/common/plugins/gorm/tenant v1.0.1
 	github.com/go-cinch/common/plugins/k8s/pod v1.0.0

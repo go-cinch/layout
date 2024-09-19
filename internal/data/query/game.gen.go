@@ -79,6 +79,8 @@ func (g game) TableName() string { return g.gameDo.TableName() }
 
 func (g game) Alias() string { return g.gameDo.Alias() }
 
+func (g game) Columns(cols ...field.Expr) gen.Columns { return g.gameDo.Columns(cols...) }
+
 func (g *game) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -108,13 +110,13 @@ func (g game) replaceDB(db *gorm.DB) game {
 
 type gameDo struct{ gen.DO }
 
-// SELECT * FROM @@table WHERE id = @id LIMIT 1
+// SELECT * FROM `@@table` WHERE `id` = @id LIMIT 1
 func (g gameDo) GetByID(id uint64) (result model.Game) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
 	params = append(params, id)
-	generateSQL.WriteString("SELECT * FROM game WHERE id = ? LIMIT 1 ")
+	generateSQL.WriteString("SELECT * FROM `game` WHERE `id` = ? LIMIT 1 ")
 
 	var executeSQL *gorm.DB
 	executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params...).Take(&result) // ignore_security_alert
@@ -123,16 +125,16 @@ func (g gameDo) GetByID(id uint64) (result model.Game) {
 	return
 }
 
-// SELECT * FROM @@table
+// SELECT * FROM `@@table`
 // {{where}}
 //
 //	{{if val != ""}}
 //	  {{if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%")}}
-//	    @@col LIKE concat('%', TRIM(BOTH '%' FROM @val), '%')
+//	    @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val), '%')
 //	  {{else if strings.HasPrefix(val, "%")}}
-//	    @@col LIKE concat('%', TRIM(BOTH '%' FROM @val))
+//	    @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val))
 //	  {{else if strings.HasSuffix(val, "%")}}
-//	    @@col LIKE concat(TRIM(BOTH '%' FROM @val), '%')
+//	    @@col LIKE CONCAT(TRIM(BOTH '%' FROM @val), '%')
 //	  {{else}}
 //	    @@col = @val
 //	  {{end}}
@@ -144,18 +146,18 @@ func (g gameDo) GetByCol(col string, val string) (result model.Game) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
-	generateSQL.WriteString("SELECT * FROM game ")
+	generateSQL.WriteString("SELECT * FROM `game` ")
 	var whereSQL0 strings.Builder
 	if val != "" {
 		if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?), '%') ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?), '%') ")
 		} else if strings.HasPrefix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?)) ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?)) ")
 		} else if strings.HasSuffix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat(TRIM(BOTH '%' FROM ?), '%') ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT(TRIM(BOTH '%' FROM ?), '%') ")
 		} else {
 			params = append(params, val)
 			whereSQL0.WriteString(g.Quote(col) + " = ? ")
@@ -171,7 +173,7 @@ func (g gameDo) GetByCol(col string, val string) (result model.Game) {
 	return
 }
 
-// SELECT * FROM @@table
+// SELECT * FROM `@@table`
 // {{if len(cols) == len(vals)}}
 // {{where}}
 //
@@ -180,11 +182,11 @@ func (g gameDo) GetByCol(col string, val string) (result model.Game) {
 //	      {{if i == j}}
 //	        {{if val != ""}}
 //	          {{if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%")}}
-//	            @@col LIKE concat('%', TRIM(BOTH '%' FROM @val), '%') AND
+//	            @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val), '%') AND
 //	          {{else if strings.HasPrefix(val, "%")}}
-//	            @@col LIKE concat('%', TRIM(BOTH '%' FROM @val)) AND
+//	            @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val)) AND
 //	          {{else if strings.HasSuffix(val, "%")}}
-//	            @@col LIKE concat(TRIM(BOTH '%' FROM @val), '%') AND
+//	            @@col LIKE CONCAT(TRIM(BOTH '%' FROM @val), '%') AND
 //	          {{else}}
 //	            @@col = @val AND
 //	          {{end}}
@@ -200,7 +202,7 @@ func (g gameDo) GetByCols(cols []string, vals []string) (result model.Game) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
-	generateSQL.WriteString("SELECT * FROM game ")
+	generateSQL.WriteString("SELECT * FROM `game` ")
 	if len(cols) == len(vals) {
 		var whereSQL0 strings.Builder
 		for i, col := range cols {
@@ -209,13 +211,13 @@ func (g gameDo) GetByCols(cols []string, vals []string) (result model.Game) {
 					if val != "" {
 						if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?), '%') AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?), '%') AND ")
 						} else if strings.HasPrefix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?)) AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?)) AND ")
 						} else if strings.HasSuffix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat(TRIM(BOTH '%' FROM ?), '%') AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT(TRIM(BOTH '%' FROM ?), '%') AND ")
 						} else {
 							params = append(params, val)
 							whereSQL0.WriteString(g.Quote(col) + " = ? AND ")
@@ -235,16 +237,16 @@ func (g gameDo) GetByCols(cols []string, vals []string) (result model.Game) {
 	return
 }
 
-// SELECT * FROM @@table
+// SELECT * FROM `@@table`
 // {{where}}
 //
 //	{{if val != ""}}
 //	  {{if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%")}}
-//	    @@col LIKE concat('%', TRIM(BOTH '%' FROM @val), '%')
+//	    @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val), '%')
 //	  {{else if strings.HasPrefix(val, "%")}}
-//	    @@col LIKE concat('%', TRIM(BOTH '%' FROM @val))
+//	    @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val))
 //	  {{else if strings.HasSuffix(val, "%")}}
-//	    @@col LIKE concat(TRIM(BOTH '%' FROM @val), '%')
+//	    @@col LIKE CONCAT(TRIM(BOTH '%' FROM @val), '%')
 //	  {{else}}
 //	    @@col = @val
 //	  {{end}}
@@ -255,18 +257,18 @@ func (g gameDo) FindByCol(col string, val string) (result []model.Game) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
-	generateSQL.WriteString("SELECT * FROM game ")
+	generateSQL.WriteString("SELECT * FROM `game` ")
 	var whereSQL0 strings.Builder
 	if val != "" {
 		if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?), '%') ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?), '%') ")
 		} else if strings.HasPrefix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?)) ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?)) ")
 		} else if strings.HasSuffix(val, "%") {
 			params = append(params, val)
-			whereSQL0.WriteString(g.Quote(col) + " LIKE concat(TRIM(BOTH '%' FROM ?), '%') ")
+			whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT(TRIM(BOTH '%' FROM ?), '%') ")
 		} else {
 			params = append(params, val)
 			whereSQL0.WriteString(g.Quote(col) + " = ? ")
@@ -281,7 +283,7 @@ func (g gameDo) FindByCol(col string, val string) (result []model.Game) {
 	return
 }
 
-// SELECT * FROM @@table
+// SELECT * FROM `@@table`
 // {{if len(cols) == len(vals)}}
 // {{where}}
 //
@@ -290,11 +292,11 @@ func (g gameDo) FindByCol(col string, val string) (result []model.Game) {
 //	      {{if i == j}}
 //	        {{if val != ""}}
 //	          {{if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%")}}
-//	            @@col LIKE concat('%', TRIM(BOTH '%' FROM @val), '%') AND
+//	            @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val), '%') AND
 //	          {{else if strings.HasPrefix(val, "%")}}
-//	            @@col LIKE concat('%', TRIM(BOTH '%' FROM @val)) AND
+//	            @@col LIKE CONCAT('%', TRIM(BOTH '%' FROM @val)) AND
 //	          {{else if strings.HasSuffix(val, "%")}}
-//	            @@col LIKE concat(TRIM(BOTH '%' FROM @val), '%') AND
+//	            @@col LIKE CONCAT(TRIM(BOTH '%' FROM @val), '%') AND
 //	          {{else}}
 //	            @@col = @val AND
 //	          {{end}}
@@ -309,7 +311,7 @@ func (g gameDo) FindByCols(cols []string, vals []string) (result []model.Game) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
-	generateSQL.WriteString("SELECT * FROM game ")
+	generateSQL.WriteString("SELECT * FROM `game` ")
 	if len(cols) == len(vals) {
 		var whereSQL0 strings.Builder
 		for i, col := range cols {
@@ -318,13 +320,13 @@ func (g gameDo) FindByCols(cols []string, vals []string) (result []model.Game) {
 					if val != "" {
 						if strings.HasPrefix(val, "%") && strings.HasSuffix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?), '%') AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?), '%') AND ")
 						} else if strings.HasPrefix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat('%', TRIM(BOTH '%' FROM ?)) AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT('%', TRIM(BOTH '%' FROM ?)) AND ")
 						} else if strings.HasSuffix(val, "%") {
 							params = append(params, val)
-							whereSQL0.WriteString(g.Quote(col) + " LIKE concat(TRIM(BOTH '%' FROM ?), '%') AND ")
+							whereSQL0.WriteString(g.Quote(col) + " LIKE CONCAT(TRIM(BOTH '%' FROM ?), '%') AND ")
 						} else {
 							params = append(params, val)
 							whereSQL0.WriteString(g.Quote(col) + " = ? AND ")
@@ -385,10 +387,6 @@ func (g gameDo) Select(conds ...field.Expr) *gameDo {
 
 func (g gameDo) Where(conds ...gen.Condition) *gameDo {
 	return g.withDO(g.DO.Where(conds...))
-}
-
-func (g gameDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *gameDo {
-	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
 func (g gameDo) Order(conds ...field.Expr) *gameDo {
