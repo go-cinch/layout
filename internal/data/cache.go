@@ -7,17 +7,21 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bsm/redislock"
 	"github.com/go-cinch/common/log"
 	"github.com/go-cinch/common/plugins/gorm/tenant"
 	"github.com/go-cinch/layout/internal/biz"
 	"github.com/go-cinch/layout/internal/conf"
+	"github.com/patrickmn/go-cache"
 	"github.com/redis/go-redis/v9"
-	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // Cache .
 type Cache struct {
 	redis   redis.UniversalClient
+	locker  *redislock.Client
 	disable bool
 	prefix  string
 	lock    string
@@ -25,10 +29,13 @@ type Cache struct {
 	refresh bool
 }
 
+var local = cache.New(30*time.Minute, 60*time.Minute)
+
 // NewCache .
 func NewCache(c *conf.Bootstrap, client redis.UniversalClient) biz.Cache {
 	return &Cache{
 		redis:   client,
+		locker:  redislock.New(client),
 		disable: c.Server.Nocache,
 		lock:    "lock",
 		val:     "val",
@@ -42,6 +49,7 @@ func (c *Cache) Cache() redis.UniversalClient {
 func (c *Cache) WithPrefix(prefix string) biz.Cache {
 	return &Cache{
 		redis:   c.redis,
+		locker:  c.locker,
 		disable: c.disable,
 		prefix:  prefix,
 		lock:    c.lock,
@@ -52,6 +60,7 @@ func (c *Cache) WithPrefix(prefix string) biz.Cache {
 func (c *Cache) WithRefresh() biz.Cache {
 	return &Cache{
 		redis:   c.redis,
+		locker:  c.locker,
 		disable: c.disable,
 		prefix:  c.prefix,
 		lock:    c.lock,
@@ -65,12 +74,22 @@ func (c *Cache) Get(
 	action string,
 	write func(context.Context) (string, error),
 ) (res string, err error) {
+	tr := otel.Tracer("cache")
+	ctx, span := tr.Start(ctx, "Get")
+	defer span.End()
 	if c.disable {
 		return write(ctx)
 	}
 	key := c.getValKey(ctx, action)
 	if !c.refresh {
 		// 1. first get cache
+		// 1.1. get from local
+		res, err = GetFromLocal(key)
+		if err == nil {
+			// cache exists
+			return
+		}
+		// 1.2. get from redis
 		res, err = c.redis.Get(ctx, key).Result()
 		if err == nil {
 			// cache exists
@@ -78,14 +97,21 @@ func (c *Cache) Get(
 		}
 	}
 	// 2. get lock before read db
-	ok := c.Lock(ctx, action)
-	if !ok {
+	lock, err := c.Lock(ctx, action)
+	if err != nil {
 		err = biz.ErrTooManyRequests(ctx)
 		return
 	}
-	defer c.Unlock(ctx, action)
+	defer func() {
+		_ = lock.Release(ctx)
+	}()
 	if !c.refresh {
 		// 3. double check cache exists(avoid concurrency step 1 ok=false)
+		res, err = GetFromLocal(key)
+		if err == nil {
+			// cache exists
+			return
+		}
 		res, err = c.redis.Get(ctx, key).Result()
 		if err == nil {
 			// cache exists
@@ -113,8 +139,11 @@ func (c *Cache) SetWithExpiration(ctx context.Context, action, data string, seco
 	if c.disable {
 		return
 	}
-	// set random expiration avoid a large number of keys expire at the same time
-	err := c.redis.Set(ctx, c.getValKey(ctx, action), data, time.Duration(seconds)*time.Second).Err()
+	key := c.getValKey(ctx, action)
+	// set to local cache
+	Set2Local(key, data, int(seconds))
+	// set to redis
+	err := c.redis.Set(ctx, key, data, time.Duration(seconds)*time.Second).Err()
 	if err != nil {
 		log.
 			WithContext(ctx).
@@ -133,6 +162,7 @@ func (c *Cache) Del(ctx context.Context, action string) {
 		return
 	}
 	key := c.getValKey(ctx, action)
+	DelFromLocal(key)
 	err := c.redis.Del(ctx, key).Err()
 	if err != nil {
 		log.
@@ -161,6 +191,7 @@ func (c *Cache) Flush(ctx context.Context, handler func(ctx context.Context) err
 		if item == c.lock {
 			continue
 		}
+		DelFromLocal(item)
 		p.Del(ctx, item)
 	}
 	_, pErr := p.Exec(ctx)
@@ -184,6 +215,7 @@ func (c *Cache) FlushByPrefix(ctx context.Context, prefix ...string) (err error)
 		if item == c.lock {
 			continue
 		}
+		DelFromLocal(item)
 		p.Del(ctx, item)
 	}
 	_, pErr := p.Exec(ctx)
@@ -199,50 +231,38 @@ func (c *Cache) FlushByPrefix(ctx context.Context, prefix ...string) (err error)
 	return
 }
 
-func (c *Cache) Lock(ctx context.Context, action string) (ok bool) {
-	if c.disable {
-		ok = true
-		return
+func (c *Cache) Lock(ctx context.Context, action string) (*redislock.Lock, error) {
+	tr := otel.Tracer("cache")
+	ctx, span := tr.Start(ctx, "Lock")
+	defer span.End()
+	lock, err := c.locker.Obtain(
+		ctx,
+		c.getLockKey(ctx, action),
+		20*time.Second,
+		&redislock.Options{
+			RetryStrategy: redislock.LimitRetry(redislock.LinearBackoff(5*time.Millisecond), 400),
+		},
+	)
+	if err != nil {
+		span.SetStatus(codes.Error, err.Error())
 	}
-	retry := 0
-	var e error
-	for retry < 600 && !ok {
-		ok, e = c.redis.SetNX(ctx, c.getLockKey(ctx, action), 1, time.Minute).Result()
-		if errors.Is(e, context.DeadlineExceeded) ||
-			errors.Is(e, context.Canceled) ||
-			(e != nil && e.Error() == "redis: connection pool timeout") {
-			log.
-				WithContext(ctx).
-				WithError(e).
-				WithFields(log.Fields{
-					"action": action,
-				}).
-				Warn("lock failed")
-			return
-		}
-		time.Sleep(25 * time.Millisecond)
-		retry++
-	}
-	return
+	return lock, err
 }
 
-func (c *Cache) Unlock(ctx context.Context, action string) {
-	if c.disable {
-		return
+func Set2Local(key, val string, expire int) {
+	local.Set(key, val, time.Duration(expire)*time.Second)
+}
+
+func GetFromLocal(key string) (string, error) {
+	val, ok := local.Get(key)
+	if !ok {
+		return "", errors.New("key not found")
 	}
-	// get span and create new ctx since current ctx maybe timeout, unlock must be execution
-	span := trace.SpanFromContext(ctx)
-	ctx = trace.ContextWithSpan(context.Background(), span)
-	err := c.redis.Del(ctx, c.getLockKey(ctx, action)).Err()
-	if err != nil {
-		log.
-			WithContext(ctx).
-			WithError(err).
-			WithFields(log.Fields{
-				"action": action,
-			}).
-			Warn("unlock cache failed")
-	}
+	return val.(string), nil
+}
+
+func DelFromLocal(key string) {
+	local.Delete(key)
 }
 
 func (c *Cache) getPrefixKey(ctx context.Context, arr ...string) string {
