@@ -1,4 +1,4 @@
-idempotent.token.missing: '缺少幂等性签名'
+idempotent.token.invalid: '幂等性签名无效'
 
 too.many.requests: '请求频繁, 请稍候重试'
 data.not.change: '数据没有发生变化'
