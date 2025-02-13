@@ -81,7 +81,7 @@ func (uc *GameUseCase) Get(ctx context.Context, id uint64) (rp *Game, err error)
 	if err != nil {
 		return
 	}
-	utils.Json2Struct(&rp, str)
+	utils.JSON2Struct(&rp, str)
 	if rp.ID == constant.UI0 {
 		err = ErrRecordNotFound(ctx)
 		return
@@ -98,7 +98,7 @@ func (uc *GameUseCase) get(ctx context.Context, action string, id uint64) (res s
 		return
 	}
 	copierx.Copy(&rp, item)
-	res = utils.Struct2Json(rp)
+	res = utils.Struct2JSON(rp)
 	uc.cache.Set(ctx, action, res, notFound)
 	return
 }
@@ -113,7 +113,7 @@ func (uc *GameUseCase) Find(ctx context.Context, condition *FindGame) (rp []Game
 		return
 	}
 	var cache FindGameCache
-	utils.Json2Struct(&cache, str)
+	utils.JSON2Struct(&cache, str)
 	condition.Page = cache.Page
 	rp = cache.List
 	return
@@ -125,7 +125,7 @@ func (uc *GameUseCase) find(ctx context.Context, action string, condition *FindG
 	var cache FindGameCache
 	cache.List = list
 	cache.Page = condition.Page
-	res = utils.Struct2Json(cache)
+	res = utils.Struct2JSON(cache)
 	uc.cache.Set(ctx, action, res, len(list) == 0)
 	return
 }

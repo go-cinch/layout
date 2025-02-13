@@ -33,7 +33,7 @@ func NewGRPCServer(
 		ratelimit.Server(),
 	}
 	if c.Tracer.Enable {
-		middlewares = append(middlewares, tracing.Server(), traceMiddleware.Id())
+		middlewares = append(middlewares, tracing.Server(), traceMiddleware.ID())
 	}
 
 	middlewares = append(

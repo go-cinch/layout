@@ -34,6 +34,7 @@ func New(c *conf.Bootstrap) (w *worker.Worker, err error) {
 
 	for id, item := range c.Task {
 		err = w.Cron(
+			context.Background(),
 			worker.WithRunUUID(id),
 			worker.WithRunGroup(item.Name),
 			worker.WithRunExpr(item.Expr),

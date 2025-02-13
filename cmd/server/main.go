@@ -115,7 +115,7 @@ func main() {
 	log.DefaultWrapper = log.NewWrapper(logOps...)
 	if bc.Server.MachineId == "" {
 		// if machine id not set, gen from pod ip
-		machineId, err := pod.MachineId()
+		machineId, err := pod.MachineID()
 		if err == nil {
 			bc.Server.MachineId = strconv.FormatUint(uint64(machineId), 10)
 		} else {
@@ -126,7 +126,7 @@ func main() {
 
 	app, cleanup, err := wireApp(&bc)
 	if err != nil {
-		str := utils.Struct2Json(&bc)
+		str := utils.Struct2JSON(&bc)
 		log.
 			WithError(err).
 			Error("wire app failed")

@@ -84,7 +84,7 @@ func (d *Data) DB(ctx context.Context) *gorm.DB {
 
 // HiddenSQL return a hidden sql ctx
 func (*Data) HiddenSQL(ctx context.Context) context.Context {
-	ctx = glog.NewHiddenSqlContext(ctx)
+	ctx = glog.NewHiddenSQLContext(ctx)
 	return ctx
 }
 
@@ -95,7 +95,7 @@ func (d *Data) Cache() redis.UniversalClient {
 
 // ID can get unique id
 func (d *Data) ID(ctx context.Context) uint64 {
-	return d.sonyflake.Id(ctx)
+	return d.sonyflake.ID(ctx)
 }
 
 // NewTransaction .
@@ -193,9 +193,9 @@ func NewDB(c *conf.Bootstrap) (gormTenant *tenant.Tenant, err error) {
 
 // NewSonyflake is initialize sonyflake id generator
 func NewSonyflake(c *conf.Bootstrap) (sf *id.Sonyflake, err error) {
-	machineId, _ := strconv.ParseUint(c.Server.MachineId, 10, 16)
+	machineID, _ := strconv.ParseUint(c.Server.MachineId, 10, 16)
 	sf = id.NewSonyflake(
-		id.WithSonyflakeMachineId(uint16(machineId)),
+		id.WithSonyflakeMachineID(uint16(machineID)),
 		id.WithSonyflakeStartTime(time.Date(100, 10, 10, 0, 0, 0, 0, time.UTC)),
 	)
 	if sf.Error != nil {
@@ -204,7 +204,7 @@ func NewSonyflake(c *conf.Bootstrap) (sf *id.Sonyflake, err error) {
 		return
 	}
 	log.
-		WithField("machine.id", machineId).
+		WithField("machine.id", machineID).
 		Info("initialize sonyflake success")
 	return
 }
