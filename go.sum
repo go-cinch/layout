@@ -758,6 +758,8 @@ github.com/go-cinch/common/i18n v1.0.7 h1:tGhrIVZhq6HnKuUPTMNcZNBoXVqnCJin9Y6kfM
 github.com/go-cinch/common/i18n v1.0.7/go.mod h1:URXatJBnKNtnLLSH9XnYBuvW57FjJ8OIuhNqadqACUY=
 github.com/go-cinch/common/id v1.0.6 h1:pRhsrW2Me08htxSVFk82ZNpRTojehdsW6srNaGHYJys=
 github.com/go-cinch/common/id v1.0.6/go.mod h1:ZFxhMBff1/oOrvtH6rX+TWcr19AyABP2Aucyrx0vCqA=
+github.com/go-cinch/common/idempotent v1.1.0 h1:+xtNb6zW7tFs3n2b6xRvasUef3Lxe+JBZwFh2la9e50=
+github.com/go-cinch/common/idempotent v1.1.0/go.mod h1:R2Qg9JiKnzg49L2Q5yODQGnEnpFLIFi2EJ1+Wn9BWvE=
 github.com/go-cinch/common/log v1.2.0 h1:Si4yrBXfTOxgrjjyujw2+/skMZ9GN77BWQis+Utw6yY=
 github.com/go-cinch/common/log v1.2.0/go.mod h1:k+WepzpanAMNHur9zKBI0YzEZPhA7EwSd0La2a3WIAQ=
 github.com/go-cinch/common/middleware/i18n v1.0.6 h1:zYy0IP4AqIPB+jutxfdngNrMGL28nd017sHnzSCs0fE=

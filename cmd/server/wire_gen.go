@@ -55,8 +55,8 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	cache := data.NewCache(c, universalClient)
 	gameUseCase := biz.NewGameUseCase(c, gameRepo, transaction, cache)
 	gameService := service.NewGameService(worker, gameUseCase)
-	grpcServer := server.NewGRPCServer(c, gameService, authClient)
-	httpServer := server.NewHTTPServer(c, gameService, authClient)
+	grpcServer := server.NewGRPCServer(c, gameService, universalClient)
+	httpServer := server.NewHTTPServer(c, gameService, universalClient)
 	app := newApp(grpcServer, httpServer)
 	return app, func() {
 		cleanup()

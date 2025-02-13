@@ -8,6 +8,7 @@ require (
 	github.com/go-cinch/common/copierx v1.0.4
 	github.com/go-cinch/common/i18n v1.0.7
 	github.com/go-cinch/common/id v1.0.6
+	github.com/go-cinch/common/idempotent v1.1.0
 	github.com/go-cinch/common/log v1.2.0
 	github.com/go-cinch/common/middleware/i18n v1.0.6
 	github.com/go-cinch/common/middleware/logging v1.0.1

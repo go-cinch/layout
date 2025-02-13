@@ -6,7 +6,6 @@ import (
 	"github.com/go-cinch/common/middleware/logging"
 	tenantMiddleware "github.com/go-cinch/common/middleware/tenant"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
-	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -19,6 +18,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/kratos/v2/transport/http/pprof"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/text/language"
 )
 
@@ -26,7 +26,7 @@ import (
 func NewHTTPServer(
 	c *conf.Bootstrap,
 	svc *service.GameService,
-	authClient auth.AuthClient,
+	rds redis.UniversalClient,
 ) *http.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
@@ -44,7 +44,7 @@ func NewHTTPServer(
 		metadata.Server(),
 	)
 	if c.Server.Idempotent {
-		middlewares = append(middlewares, localMiddleware.Idempotent(authClient))
+		middlewares = append(middlewares, localMiddleware.Idempotent(rds))
 	}
 	if c.Server.Validate {
 		middlewares = append(middlewares, validate.Validator())

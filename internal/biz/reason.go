@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	ErrIdempotentMissingToken = func(ctx context.Context) error {
-		return reason.ErrorIllegalParameter(i18n.FromContext(ctx).T(constant.IdempotentMissingToken))
+	ErrIdempotentTokenExpired = func(ctx context.Context) error {
+		return i18n.NewError(ctx, constant.IdempotentTokenExpired, reason.ErrorIllegalParameter)
 	}
 
 	ErrTooManyRequests = func(ctx context.Context) error {

@@ -6,7 +6,6 @@ import (
 	"github.com/go-cinch/common/middleware/logging"
 	tenantMiddleware "github.com/go-cinch/common/middleware/tenant"
 	traceMiddleware "github.com/go-cinch/common/middleware/trace"
-	"github.com/go-cinch/layout/api/auth"
 	"github.com/go-cinch/layout/api/game"
 	"github.com/go-cinch/layout/internal/conf"
 	localMiddleware "github.com/go-cinch/layout/internal/server/middleware"
@@ -18,6 +17,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/text/language"
 )
 
@@ -25,7 +25,7 @@ import (
 func NewGRPCServer(
 	c *conf.Bootstrap,
 	svc *service.GameService,
-	authClient auth.AuthClient,
+	rds redis.UniversalClient,
 ) *grpc.Server {
 	middlewares := []middleware.Middleware{
 		recovery.Recovery(),
@@ -43,7 +43,7 @@ func NewGRPCServer(
 		metadata.Server(),
 	)
 	if c.Server.Idempotent {
-		middlewares = append(middlewares, localMiddleware.Idempotent(authClient))
+		middlewares = append(middlewares, localMiddleware.Idempotent(rds))
 	}
 	if c.Server.Validate {
 		middlewares = append(middlewares, validate.Validator())
